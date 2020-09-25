@@ -74,29 +74,6 @@ static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits
  * + Contains no strange transactions
  */
 
- void MineGenesis(CBlock genesis)
-{
-    if (genesis.GetHash() != uint256S("0x")) {
-        printf("Looking for genesis block...\n");
-        uint256 hashTarget = CBigNum().SetCompact(genesis.nBits).setuint256();
-        while (genesis.GetHash() > hashTarget) {
-            ++genesis.nNonce;
-            if (genesis.nNonce == 0) {
-                printf("NONCE WRAPPED, incrementing time");
-                std::cout << std::string("NONCE WRAPPED, incrementing time:\n");
-                ++genesis.nTime;
-            }
-            if (genesis.nNonce % 10000 == 0) {
-                printf("Mainnet: nonce %08u: hash = %s \n", genesis.nNonce, genesis.GetHash().ToString().c_str());
-            }
-        }
-        printf("merkle root: %s\n", genesis.hashMerkleRoot.ToString().c_str());
-        printf("block.nTime = %u \n", genesis.nTime);
-        printf("block.nNonce = %u \n", genesis.nNonce);
-        printf("block.GetHash = %s\n", genesis.GetHash().ToString().c_str());
-    }
-}
-
 class CMainParams : public CChainParams {
 public:
     CMainParams() {
@@ -196,9 +173,22 @@ public:
         genesis = CreateGenesisBlock(ZC_GENESIS_BLOCK_TIME, 24573139, 0x1e00ffff, 2, 0 * COIN, extraNonce);
         // std::cout << "5G new hashMerkleRoot hash: " << genesis.hashMerkleRoot.ToString() << std::endl;
         // std::cout << "5G new genesis hash: " << genesis.GetHash().ToString() << std::endl;
-        consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x"));
-        assert(genesis.hashMerkleRoot == uint256S("0x"));
+
+        hashGenesisBlock = genesis.GetHash();
+        while (genesis.GetHash() > uint256("0x00000ffff0000000000000000000000000000000000000000000000000000000")) {
+            genesis.nNonce++;
+            if (genesis.nNonce % 128 == 0)
+                printf("\rnonce %08x", genesis.nNonce);
+        }
+        printf("genesis is %s\n", genesis.ToString().c_str());
+
+        //printf("merkle root: %s\n", genesis.hashMerkleRoot.ToString().c_str());
+        //printf("block.nTime = %u \n", genesis.nTime);
+        //printf("block.nNonce = %u \n", genesis.nNonce);
+        //printf("block.GetHash = %s\n", genesis.GetHash().ToString().c_str());
+        //consensus.hashGenesisBlock = genesis.GetHash();
+        //assert(consensus.hashGenesisBlock == uint256S("0x"));
+        //assert(genesis.hashMerkleRoot == uint256S("0x"));
 
         //vFixedSeeds.clear();
         //vSeeds.clear();
