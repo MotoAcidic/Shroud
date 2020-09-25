@@ -45,6 +45,32 @@ static CBlock CreateGenesisBlock(const char *pszTimestamp, const CScript &genesi
     return genesis;
 }
 
+ void MineGenesis(CBlock genesis) {
+ if(genesis.GetHash() != uint256S("0x"))
+         {
+             printf("Looking for genesis block...\n");
+             uint256 hashTarget = CBigNum().SetCompact(genesis.nBits).getuint256();
+             while(genesis.GetHash() > hashTarget)
+             {
+                 ++genesis.nNonce;
+                 if (genesis.nNonce == 0)
+                 {
+                     printf("NONCE WRAPPED, incrementing time");
+                     std::cout << std::string("NONCE WRAPPED, incrementing time:\n");
+                     ++genesis.nTime;
+                 }
+                 if (genesis.nNonce % 10000 == 0)
+                 {
+                     printf("Mainnet: nonce %08u: hash = %s \n", genesis.nNonce, genesis.GetHash().ToString().c_str());
+                 }
+             }
+             printf("merkle root: %s\n", genesis.hashMerkleRoot.ToString().c_str());
+             printf("block.nTime = %u \n", genesis.nTime);
+             printf("block.nNonce = %u \n", genesis.nNonce);
+             printf("block.GetHash = %s\n", genesis.GetHash().ToString().c_str());
+         }
+ }
+
 /**
  * Build the genesis block. Note that the output of its generation
  * transaction cannot be spent since it did not originally exist in the
@@ -58,7 +84,7 @@ static CBlock CreateGenesisBlock(const char *pszTimestamp, const CScript &genesi
  */
 static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount &genesisReward,
         std::vector<unsigned char> extraNonce) {
-    const char *pszTimestamp = "$8M in BTC Stuck in Limbo, Analyst Says Action 'Violates Liquid's Security Model'";
+    const char *pszTimestamp = "Third time is a charm in most cases but not here.'";
     const CScript genesisOutputScript = CScript();
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward,
                               extraNonce);
@@ -173,19 +199,15 @@ public:
         //MAINNET Genesis
         genesis = CreateGenesisBlock(ZC_GENESIS_BLOCK_TIME, 3320146, 0x1e00ffff, 2, 0 * COIN, extraNonce);
         consensus.hashGenesisBlock = genesis.GetHash();    
-        assert(consensus.hashGenesisBlock == uint256S("0x000000057a1de67260b16b5cd2acc0b997dc01c56fa5ea089f22fac4cf8be8a0"));
-        assert(genesis.hashMerkleRoot     == uint256S("31d5355a6e7138057145681f656469697ed0e0a00c21eff1ebb2eb6452a56bb9"));
+        assert(consensus.hashGenesisBlock == uint256S("0x"));
+        assert(genesis.hashMerkleRoot     == uint256S("0x"));
         //vFixedSeeds.clear();
         //vSeeds.clear();
         //Initial seeders to use
         vSeeds.push_back(CDNSSeedData("seed1.shroudx.org", "seed1.shroudx.org", false));
 
         // Single trusted IPs incase of seeder failure / downtime
-        vSeeds.push_back(CDNSSeedData("188.166.250.71", "188.166.250.71", false)); 
-        vSeeds.push_back(CDNSSeedData("161.35.162.49", "161.35.162.49", false));
-        vSeeds.push_back(CDNSSeedData("104.131.39.211", "104.131.39.211", false));
-        vSeeds.push_back(CDNSSeedData("188.166.244.152", "188.166.244.152", false));
-        vSeeds.push_back(CDNSSeedData("167.71.155.37", "167.71.155.37", false));
+        vSeeds.push_back(CDNSSeedData("188.166.250.71", "188.166.250.71", false));
 
 
         // Note that of those with the service bits flag, most only support a subset of possible options
@@ -213,18 +235,7 @@ public:
         checkpointData = (CCheckpointData) {
                 boost::assign::map_list_of
                     (0, genesis.GetHash())
-                    (501,uint256S("0x000000005c5581de7352f91a9d2528981004727df56dfb50aef53b9eadc28f7d"))
-                    (601,uint256S("0x000000000f1fd6cceee2305054ee3629f232636844d09b6409cd628d116278a9"))
-                    (701,uint256S("0x000000001ac322b43e3beff92727d2bad5edbb68010061eb74dbacc77d5a0b30"))
-                    (801,uint256S("0x00000000200843862a078b344e529736118412a7e0f2bc28123026fe31962959"))
-                    (901,uint256S("0x000000000b027366ebf34a265edca4526335f0cb39e684f3a44ef15d270e29c9"))
-                    (1001,uint256S("0x000000000f8ea629205f51147fdb0632abfd9c9358ffea8f2fe0c2cb04c1e76a"))
-                    (1101,uint256S("0x0000000002d46a17fc6d2bd992ffc58353a02bdee21f9cce7570bda38257eec9"))
-                    (1201,uint256S("0x0000000014be4904b58ee7a482de29ade97f166f37233549b4fadb43dab3d03f"))
-                    (2201,uint256S("0x000000001b5599df209fd9f75b51a86eda63b2460d4782c16c1b4fb9885e9c27"))
-                    (2301,uint256S("0x0000000020878c23c733efc3acf5cd4c41673d3d60f3b42c878913a7656a000d"))
-                    (3301,uint256S("0x0000000005fed918f715a5b26ed5792abf99e73901ba09f8c1fcd7f702743eb5"))
-                    (4301,uint256S("0x00000000022da22211a2e47f929af8dd4cb42bc1af48a814e15ade1d826aefcc")),
+                    (501,uint256S("0x")),
                     
 
 
