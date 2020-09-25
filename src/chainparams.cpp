@@ -45,32 +45,6 @@ static CBlock CreateGenesisBlock(const char *pszTimestamp, const CScript &genesi
     return genesis;
 }
 
- void MineGenesis(CBlock genesis) {
- if(genesis.GetHash() != uint256S("0x"))
-         {
-             printf("Looking for genesis block...\n");
-             uint256 hashTarget = CBigNum().SetCompact(genesis.nBits).getuint256();
-             while(genesis.GetHash() > hashTarget)
-             {
-                 ++genesis.nNonce;
-                 if (genesis.nNonce == 0)
-                 {
-                     printf("NONCE WRAPPED, incrementing time");
-                     std::cout << std::string("NONCE WRAPPED, incrementing time:\n");
-                     ++genesis.nTime;
-                 }
-                 if (genesis.nNonce % 10000 == 0)
-                 {
-                     printf("Mainnet: nonce %08u: hash = %s \n", genesis.nNonce, genesis.GetHash().ToString().c_str());
-                 }
-             }
-             printf("merkle root: %s\n", genesis.hashMerkleRoot.ToString().c_str());
-             printf("block.nTime = %u \n", genesis.nTime);
-             printf("block.nNonce = %u \n", genesis.nNonce);
-             printf("block.GetHash = %s\n", genesis.GetHash().ToString().c_str());
-         }
- }
-
 /**
  * Build the genesis block. Note that the output of its generation
  * transaction cannot be spent since it did not originally exist in the
@@ -99,6 +73,29 @@ static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits
  *    timestamp before)
  * + Contains no strange transactions
  */
+
+ void MineGenesis(CBlock genesis)
+{
+    if (genesis.GetHash() != uint256S("0x")) {
+        printf("Looking for genesis block...\n");
+        uint256 hashTarget = CBigNum().SetCompact(genesis.nBits).setuint256();
+        while (genesis.GetHash() > hashTarget) {
+            ++genesis.nNonce;
+            if (genesis.nNonce == 0) {
+                printf("NONCE WRAPPED, incrementing time");
+                std::cout << std::string("NONCE WRAPPED, incrementing time:\n");
+                ++genesis.nTime;
+            }
+            if (genesis.nNonce % 10000 == 0) {
+                printf("Mainnet: nonce %08u: hash = %s \n", genesis.nNonce, genesis.GetHash().ToString().c_str());
+            }
+        }
+        printf("merkle root: %s\n", genesis.hashMerkleRoot.ToString().c_str());
+        printf("block.nTime = %u \n", genesis.nTime);
+        printf("block.nNonce = %u \n", genesis.nNonce);
+        printf("block.GetHash = %s\n", genesis.GetHash().ToString().c_str());
+    }
+}
 
 class CMainParams : public CChainParams {
 public:
@@ -138,7 +135,7 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 1611840329; // November 15th, 2017.
 
         // The best chain should have at least this much work
-        consensus.nMinimumChainWork = uint256S("0x00000000000000000000000000000000000000000000000000001f7538ccd169");
+        consensus.nMinimumChainWork = uint256S("00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 
         consensus.nCheckBugFixedAtBlock = ZC_CHECK_BUG_FIXED_AT_BLOCK;
         consensus.nShroudnodePaymentsBugFixedAtBlock = ZC_SHROUDNODE_PAYMENT_BUG_FIXED_AT_BLOCK;
@@ -196,11 +193,13 @@ public:
         extraNonce[2] = 0x09;
         extraNonce[3] = 0x27;
         
-        //MAINNET Genesis
-        genesis = CreateGenesisBlock(ZC_GENESIS_BLOCK_TIME, 3320146, 0x1e00ffff, 2, 0 * COIN, extraNonce);
-        consensus.hashGenesisBlock = genesis.GetHash();    
+        genesis = CreateGenesisBlock(ZC_GENESIS_BLOCK_TIME, 24573139, 0x1e00ffff, 2, 0 * COIN, extraNonce);
+        // std::cout << "5G new hashMerkleRoot hash: " << genesis.hashMerkleRoot.ToString() << std::endl;
+        // std::cout << "5G new genesis hash: " << genesis.GetHash().ToString() << std::endl;
+        consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock == uint256S("0x"));
-        assert(genesis.hashMerkleRoot     == uint256S("0x"));
+        assert(genesis.hashMerkleRoot == uint256S("0x"));
+
         //vFixedSeeds.clear();
         //vSeeds.clear();
         //Initial seeders to use
