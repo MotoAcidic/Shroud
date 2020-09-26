@@ -174,7 +174,7 @@ public:
         // std::cout << "5G new hashMerkleRoot hash: " << genesis.hashMerkleRoot.ToString() << std::endl;
         // std::cout << "5G new genesis hash: " << genesis.GetHash().ToString() << std::endl;
 
-        hashGenesisBlock = genesis.GetHash();
+        consensus.hashGenesisBlock = genesis.GetHash();        
         while (genesis.GetHash() > uint256("0x00000ffff0000000000000000000000000000000000000000000000000000000")) {
             genesis.nNonce++;
             if (genesis.nNonce % 128 == 0)
