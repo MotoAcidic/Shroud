@@ -170,11 +170,9 @@ public:
         extraNonce[2] = 0x09;
         extraNonce[3] = 0x27;
         
-        genesis = CreateGenesisBlock(ZC_GENESIS_BLOCK_TIME, 24573139, 0x1e00ffff, 2, 0 * COIN, extraNonce);
-        // std::cout << "5G new hashMerkleRoot hash: " << genesis.hashMerkleRoot.ToString() << std::endl;
-        // std::cout << "5G new genesis hash: " << genesis.GetHash().ToString() << std::endl;
+        genesis = CreateGenesisBlock(ZC_GENESIS_BLOCK_TIME, 2046200, 0x1e00ffff, 2, 0 * COIN, extraNonce);
 
-        
+        /*
         uint32_t nGenesisTime = ZC_GENESIS_BLOCK_TIME;
         arith_uint256 test;
         bool fNegative;
@@ -212,23 +210,19 @@ public:
         std::cout << "Genesis Merkle " << genesis.hashMerkleRoot.GetHex() << std::endl;
         std::cout << "\n";
         return;
-        
+        */
 
-        //printf("merkle root: %s\n", genesis.hashMerkleRoot.ToString().c_str());
-        //printf("block.nTime = %u \n", genesis.nTime);
-        //printf("block.nNonce = %u \n", genesis.nNonce);
-        //printf("block.GetHash = %s\n", genesis.GetHash().ToString().c_str());
-        //consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x"));
-        assert(genesis.hashMerkleRoot == uint256S("0x"));
+        consensus.hashGenesisBlock = genesis.GetHash();
+        assert(consensus.hashGenesisBlock == uint256S("0x000000b3cf5064a01dcdc8931f5bae3cc38c6af1aec07f4459903e9eebae986a"));
+        assert(genesis.hashMerkleRoot == uint256S("0x9ad9f892d158cf38d7e39dfaf2e63cfa62322993f7831aec160f0adb7a668c82"));
 
         //vFixedSeeds.clear();
         //vSeeds.clear();
         //Initial seeders to use
-        vSeeds.push_back(CDNSSeedData("seed1.shroudx.org", "seed1.shroudx.org", false));
+        vSeeds.push_back(CDNSSeedData("", "", false));
 
         // Single trusted IPs incase of seeder failure / downtime
-        vSeeds.push_back(CDNSSeedData("188.166.250.71", "188.166.250.71", false));
+        vSeeds.push_back(CDNSSeedData("", "", false));
 
 
         // Note that of those with the service bits flag, most only support a subset of possible options
@@ -255,8 +249,7 @@ public:
         // + Contains no strange transactions
         checkpointData = (CCheckpointData) {
                 boost::assign::map_list_of
-                    (0, genesis.GetHash())
-                    (501,uint256S("0x")),
+                    (0, genesis.GetHash()),
                     
 
 
@@ -319,7 +312,7 @@ public:
         consensus.nMajorityEnforceBlockUpgrade = 51;
         consensus.nMajorityRejectBlockOutdated = 75;
         consensus.nMajorityWindow = 100;
-        consensus.BIP34Hash = uint256S("0x0000000023b3a96d3484e5abb3755c413e7d41500f8e2a5c3f0dd01299cd8ef8");
+        consensus.BIP34Hash = uint256S("0x00");
         consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.posLimit = uint256S("00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         
@@ -393,8 +386,8 @@ public:
         //TESTNET Genesis
         genesis = CreateGenesisBlock(ZC_GENESIS_BLOCK_TIME, 1263713, 504365040, 2, 0 * COIN, extraNonce);
         consensus.hashGenesisBlock = genesis.GetHash();       
-        assert(consensus.hashGenesisBlock == uint256S("0x00000190276d1ee5e386e6573619a203544b292c1b06e8207ef11da9f4b923a5"));
-        assert(genesis.hashMerkleRoot == uint256S("6c3e15a3cecc3a4640f5b0593489036a0ed648a2c8eb6f12366a8b86db01650b"));
+        assert(consensus.hashGenesisBlock == uint256S("0x00"));
+        assert(genesis.hashMerkleRoot == uint256S("0x00"));
         //vFixedSeeds.clear();
         //vSeeds.clear();
         // nodes with support for servicebits filtering should be at the top
@@ -402,8 +395,8 @@ public:
         // vSeeds.push_back(CDNSSeedData("test1.shroudx.org", "test1.shroudx.org", false));
 
         // Single trusted IPs incase of seeder failure / downtime
-        vSeeds.push_back(CDNSSeedData("37.72.175.139", "37.72.175.139"));
-        vSeeds.push_back(CDNSSeedData("89.38.225.171", "89.38.225.171")); 
+        vSeeds.push_back(CDNSSeedData("", ""));
+        vSeeds.push_back(CDNSSeedData("", "")); 
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector < unsigned char > (1, 65);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector < unsigned char > (1, 178);
@@ -534,8 +527,8 @@ public:
         // REGTEST Genesis
         genesis = CreateGenesisBlock(ZC_GENESIS_BLOCK_TIME, 123956, 0x1e2fffff, 2, 0 * COIN, extraNonce);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x00001d7d96ec35c1124c3cb76295e88a5fb1cd9ce846bbe06386ac85064079ad"));
-        assert(genesis.hashMerkleRoot == uint256S("03da28cf0ba24b756983b5152f0d5753f1781321cada43b672c92c966d04d028"));
+        assert(consensus.hashGenesisBlock == uint256S("0x00"));
+        assert(genesis.hashMerkleRoot == uint256S("0x00"));
         //Disable consecutive checks
         nConsecutivePoWHeight = INT_MAX;
         nMaxPoWBlocks = 101;
