@@ -384,10 +384,10 @@ public:
         extraNonce[3] = 0x24;
          
         //TESTNET Genesis
-        genesis = CreateGenesisBlock(ZC_GENESIS_BLOCK_TIME, 1263713, 504365040, 2, 0 * COIN, extraNonce);
+        genesis = CreateGenesisBlock(ZC_GENESIS_BLOCK_TIME, 2046200, 0x1e00ffff, 2, 0 * COIN, extraNonce);
         consensus.hashGenesisBlock = genesis.GetHash();       
-        assert(consensus.hashGenesisBlock == uint256S("0x00"));
-        assert(genesis.hashMerkleRoot == uint256S("0x00"));
+        assert(consensus.hashGenesisBlock == uint256S("0x000000b3cf5064a01dcdc8931f5bae3cc38c6af1aec07f4459903e9eebae986a"));
+        assert(genesis.hashMerkleRoot == uint256S("0x9ad9f892d158cf38d7e39dfaf2e63cfa62322993f7831aec160f0adb7a668c82"));
         //vFixedSeeds.clear();
         //vSeeds.clear();
         // nodes with support for servicebits filtering should be at the top
@@ -525,10 +525,10 @@ public:
         extraNonce[3] = 0xa2;
          
         // REGTEST Genesis
-        genesis = CreateGenesisBlock(ZC_GENESIS_BLOCK_TIME, 123956, 0x1e2fffff, 2, 0 * COIN, extraNonce);
+        genesis = CreateGenesisBlock(ZC_GENESIS_BLOCK_TIME, 2046200, 0x1e00ffff, 2, 0 * COIN, extraNonce);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x00"));
-        assert(genesis.hashMerkleRoot == uint256S("0x00"));
+        assert(consensus.hashGenesisBlock == uint256S("0x000000b3cf5064a01dcdc8931f5bae3cc38c6af1aec07f4459903e9eebae986a"));
+        assert(genesis.hashMerkleRoot == uint256S("0x9ad9f892d158cf38d7e39dfaf2e63cfa62322993f7831aec160f0adb7a668c82"));
         //Disable consecutive checks
         nConsecutivePoWHeight = INT_MAX;
         nMaxPoWBlocks = 101;
