@@ -2105,8 +2105,8 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params &consensusParams, i
     bool fPremineBlock = nHeight ==2;
     int nYearBlocksinmin = 525600;
     bool phaseinitialdiff = nHeight > 2 && nHeight <= 1500;
-    bool preparationforpos = nHeight > 1500 && nHeight <= 10080;
-    bool phaseyear1 = nHeight > 10080 && nHeight <= nYearBlocksinmin;
+    bool preparationforpos = nHeight > 1500 && nHeight <= 10000;
+    bool phaseyear1 = nHeight > 10000 && nHeight <= nYearBlocksinmin;
     bool phaseyear2 = nHeight > nYearBlocksinmin && nHeight <= (nYearBlocksinmin * 2);
     bool phaseyear3 = nHeight > (nYearBlocksinmin * 2) && nHeight <= (nYearBlocksinmin * 3);
     bool phaseyear4 = nHeight > (nYearBlocksinmin * 3) && nHeight <= (nYearBlocksinmin * 4);
@@ -2121,23 +2121,23 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params &consensusParams, i
     if (nHeight < 2)
         return 0 * COIN;
     else if (fPremineBlock)
-        return 5000000 * COIN;              // 5 mil premine
-    else if (phaseinitialdiff) 
+        return 13000000 * COIN; // 13 mil premine
+    else if (phaseinitialdiff)
         return 0.0001 * COIN;
-    else if (preparationforpos) 
-        return 1 * COIN;              
+    else if (preparationforpos)
+        return 1 * COIN;
     else if (phaseyear1)
-        return 5 * COIN;                   
+        return 3 * COIN;
     else if (phaseyear2)
-        return 3 * COIN;                    
+        return 2.5 * COIN;
     else if (phaseyear3)
-        return 2 * COIN;                    
+        return 2 * COIN;
     else if (phaseyear4)
-        return 1.75 * COIN;                    
+        return 1.75 * COIN;
     else if (phaseyear5)
-        return 1.5 * COIN;                    
+        return 1.5 * COIN;
     else if (phaseyear6)
-        return 1.25 * COIN;                 
+        return 1.25 * COIN;
     else if (phaseyear7)
         return 1 * COIN;
     else if (phaseyear8)
@@ -2145,7 +2145,7 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params &consensusParams, i
     else if (phaseyear9)
         return 0.5 * COIN;
     else if (phaseyear10)
-        return 0.25 * COIN;                      
+        return 0.25 * COIN;
     else
         return 0.1 * COIN;
 }

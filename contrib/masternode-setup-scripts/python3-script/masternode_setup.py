@@ -199,7 +199,7 @@ def setup_xth_masternode(xth):
     masternode_priv_key = input("fivegnodeprivkey: ")
     PRIVATE_KEYS.append(masternode_priv_key)
 
-    BASE_RPC_PORT = 42999
+    BASE_RPC_PORT = 22020
     BASE_PORT = 23020
     
     config = """rpcuser={}

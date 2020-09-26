@@ -73,7 +73,7 @@ VOLUME [ "/home/fivegd/.fiveg" ]
 
 # Main network ports
 EXPOSE 23020
-EXPOSE 42999
+EXPOSE 22020
 
 # Test network ports
 EXPOSE 41998

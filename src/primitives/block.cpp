@@ -19,17 +19,20 @@
 #include <fstream>
 #include <algorithm>
 #include <string>
-#include "crypto/x16Rv2/hash_algos.h"
+//#include "crypto/x16Rv2/hash_algos.h"
+#include "crypto/yescrypt/yescrypt.c"
+
+extern "C" void yescrypt_hash(const char* input, char* output);
 
 uint256 CBlockHeader::GetHash() const {
 
-    return HashX16RV2(BEGIN(nVersion), END(nNonce), hashPrevBlock);
+    return yescrypt_hash(BEGIN(nVersion), END(nNonce), hashPrevBlock);
 
 }
 
 uint256 CBlockHeader::GetPoWHash() const {
-        //Changed hash algo to X16Rv2
-    return HashX16RV2(BEGIN(nVersion), END(nNonce), hashPrevBlock);
+        //Changed hash algo to Yescrypt
+    return yescrypt_hash(BEGIN(nVersion), END(nNonce), hashPrevBlock);
 }
 
 std::string CBlock::ToString() const {

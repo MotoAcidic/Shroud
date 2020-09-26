@@ -8,55 +8,25 @@ Fiveg Protocol (FIVEG) is a new state of the art privacy coin that uses Sigma an
     -Sigma Protocol 
     -Tor Protocol
     -Dandelion++ Protocol
-    -Proof of Work (x16r-V2)
+    -Proof of Work ()
     -Proof of Stake (PoS 3.0)
     -Masternode
 
 ### Specifications
 | Specification | Value |
 |:-----------|:-----------|
-| Name | `FIVEG` |
-| Ticker | `FIVEG` |
-| Consensus Algorithm | `PoW & PoS` |
-| Mining Algorithm | `x16rv2` |
-| Block Time | `60s (1 min)` |
-| Type | `Hybrid PoW/PoS/MN` |
-| Max Supply | `50000000 FIVEG` |
-| Premine Supply | `5000000 FIVEG` |
-| Coinbase Maturity | `100 Blocks` |
-| Stake Maturity | `100 MIN` |
-| Masternode Maturity | `100 MIN` |
-| Masternode Confirmations | `15` |
-| Masternode Collateral | `10000 FIVEG` |
-| Default Port | `23020` |
-| RPC Port | `42999` |
+
 
 #### Block Rewards
-| Phase | Reward (FIVEG) | PoW | PoS | MN | Blocks |
-|:-----------|:-----------|:-----------|:-----------|:-----------|:-----------|
-| GENESIS | `0` | | | | `1` |
-| PREMINE | `5,000,000` | | | | `2` |
-| INITIAL | `0.0001` | `100 %` | `0%` | `0%` | `3 - 1500` |
-| POSPREPARATION | `1` | `100 %` | `0%` | `0%` | `1501 - 10080` |
-| YEAR1 | `5` | `15 %` | `15%` | `70%` | `10081 - 525600` |
-| YEAR2 | `3` | `15 %` | `15%` | `70%` | `525601 - 1051200` |
-| YEAR3 | `2` | `15 %` | `15%` | `70%` | `1051201 - 1576800` |
-| YEAR4 | `1.75` | `15 %` | `15%` | `70%` | `1576801 - 2102400` |
-| YEAR5 | `1.5` | `15 %` | `15%` | `70%` | `2102401 - 2628000` |
-| YEAR6 | `1.25` | `15 %` | `15%` | `70%` | `2628001 - 3153600` |
-| YEAR7 | `1` | `15 %` | `15%` | `70%` | `3153601 - 3679200` |
-| YEAR8 | `0.75` | `15 %` | `15%` | `70%` | `3679201 - 4204800` |
-| YEAR9 | `0.5` | `15 %` | `15%` | `70%` | `4204801 - 4730400` |
-| YEAR10 | `0.25` | `15 %` | `15%` | `70%` | `4730401 - 5256000` |
-| YEAR10++ | `0.1` | `15 %` | `15%` | `70%` | `5256001 - infinite` |
+
 
 Windows Build Instructions and Notes
 ==================================
-The Windows wallet is build with QTs QMAKE. See [build-windows.md](https://github.com/FivegXProject/Fiveg/blob/master/doc/build-windows.md) for instructions.
+The Windows wallet is build with QTs QMAKE. See [build-windows.md]() for instructions.
 
 MACOS Build Instructions and Notes
 ==================================
-The macOS wallet itself is build with QTs QMAKE. See [build-macos.md](https://github.com/FivegXProject/Fiveg/blob/master/doc/build-macos.md) for instructions.
+The macOS wallet itself is build with QTs QMAKE. See [build-macos.md]() for instructions.
 
 Linux Build Instructions and Notes
 ==================================
@@ -87,7 +57,7 @@ Build
 ----------------------
 1.  Clone the source:
 
-        git clone https://github.com/FivegXProject/Fiveg
+        git clone 
 
 2.  Build Fiveg core:
 

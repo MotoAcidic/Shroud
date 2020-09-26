@@ -37,7 +37,7 @@ public:
         nAPIOpenREPPort = 25558;
         nAPIAuthPUBPort = 18332;
         nAPIOpenPUBPort = 28333;
-        nRPCPort = 42999;
+        nRPCPort = 22020;
     }
 };
 static CBaseMainParams mainParams;
