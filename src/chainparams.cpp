@@ -175,7 +175,7 @@ public:
         // std::cout << "5G new genesis hash: " << genesis.GetHash().ToString() << std::endl;
 
         consensus.hashGenesisBlock = genesis.GetHash();        
-        while (genesis.GetHash() > uint256("0x00000ffff0000000000000000000000000000000000000000000000000000000")) {
+        while (genesis.GetHash() > uint256S("0x00000ffff0000000000000000000000000000000000000000000000000000000")) {
             genesis.nNonce++;
             if (genesis.nNonce % 128 == 0)
                 printf("\rnonce %08x", genesis.nNonce);
