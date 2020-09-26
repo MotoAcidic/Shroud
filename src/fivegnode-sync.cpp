@@ -1,25 +1,25 @@
 // Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2020 The ShroudX Project developers
+// Copyright (c) 2020 The FivegX Project developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "activeshroudnode.h"
+#include "activefivegnode.h"
 #include "checkpoints.h"
 #include "main.h"
-#include "shroudnode.h"
-#include "shroudnode-payments.h"
-#include "shroudnode-sync.h"
-#include "shroudnodeman.h"
+#include "fivegnode.h"
+#include "fivegnode-payments.h"
+#include "fivegnode-sync.h"
+#include "fivegnodeman.h"
 #include "netfulfilledman.h"
 #include "spork.h"
 #include "util.h"
 #include "validationinterface.h"
 
-class CShroudnodeSync;
+class CFivegnodeSync;
 
-CShroudnodeSync shroudnodeSync;
+CFivegnodeSync fivegnodeSync;
 
-bool CShroudnodeSync::CheckNodeHeight(CNode *pnode, bool fDisconnectStuckNodes) {
+bool CFivegnodeSync::CheckNodeHeight(CNode *pnode, bool fDisconnectStuckNodes) {
     CNodeStateStats stats;
     if (!GetNodeStateStats(pnode->id, stats) || stats.nCommonHeight == -1 || stats.nSyncHeight == -1) return false; // not enough info about this peer
 
@@ -29,16 +29,16 @@ bool CShroudnodeSync::CheckNodeHeight(CNode *pnode, bool fDisconnectStuckNodes) 
         if (fDisconnectStuckNodes) {
             // Disconnect to free this connection slot for another peer.
             pnode->fDisconnect = true;
-            LogPrintf("CShroudnodeSync::CheckNodeHeight -- disconnecting from stuck peer, nHeight=%d, nCommonHeight=%d, peer=%d\n",
+            LogPrintf("CFivegnodeSync::CheckNodeHeight -- disconnecting from stuck peer, nHeight=%d, nCommonHeight=%d, peer=%d\n",
                       pCurrentBlockIndex->nHeight, stats.nCommonHeight, pnode->id);
         } else {
-            LogPrintf("CShroudnodeSync::CheckNodeHeight -- skipping stuck peer, nHeight=%d, nCommonHeight=%d, peer=%d\n",
+            LogPrintf("CFivegnodeSync::CheckNodeHeight -- skipping stuck peer, nHeight=%d, nCommonHeight=%d, peer=%d\n",
                       pCurrentBlockIndex->nHeight, stats.nCommonHeight, pnode->id);
         }
         return false;
     } else if (pCurrentBlockIndex->nHeight < stats.nSyncHeight - 1) {
         // This peer announced more headers than we have blocks currently
-        LogPrint("shroudnode", "CShroudnodeSync::CheckNodeHeight -- skipping peer, who announced more headers than we have blocks currently, nHeight=%d, nSyncHeight=%d, peer=%d\n",
+        LogPrint("fivegnode", "CFivegnodeSync::CheckNodeHeight -- skipping peer, who announced more headers than we have blocks currently, nHeight=%d, nSyncHeight=%d, peer=%d\n",
                   pCurrentBlockIndex->nHeight, stats.nSyncHeight, pnode->id);
         return false;
     }
@@ -46,7 +46,7 @@ bool CShroudnodeSync::CheckNodeHeight(CNode *pnode, bool fDisconnectStuckNodes) 
     return true;
 }
 
-bool CShroudnodeSync::GetBlockchainSynced(bool fBlockAccepted){
+bool CFivegnodeSync::GetBlockchainSynced(bool fBlockAccepted){
     bool currentBlockchainSynced = fBlockchainSynced;
     IsBlockchainSynced(fBlockAccepted);
     if(currentBlockchainSynced != fBlockchainSynced){
@@ -55,7 +55,7 @@ bool CShroudnodeSync::GetBlockchainSynced(bool fBlockAccepted){
     return fBlockchainSynced;
 }
 
-bool CShroudnodeSync::IsBlockchainSynced(bool fBlockAccepted) {
+bool CFivegnodeSync::IsBlockchainSynced(bool fBlockAccepted) {
     static int64_t nTimeLastProcess = GetTime();
     static int nSkipped = 0;
     static bool fFirstBlockAccepted = false;
@@ -63,7 +63,7 @@ bool CShroudnodeSync::IsBlockchainSynced(bool fBlockAccepted) {
     // If the last call to this function was more than 60 minutes ago 
     // (client was in sleep mode) reset the sync process
     if (GetTime() - nTimeLastProcess > 60 * 60) {
-        LogPrintf("CShroudnodeSync::IsBlockchainSynced time-check fBlockchainSynced=%s\n", 
+        LogPrintf("CFivegnodeSync::IsBlockchainSynced time-check fBlockchainSynced=%s\n", 
                   fBlockchainSynced);
         Reset();
         fBlockchainSynced = false;
@@ -85,15 +85,15 @@ bool CShroudnodeSync::IsBlockchainSynced(bool fBlockAccepted) {
         // Dont skip on REGTEST to make the tests run faster.
         if(Params().NetworkIDString() != CBaseChainParams::REGTEST) {
             // skip if we already checked less than 1 tick ago.
-            if (GetTime() - nTimeLastProcess < SHROUDNODE_SYNC_TICK_SECONDS) {
+            if (GetTime() - nTimeLastProcess < FIVEGNODE_SYNC_TICK_SECONDS) {
                 nSkipped++;
                 return fBlockchainSynced;
             }
         }
     }
 
-    LogPrint("shroudnode-sync", 
-             "CShroudnodeSync::IsBlockchainSynced -- state before check: %ssynced, skipped %d times\n", 
+    LogPrint("fivegnode-sync", 
+             "CFivegnodeSync::IsBlockchainSynced -- state before check: %ssynced, skipped %d times\n", 
              fBlockchainSynced ? "" : "not ", 
              nSkipped);
 
@@ -112,7 +112,7 @@ bool CShroudnodeSync::IsBlockchainSynced(bool fBlockAccepted) {
 
     std::vector < CNode * > vNodesCopy = CopyNodeVector();
     // We have enough peers and assume most of them are synced
-    if (vNodesCopy.size() >= SHROUDNODE_SYNC_ENOUGH_PEERS) {
+    if (vNodesCopy.size() >= FIVEGNODE_SYNC_ENOUGH_PEERS) {
         // Check to see how many of our peers are (almost) at the same height as we are
         int nNodesAtSameHeight = 0;
         BOOST_FOREACH(CNode * pnode, vNodesCopy)
@@ -123,8 +123,8 @@ bool CShroudnodeSync::IsBlockchainSynced(bool fBlockAccepted) {
             }
             nNodesAtSameHeight++;
             // if we have decent number of such peers, most likely we are synced now
-            if (nNodesAtSameHeight >= SHROUDNODE_SYNC_ENOUGH_PEERS) {
-                LogPrintf("CShroudnodeSync::IsBlockchainSynced -- found enough peers on the same height as we are, done\n");
+            if (nNodesAtSameHeight >= FIVEGNODE_SYNC_ENOUGH_PEERS) {
+                LogPrintf("CFivegnodeSync::IsBlockchainSynced -- found enough peers on the same height as we are, done\n");
                 fBlockchainSynced = true;
                 ReleaseNodeVector(vNodesCopy);
                 return fBlockchainSynced;
@@ -146,94 +146,94 @@ bool CShroudnodeSync::IsBlockchainSynced(bool fBlockAccepted) {
     return fBlockchainSynced;
 }
 
-void CShroudnodeSync::Fail() {
+void CFivegnodeSync::Fail() {
     nTimeLastFailure = GetTime();
-    nRequestedShroudnodeAssets = SHROUDNODE_SYNC_FAILED;
+    nRequestedFivegnodeAssets = FIVEGNODE_SYNC_FAILED;
     GetMainSignals().UpdateSyncStatus();
 }
 
-void CShroudnodeSync::Reset() {
-    nRequestedShroudnodeAssets = SHROUDNODE_SYNC_INITIAL;
-    nRequestedShroudnodeAttempt = 0;
+void CFivegnodeSync::Reset() {
+    nRequestedFivegnodeAssets = FIVEGNODE_SYNC_INITIAL;
+    nRequestedFivegnodeAttempt = 0;
     nTimeAssetSyncStarted = GetTime();
-    nTimeLastShroudnodeList = GetTime();
+    nTimeLastFivegnodeList = GetTime();
     nTimeLastPaymentVote = GetTime();
     nTimeLastGovernanceItem = GetTime();
     nTimeLastFailure = 0;
     nCountFailures = 0;
 }
 
-std::string CShroudnodeSync::GetAssetName() {
-    switch (nRequestedShroudnodeAssets) {
-        case (SHROUDNODE_SYNC_INITIAL):
-            return "SHROUDNODE_SYNC_INITIAL";
-        case (SHROUDNODE_SYNC_SPORKS):
-            return "SHROUDNODE_SYNC_SPORKS";
-        case (SHROUDNODE_SYNC_LIST):
-            return "SHROUDNODE_SYNC_LIST";
-        case (SHROUDNODE_SYNC_MNW):
-            return "SHROUDNODE_SYNC_MNW";
-        case (SHROUDNODE_SYNC_FAILED):
-            return "SHROUDNODE_SYNC_FAILED";
-        case SHROUDNODE_SYNC_FINISHED:
-            return "SHROUDNODE_SYNC_FINISHED";
+std::string CFivegnodeSync::GetAssetName() {
+    switch (nRequestedFivegnodeAssets) {
+        case (FIVEGNODE_SYNC_INITIAL):
+            return "FIVEGNODE_SYNC_INITIAL";
+        case (FIVEGNODE_SYNC_SPORKS):
+            return "FIVEGNODE_SYNC_SPORKS";
+        case (FIVEGNODE_SYNC_LIST):
+            return "FIVEGNODE_SYNC_LIST";
+        case (FIVEGNODE_SYNC_MNW):
+            return "FIVEGNODE_SYNC_MNW";
+        case (FIVEGNODE_SYNC_FAILED):
+            return "FIVEGNODE_SYNC_FAILED";
+        case FIVEGNODE_SYNC_FINISHED:
+            return "FIVEGNODE_SYNC_FINISHED";
         default:
             return "UNKNOWN";
     }
 }
 
-void CShroudnodeSync::SwitchToNextAsset() {
-    switch (nRequestedShroudnodeAssets) {
-        case (SHROUDNODE_SYNC_FAILED):
+void CFivegnodeSync::SwitchToNextAsset() {
+    switch (nRequestedFivegnodeAssets) {
+        case (FIVEGNODE_SYNC_FAILED):
             throw std::runtime_error("Can't switch to next asset from failed, should use Reset() first!");
             break;
-        case (SHROUDNODE_SYNC_INITIAL):
+        case (FIVEGNODE_SYNC_INITIAL):
             ClearFulfilledRequests();
-            nRequestedShroudnodeAssets = SHROUDNODE_SYNC_SPORKS;
-            LogPrintf("CShroudnodeSync::SwitchToNextAsset -- Starting %s\n", GetAssetName());
+            nRequestedFivegnodeAssets = FIVEGNODE_SYNC_SPORKS;
+            LogPrintf("CFivegnodeSync::SwitchToNextAsset -- Starting %s\n", GetAssetName());
             break;
-        case (SHROUDNODE_SYNC_SPORKS):
-            nTimeLastShroudnodeList = GetTime();
-            nRequestedShroudnodeAssets = SHROUDNODE_SYNC_LIST;
-            LogPrintf("CShroudnodeSync::SwitchToNextAsset -- Starting %s\n", GetAssetName());
+        case (FIVEGNODE_SYNC_SPORKS):
+            nTimeLastFivegnodeList = GetTime();
+            nRequestedFivegnodeAssets = FIVEGNODE_SYNC_LIST;
+            LogPrintf("CFivegnodeSync::SwitchToNextAsset -- Starting %s\n", GetAssetName());
             break;
-        case (SHROUDNODE_SYNC_LIST):
+        case (FIVEGNODE_SYNC_LIST):
             nTimeLastPaymentVote = GetTime();
-            nRequestedShroudnodeAssets = SHROUDNODE_SYNC_MNW;
-            LogPrintf("CShroudnodeSync::SwitchToNextAsset -- Starting %s\n", GetAssetName());
+            nRequestedFivegnodeAssets = FIVEGNODE_SYNC_MNW;
+            LogPrintf("CFivegnodeSync::SwitchToNextAsset -- Starting %s\n", GetAssetName());
             break;
 
-        case (SHROUDNODE_SYNC_MNW):
+        case (FIVEGNODE_SYNC_MNW):
             nTimeLastGovernanceItem = GetTime();
-            LogPrintf("CShroudnodeSync::SwitchToNextAsset -- Sync has finished\n");
-            nRequestedShroudnodeAssets = SHROUDNODE_SYNC_FINISHED;
+            LogPrintf("CFivegnodeSync::SwitchToNextAsset -- Sync has finished\n");
+            nRequestedFivegnodeAssets = FIVEGNODE_SYNC_FINISHED;
             break;
     }
-    nRequestedShroudnodeAttempt = 0;
+    nRequestedFivegnodeAttempt = 0;
     nTimeAssetSyncStarted = GetTime();
     GetMainSignals().UpdateSyncStatus();
 }
 
-std::string CShroudnodeSync::GetSyncStatus() {
-    switch (shroudnodeSync.nRequestedShroudnodeAssets) {
-        case SHROUDNODE_SYNC_INITIAL:
+std::string CFivegnodeSync::GetSyncStatus() {
+    switch (fivegnodeSync.nRequestedFivegnodeAssets) {
+        case FIVEGNODE_SYNC_INITIAL:
             return _("Synchronization pending...");
-        case SHROUDNODE_SYNC_SPORKS:
+        case FIVEGNODE_SYNC_SPORKS:
             return _("Synchronizing sporks...");
-        case SHROUDNODE_SYNC_LIST:
-            return _("Synchronizing shroudnodes...");
-        case SHROUDNODE_SYNC_MNW:
-            return _("Synchronizing shroudnode payments...");
-        case SHROUDNODE_SYNC_FAILED:
+        case FIVEGNODE_SYNC_LIST:
+            return _("Synchronizing fivegnodes...");
+        case FIVEGNODE_SYNC_MNW:
+            return _("Synchronizing fivegnode payments...");
+        case FIVEGNODE_SYNC_FAILED:
             return _("Synchronization failed");
-        case SHROUDNODE_SYNC_FINISHED:
+        case FIVEGNODE_SYNC_FINISHED:
             return _("Synchronization finished");
         default:
             return "";
     }
 }
 
-void CShroudnodeSync::ProcessMessage(CNode *pfrom, std::string &strCommand, CDataStream &vRecv) {
+void CFivegnodeSync::ProcessMessage(CNode *pfrom, std::string &strCommand, CDataStream &vRecv) {
     if (strCommand == NetMsgType::SYNCSTATUSCOUNT) { //Sync status count
 
         //do not care about stats if sync process finished or failed
@@ -247,42 +247,42 @@ void CShroudnodeSync::ProcessMessage(CNode *pfrom, std::string &strCommand, CDat
     }
 }
 
-void CShroudnodeSync::ClearFulfilledRequests() {
+void CFivegnodeSync::ClearFulfilledRequests() {
     TRY_LOCK(cs_vNodes, lockRecv);
     if (!lockRecv) return;
 
     BOOST_FOREACH(CNode * pnode, vNodes)
     {
         netfulfilledman.RemoveFulfilledRequest(pnode->addr, "spork-sync");
-        netfulfilledman.RemoveFulfilledRequest(pnode->addr, "shroudnode-list-sync");
-        netfulfilledman.RemoveFulfilledRequest(pnode->addr, "shroudnode-payment-sync");
+        netfulfilledman.RemoveFulfilledRequest(pnode->addr, "fivegnode-list-sync");
+        netfulfilledman.RemoveFulfilledRequest(pnode->addr, "fivegnode-payment-sync");
         netfulfilledman.RemoveFulfilledRequest(pnode->addr, "full-sync");
     }
 }
 
-void CShroudnodeSync::ProcessTick() {
+void CFivegnodeSync::ProcessTick() {
     static int nTick = 0;
-    if (nTick++ % SHROUDNODE_SYNC_TICK_SECONDS != 0) return;
+    if (nTick++ % FIVEGNODE_SYNC_TICK_SECONDS != 0) return;
     if (!pCurrentBlockIndex) return;
 
-    //the actual count of shroudnodes we have currently
-    int nMnCount = mnodeman.CountShroudnodes();
+    //the actual count of fivegnodes we have currently
+    int nMnCount = mnodeman.CountFivegnodes();
 
-    LogPrint("ProcessTick", "CShroudnodeSync::ProcessTick -- nTick %d nMnCount %d\n", nTick, nMnCount);
+    LogPrint("ProcessTick", "CFivegnodeSync::ProcessTick -- nTick %d nMnCount %d\n", nTick, nMnCount);
 
     // INITIAL SYNC SETUP / LOG REPORTING
-    double nSyncProgress = double(nRequestedShroudnodeAttempt + (nRequestedShroudnodeAssets - 1) * 8) / (8 * 4);
-    LogPrint("ProcessTick", "CShroudnodeSync::ProcessTick -- nTick %d nRequestedShroudnodeAssets %d nRequestedShroudnodeAttempt %d nSyncProgress %f\n", nTick, nRequestedShroudnodeAssets, nRequestedShroudnodeAttempt, nSyncProgress);
+    double nSyncProgress = double(nRequestedFivegnodeAttempt + (nRequestedFivegnodeAssets - 1) * 8) / (8 * 4);
+    LogPrint("ProcessTick", "CFivegnodeSync::ProcessTick -- nTick %d nRequestedFivegnodeAssets %d nRequestedFivegnodeAttempt %d nSyncProgress %f\n", nTick, nRequestedFivegnodeAssets, nRequestedFivegnodeAttempt, nSyncProgress);
     uiInterface.NotifyAdditionalDataSyncProgressChanged(pCurrentBlockIndex->nHeight, nSyncProgress);
 
     // RESET SYNCING INCASE OF FAILURE
     {
         if (IsSynced()) {
             /*
-                Resync if we lost all shroudnodes from sleep/wake or failed to sync originally
+                Resync if we lost all fivegnodes from sleep/wake or failed to sync originally
             */
             if (nMnCount == 0) {
-                LogPrintf("CShroudnodeSync::ProcessTick -- WARNING: not enough data, restarting sync\n");
+                LogPrintf("CFivegnodeSync::ProcessTick -- WARNING: not enough data, restarting sync\n");
                 Reset();
             } else {
                 std::vector < CNode * > vNodesCopy = CopyNodeVector();
@@ -300,13 +300,13 @@ void CShroudnodeSync::ProcessTick() {
         }
     }
 
-    if (Params().NetworkIDString() != CBaseChainParams::REGTEST && !IsBlockchainSynced() && nRequestedShroudnodeAssets > SHROUDNODE_SYNC_SPORKS) {
-        nTimeLastShroudnodeList = GetTime();
+    if (Params().NetworkIDString() != CBaseChainParams::REGTEST && !IsBlockchainSynced() && nRequestedFivegnodeAssets > FIVEGNODE_SYNC_SPORKS) {
+        nTimeLastFivegnodeList = GetTime();
         nTimeLastPaymentVote = GetTime();
         nTimeLastGovernanceItem = GetTime();
         return;
     }
-    if (nRequestedShroudnodeAssets == SHROUDNODE_SYNC_INITIAL || (nRequestedShroudnodeAssets == SHROUDNODE_SYNC_SPORKS && IsBlockchainSynced())) {
+    if (nRequestedFivegnodeAssets == FIVEGNODE_SYNC_INITIAL || (nRequestedFivegnodeAssets == FIVEGNODE_SYNC_SPORKS && IsBlockchainSynced())) {
         SwitchToNextAsset();
     }
 
@@ -314,26 +314,26 @@ void CShroudnodeSync::ProcessTick() {
 
     BOOST_FOREACH(CNode * pnode, vNodesCopy)
     {
-        // Don't try to sync any data from outbound "shroudnode" connections -
+        // Don't try to sync any data from outbound "fivegnode" connections -
         // they are temporary and should be considered unreliable for a sync process.
-        // Inbound connection this early is most likely a "shroudnode" connection
+        // Inbound connection this early is most likely a "fivegnode" connection
         // initialted from another node, so skip it too.
-        if (pnode->fShroudnode || (fShroudNode && pnode->fInbound)) continue;
+        if (pnode->fFivegnode || (fFivegNode && pnode->fInbound)) continue;
 
         // QUICK MODE (REGTEST ONLY!)
         if (Params().NetworkIDString() == CBaseChainParams::REGTEST) {
-            if (nRequestedShroudnodeAttempt <= 2) {
+            if (nRequestedFivegnodeAttempt <= 2) {
                 pnode->PushMessage(NetMsgType::GETSPORKS); //get current network sporks
-            } else if (nRequestedShroudnodeAttempt < 4) {
+            } else if (nRequestedFivegnodeAttempt < 4) {
                 mnodeman.DsegUpdate(pnode);
-            } else if (nRequestedShroudnodeAttempt < 6) {
-                int nMnCount = mnodeman.CountShroudnodes();
-                pnode->PushMessage(NetMsgType::SHROUDNODEPAYMENTSYNC, nMnCount); //sync payment votes
+            } else if (nRequestedFivegnodeAttempt < 6) {
+                int nMnCount = mnodeman.CountFivegnodes();
+                pnode->PushMessage(NetMsgType::FIVEGNODEPAYMENTSYNC, nMnCount); //sync payment votes
             } else {
-                nRequestedShroudnodeAssets = SHROUDNODE_SYNC_FINISHED;
+                nRequestedFivegnodeAssets = FIVEGNODE_SYNC_FINISHED;
                 GetMainSignals().UpdateSyncStatus();
             }
-            nRequestedShroudnodeAttempt++;
+            nRequestedFivegnodeAttempt++;
             ReleaseNodeVector(vNodesCopy);
             return;
         }
@@ -344,7 +344,7 @@ void CShroudnodeSync::ProcessTick() {
                 // We already fully synced from this node recently,
                 // disconnect to free this connection slot for another peer.
                 pnode->fDisconnect = true;
-                LogPrintf("CShroudnodeSync::ProcessTick -- disconnecting from recently synced peer %d\n", pnode->id);
+                LogPrintf("CFivegnodeSync::ProcessTick -- disconnecting from recently synced peer %d\n", pnode->id);
                 continue;
             }
 
@@ -355,19 +355,19 @@ void CShroudnodeSync::ProcessTick() {
                 netfulfilledman.AddFulfilledRequest(pnode->addr, "spork-sync");
                 // get current network sporks
                 pnode->PushMessage(NetMsgType::GETSPORKS);
-                LogPrintf("CShroudnodeSync::ProcessTick -- nTick %d nRequestedShroudnodeAssets %d -- requesting sporks from peer %d\n", nTick, nRequestedShroudnodeAssets, pnode->id);
+                LogPrintf("CFivegnodeSync::ProcessTick -- nTick %d nRequestedFivegnodeAssets %d -- requesting sporks from peer %d\n", nTick, nRequestedFivegnodeAssets, pnode->id);
                 continue; // always get sporks first, switch to the next node without waiting for the next tick
             }
 
-            // MNLIST : SYNC SHROUDNODE LIST FROM OTHER CONNECTED CLIENTS
+            // MNLIST : SYNC FIVEGNODE LIST FROM OTHER CONNECTED CLIENTS
 
-            if (nRequestedShroudnodeAssets == SHROUDNODE_SYNC_LIST) {
+            if (nRequestedFivegnodeAssets == FIVEGNODE_SYNC_LIST) {
                 // check for timeout first
-                if (nTimeLastShroudnodeList < GetTime() - SHROUDNODE_SYNC_TIMEOUT_SECONDS) {
-                    LogPrintf("CShroudnodeSync::ProcessTick -- nTick %d nRequestedShroudnodeAssets %d -- timeout\n", nTick, nRequestedShroudnodeAssets);
-                    if (nRequestedShroudnodeAttempt == 0) {
-                        LogPrintf("CShroudnodeSync::ProcessTick -- ERROR: failed to sync %s\n", GetAssetName());
-                        // there is no way we can continue without shroudnode list, fail here and try later
+                if (nTimeLastFivegnodeList < GetTime() - FIVEGNODE_SYNC_TIMEOUT_SECONDS) {
+                    LogPrintf("CFivegnodeSync::ProcessTick -- nTick %d nRequestedFivegnodeAssets %d -- timeout\n", nTick, nRequestedFivegnodeAssets);
+                    if (nRequestedFivegnodeAttempt == 0) {
+                        LogPrintf("CFivegnodeSync::ProcessTick -- ERROR: failed to sync %s\n", GetAssetName());
+                        // there is no way we can continue without fivegnode list, fail here and try later
                         Fail();
                         ReleaseNodeVector(vNodesCopy);
                         return;
@@ -378,11 +378,11 @@ void CShroudnodeSync::ProcessTick() {
                 }
 
                 // only request once from each peer
-                if (netfulfilledman.HasFulfilledRequest(pnode->addr, "shroudnode-list-sync")) continue;
-                netfulfilledman.AddFulfilledRequest(pnode->addr, "shroudnode-list-sync");
+                if (netfulfilledman.HasFulfilledRequest(pnode->addr, "fivegnode-list-sync")) continue;
+                netfulfilledman.AddFulfilledRequest(pnode->addr, "fivegnode-list-sync");
 
-                if (pnode->nVersion < mnpayments.GetMinShroudnodePaymentsProto()) continue;
-                nRequestedShroudnodeAttempt++;
+                if (pnode->nVersion < mnpayments.GetMinFivegnodePaymentsProto()) continue;
+                nRequestedFivegnodeAttempt++;
 
                 mnodeman.DsegUpdate(pnode);
 
@@ -390,17 +390,17 @@ void CShroudnodeSync::ProcessTick() {
                 return; //this will cause each peer to get one request each six seconds for the various assets we need
             }
 
-            // MNW : SYNC SHROUDNODE PAYMENT VOTES FROM OTHER CONNECTED CLIENTS
+            // MNW : SYNC FIVEGNODE PAYMENT VOTES FROM OTHER CONNECTED CLIENTS
 
-            if (nRequestedShroudnodeAssets == SHROUDNODE_SYNC_MNW) {
-                LogPrint("mnpayments", "CShroudnodeSync::ProcessTick -- nTick %d nRequestedShroudnodeAssets %d nTimeLastPaymentVote %lld GetTime() %lld diff %lld\n", nTick, nRequestedShroudnodeAssets, nTimeLastPaymentVote, GetTime(), GetTime() - nTimeLastPaymentVote);
+            if (nRequestedFivegnodeAssets == FIVEGNODE_SYNC_MNW) {
+                LogPrint("mnpayments", "CFivegnodeSync::ProcessTick -- nTick %d nRequestedFivegnodeAssets %d nTimeLastPaymentVote %lld GetTime() %lld diff %lld\n", nTick, nRequestedFivegnodeAssets, nTimeLastPaymentVote, GetTime(), GetTime() - nTimeLastPaymentVote);
                 // check for timeout first
-                // This might take a lot longer than SHROUDNODE_SYNC_TIMEOUT_SECONDS minutes due to new blocks,
+                // This might take a lot longer than FIVEGNODE_SYNC_TIMEOUT_SECONDS minutes due to new blocks,
                 // but that should be OK and it should timeout eventually.
-                if (nTimeLastPaymentVote < GetTime() - SHROUDNODE_SYNC_TIMEOUT_SECONDS) {
-                    LogPrintf("CShroudnodeSync::ProcessTick -- nTick %d nRequestedShroudnodeAssets %d -- timeout\n", nTick, nRequestedShroudnodeAssets);
-                    if (nRequestedShroudnodeAttempt == 0) {
-                        LogPrintf("CShroudnodeSync::ProcessTick -- ERROR: failed to sync %s\n", GetAssetName());
+                if (nTimeLastPaymentVote < GetTime() - FIVEGNODE_SYNC_TIMEOUT_SECONDS) {
+                    LogPrintf("CFivegnodeSync::ProcessTick -- nTick %d nRequestedFivegnodeAssets %d -- timeout\n", nTick, nRequestedFivegnodeAssets);
+                    if (nRequestedFivegnodeAttempt == 0) {
+                        LogPrintf("CFivegnodeSync::ProcessTick -- ERROR: failed to sync %s\n", GetAssetName());
                         // probably not a good idea to proceed without winner list
                         Fail();
                         ReleaseNodeVector(vNodesCopy);
@@ -414,22 +414,22 @@ void CShroudnodeSync::ProcessTick() {
                 // check for data
                 // if mnpayments already has enough blocks and votes, switch to the next asset
                 // try to fetch data from at least two peers though
-                if (nRequestedShroudnodeAttempt > 1 && mnpayments.IsEnoughData()) {
-                    LogPrintf("CShroudnodeSync::ProcessTick -- nTick %d nRequestedShroudnodeAssets %d -- found enough data\n", nTick, nRequestedShroudnodeAssets);
+                if (nRequestedFivegnodeAttempt > 1 && mnpayments.IsEnoughData()) {
+                    LogPrintf("CFivegnodeSync::ProcessTick -- nTick %d nRequestedFivegnodeAssets %d -- found enough data\n", nTick, nRequestedFivegnodeAssets);
                     SwitchToNextAsset();
                     ReleaseNodeVector(vNodesCopy);
                     return;
                 }
 
                 // only request once from each peer
-                if (netfulfilledman.HasFulfilledRequest(pnode->addr, "shroudnode-payment-sync")) continue;
-                netfulfilledman.AddFulfilledRequest(pnode->addr, "shroudnode-payment-sync");
+                if (netfulfilledman.HasFulfilledRequest(pnode->addr, "fivegnode-payment-sync")) continue;
+                netfulfilledman.AddFulfilledRequest(pnode->addr, "fivegnode-payment-sync");
 
-                if (pnode->nVersion < mnpayments.GetMinShroudnodePaymentsProto()) continue;
-                nRequestedShroudnodeAttempt++;
+                if (pnode->nVersion < mnpayments.GetMinFivegnodePaymentsProto()) continue;
+                nRequestedFivegnodeAttempt++;
 
                 // ask node for all payment votes it has (new nodes will only return votes for future payments)
-                pnode->PushMessage(NetMsgType::SHROUDNODEPAYMENTSYNC, mnpayments.GetStorageLimit());
+                pnode->PushMessage(NetMsgType::FIVEGNODEPAYMENTSYNC, mnpayments.GetStorageLimit());
                 // ask node for missing pieces only (old nodes will not be asked)
                 mnpayments.RequestLowDataPaymentBlocks(pnode);
 
@@ -443,6 +443,6 @@ void CShroudnodeSync::ProcessTick() {
     ReleaseNodeVector(vNodesCopy);
 }
 
-void CShroudnodeSync::UpdatedBlockTip(const CBlockIndex *pindex) {
+void CFivegnodeSync::UpdatedBlockTip(const CBlockIndex *pindex) {
     pCurrentBlockIndex = pindex;
 }

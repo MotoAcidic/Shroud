@@ -154,8 +154,8 @@
         <translation>正在為磁碟區塊重建索引...</translation>
     </message>
     <message>
-        <source>Send coins to a Shroud address</source>
-        <translation>付款至一個 Shroud 位址</translation>
+        <source>Send coins to a Fiveg address</source>
+        <translation>付款至一個 Fiveg 位址</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -178,8 +178,8 @@
         <translation>驗證訊息... &amp;V</translation>
     </message>
     <message>
-        <source>Shroud</source>
-        <translation>Shroud</translation>
+        <source>Fiveg</source>
+        <translation>Fiveg</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -296,6 +296,6 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>shroud-core</name>
+    <name>fiveg-core</name>
     </context>
 </TS>

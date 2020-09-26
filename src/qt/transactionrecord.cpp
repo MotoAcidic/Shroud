@@ -128,7 +128,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet *
         sub.idx = parts.size();
         sub.debit = -txAmount;
         sub.credit = txAmount;
-        sub.address = QCoreApplication::translate("shroud-core", "Zerocoin->Sigma remint").toStdString();
+        sub.address = QCoreApplication::translate("fiveg-core", "Zerocoin->Sigma remint").toStdString();
         parts.append(sub);
     }
     else if (nNet > 0 || wtx.IsCoinBase() || wtx.IsCoinStake())
@@ -336,7 +336,7 @@ void TransactionRecord::updateStatus(const CWalletTx &wtx)
             status.open_for = wtx.nLockTime;
         }
     }
-    // For generated,staked,or shroudnode reward transactions, determine maturity
+    // For generated,staked,or fivegnode reward transactions, determine maturity
     else if(type == TransactionRecord::Generated || type == TransactionRecord::Stake ||type == TransactionRecord::INReward)
     {
         if (wtx.GetBlocksToMaturity() > 0)

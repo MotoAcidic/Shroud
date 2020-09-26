@@ -38,10 +38,10 @@
 #include "validation.h"
 #include "darksend.h"
 #include "instantx.h"
-#include "shroudnode.h"
-#include "shroudnode-payments.h"
-#include "shroudnode-sync.h"
-#include "shroudnodeconfig.h"
+#include "fivegnode.h"
+#include "fivegnode-payments.h"
+#include "fivegnode-sync.h"
+#include "fivegnodeconfig.h"
 #include "random.h"
 #include "init.h"
 #include "hdmint/wallet.h"
@@ -785,7 +785,7 @@ bool CWallet::SelectCoinsForStaking(CAmount& nTargetValue, std::set<std::pair<co
          //We dont allow sigma inputs to stake yet
         if(pcoin->IsSigmaMint())
             continue;
-        if (n == SHROUDNODE_COIN_REQUIRED * COIN)
+        if (n == FIVEGNODE_COIN_REQUIRED * COIN)
             continue;
 
         pair<int64_t,pair<const CWalletTx*,unsigned int> > coin = make_pair(n,make_pair(pcoin, i));
@@ -848,7 +848,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     //     stakeCache.clear();
     // }
 
-    // if (GetBoolArg("-stakecache", shroudnodeSync.IsBlockchainSynced())) {
+    // if (GetBoolArg("-stakecache", fivegnodeSync.IsBlockchainSynced())) {
     //     BOOST_FOREACH(const PAIRTYPE(const CWalletTx*, unsigned int)& pcoin, setCoins)
     //     {
     //         boost::this_thread::interruption_point();
@@ -972,16 +972,16 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
         }
 
         CBlock *pblock = &pblocktemplate->block;
-        CAmount shroudnodePayment = 0; 
-        // shroudnode payments
-        if (nHeight >= Params().GetConsensus().nShroudnodePaymentsStartBlock) {
+        CAmount fivegnodePayment = 0; 
+        // fivegnode payments
+        if (nHeight >= Params().GetConsensus().nFivegnodePaymentsStartBlock) {
             const CChainParams &chainparams = Params();
             const Consensus::Params &params = chainparams.GetConsensus();
-             shroudnodePayment = GetShroudnodePayment(chainparams.GetConsensus(),false,nHeight);
-            FillBlockPayments(txNew, nHeight, shroudnodePayment, pblock->txoutShroudnode, pblock->voutSuperblock);
+             fivegnodePayment = GetFivegnodePayment(chainparams.GetConsensus(),false,nHeight);
+            FillBlockPayments(txNew, nHeight, fivegnodePayment, pblock->txoutFivegnode, pblock->voutSuperblock);
         }
-        if(pblock->txoutShroudnode != CTxOut() && shroudnodePayment != 0){
-            nReward -= shroudnodePayment;
+        if(pblock->txoutFivegnode != CTxOut() && fivegnodePayment != 0){
+            nReward -= fivegnodePayment;
         }
 
         nCredit += nReward;
@@ -1310,18 +1310,18 @@ bool CWallet::AddToWallet(const CWalletTx &wtxIn, bool fFromLoadWallet, CWalletD
         }
 
     }
-    // If Shroudnode payment, lock corresponding outpoint
-    if (GetBoolArg("-inconflock", true) && (shroudnodeConfig.getCount() > 0)) {
-        BOOST_FOREACH(CShroudnodeConfig::CShroudnodeEntry mne, shroudnodeConfig.getEntries()) {
+    // If Fivegnode payment, lock corresponding outpoint
+    if (GetBoolArg("-inconflock", true) && (fivegnodeConfig.getCount() > 0)) {
+        BOOST_FOREACH(CFivegnodeConfig::CFivegnodeEntry mne, fivegnodeConfig.getEntries()) {
             uint256 mnTxHash(uint256S(mne.getTxHash()));
             int outputIndex = boost::lexical_cast<unsigned int>(mne.getOutputIndex());
 
             COutPoint outpoint = COutPoint(mnTxHash, outputIndex);
 
             if(IsMine(CTxIn(outpoint)) == ISMINE_SPENDABLE && !IsSpent(mnTxHash, outputIndex)){
-                LockCoin(outpoint); //Lock if this transaction is an available shroudnode colleteral payment  
+                LockCoin(outpoint); //Lock if this transaction is an available fivegnode colleteral payment  
             }else {
-                UnlockCoin(outpoint); // Unlock any spent Shroudnode collateral
+                UnlockCoin(outpoint); // Unlock any spent Fivegnode collateral
             }
         }
     }
@@ -3266,13 +3266,13 @@ void CWallet::AvailableCoins(vector <COutput> &vCoins, bool fOnlyConfirmed, cons
                 } else if (nCoinType == ONLY_DENOMINATED) {
                     found = IsDenominatedAmount(pcoin->vout[i].nValue);
                 } else if (nCoinType == ONLY_NOT1000IFMN) {
-                    found = !(fShroudNode && pcoin->vout[i].nValue == SHROUDNODE_COIN_REQUIRED * COIN);
+                    found = !(fFivegNode && pcoin->vout[i].nValue == FIVEGNODE_COIN_REQUIRED * COIN);
                 } else if (nCoinType == ONLY_NONDENOMINATED_NOT1000IFMN) {
                     if (IsCollateralAmount(pcoin->vout[i].nValue)) continue; // do not use collateral amounts
                     found = !IsDenominatedAmount(pcoin->vout[i].nValue);
-                    if (found && fShroudNode) found = pcoin->vout[i].nValue != SHROUDNODE_COIN_REQUIRED * COIN; // do not use Hot MN funds
+                    if (found && fFivegNode) found = pcoin->vout[i].nValue != FIVEGNODE_COIN_REQUIRED * COIN; // do not use Hot MN funds
                 } else if (nCoinType == ONLY_1000) {
-                    found = pcoin->vout[i].nValue == SHROUDNODE_COIN_REQUIRED * COIN;
+                    found = pcoin->vout[i].nValue == FIVEGNODE_COIN_REQUIRED * COIN;
                 } else if (nCoinType == ONLY_PRIVATESEND_COLLATERAL) {
                     found = IsCollateralAmount(pcoin->vout[i].nValue);
                 } else {
@@ -3323,7 +3323,7 @@ bool CWallet::SelectCoinsDark(CAmount nValueMin, CAmount nValueMax, std::vector 
         if (out.tx->vout[out.i].nValue < nValueMin / 10) continue;
         //do not allow collaterals to be selected
         if (IsCollateralAmount(out.tx->vout[out.i].nValue)) continue;
-        if (fShroudNode && out.tx->vout[out.i].nValue == SHROUDNODE_COIN_REQUIRED * COIN) continue; //shroudnode input
+        if (fFivegNode && out.tx->vout[out.i].nValue == FIVEGNODE_COIN_REQUIRED * COIN) continue; //fivegnode input
 
         if (nValueRet + out.tx->vout[out.i].nValue <= nValueMax) {
             CTxIn txin = CTxIn(out.tx->GetHash(), out.i);
@@ -3341,7 +3341,7 @@ bool CWallet::SelectCoinsDark(CAmount nValueMin, CAmount nValueMax, std::vector 
     return nValueRet >= nValueMin;
 }
 
-// shroudnode
+// fivegnode
 bool CWallet::GetCollateralTxIn(CTxIn& txinRet, CAmount& nValueRet) const
 {
     vector<COutput> vCoins;
@@ -3362,7 +3362,7 @@ bool CWallet::GetCollateralTxIn(CTxIn& txinRet, CAmount& nValueRet) const
     return false;
 }
 
-bool CWallet::GetShroudnodeVinAndKeys(CTxIn &txinRet, CPubKey &pubKeyRet, CKey &keyRet, std::string strTxHash,
+bool CWallet::GetFivegnodeVinAndKeys(CTxIn &txinRet, CPubKey &pubKeyRet, CKey &keyRet, std::string strTxHash,
                                  std::string strOutputIndex) {
     // wait for reindex and/or import to finish
     if (fImporting || fReindex) return false;
@@ -3371,7 +3371,7 @@ bool CWallet::GetShroudnodeVinAndKeys(CTxIn &txinRet, CPubKey &pubKeyRet, CKey &
     std::vector <COutput> vPossibleCoins;
     AvailableCoins(vPossibleCoins, true, NULL, false, ONLY_1000);
     if (vPossibleCoins.empty()) {
-        LogPrintf("CWallet::GetShroudnodeVinAndKeys -- Could not locate any valid shroudnode vin\n");
+        LogPrintf("CWallet::GetFivegnodeVinAndKeys -- Could not locate any valid fivegnode vin\n");
         return false;
     }
 
@@ -3386,7 +3386,7 @@ bool CWallet::GetShroudnodeVinAndKeys(CTxIn &txinRet, CPubKey &pubKeyRet, CKey &
     if (out.tx->GetHash() == txHash && out.i == nOutputIndex) // found it!
         return GetVinAndKeysFromOutput(out, txinRet, pubKeyRet, keyRet);
 
-    LogPrintf("CWallet::GetShroudnodeVinAndKeys -- Could not locate specified shroudnode vin\n");
+    LogPrintf("CWallet::GetFivegnodeVinAndKeys -- Could not locate specified fivegnode vin\n");
     return false;
 }
 
@@ -3941,7 +3941,7 @@ bool CWallet::SelectCoinsByDenominations(int nDenom, CAmount nValueMin, CAmount 
     InsecureRand insecureRand;
     BOOST_FOREACH(const COutput &out, vCoins)
     {
-        // shroudnode-like input should not be selected by AvailableCoins now anyway
+        // fivegnode-like input should not be selected by AvailableCoins now anyway
         //if(out.tx->vout[out.i].nValue == 1000*COIN) continue;
         if (nValueRet + out.tx->vout[out.i].nValue <= nValueMax) {
 
@@ -4049,7 +4049,7 @@ bool CWallet::SelectCoinsGrouppedByAddresses(std::vector <CompactTallyItem> &vec
             if (fAnonymizable) {
                 // ignore collaterals
                 if (IsCollateralAmount(wtx.vout[i].nValue)) continue;
-                if (fShroudNode && wtx.vout[i].nValue == SHROUDNODE_COIN_REQUIRED * COIN) continue;
+                if (fFivegNode && wtx.vout[i].nValue == FIVEGNODE_COIN_REQUIRED * COIN) continue;
                 // ignore outputs that are 10 times smaller then the smallest denomination
                 // otherwise they will just lead to higher fee / lower priority
                 if (wtx.vout[i].nValue <= vecPrivateSendDenominations.back() / 10) continue;
@@ -4212,9 +4212,9 @@ bool CWallet::CreateTransaction(const vector <CRecipient> &vecSend, CWalletTx &w
                 CAmount nValueIn = 0;
                 if (!SelectCoins(vAvailableCoins, nValueToSelect, setCoins, nValueIn, coinControl)) {
                     if (nCoinType == ONLY_NOT1000IFMN) {
-                        strFailReason = _("Unable to locate enough funds for this transaction that are not equal 1000 SHROUD.");
+                        strFailReason = _("Unable to locate enough funds for this transaction that are not equal 1000 FIVEG.");
                     } else if (nCoinType == ONLY_NONDENOMINATED_NOT1000IFMN) {
-                        strFailReason = _("Unable to locate enough PrivateSend non-denominated funds for this transaction that are not equal 1000 SHROUD.");
+                        strFailReason = _("Unable to locate enough PrivateSend non-denominated funds for this transaction that are not equal 1000 FIVEG.");
                     } else if (nCoinType == ONLY_DENOMINATED) {
                         strFailReason = _("Unable to locate enough PrivateSend denominated funds for this transaction.");
                         strFailReason += _("PrivateSend uses exact denominated amounts to send funds, you might simply need to anonymize some more coins.");
@@ -4612,7 +4612,7 @@ bool CWallet::CreateSigmaMintModel(
         int64_t denominationValue;
         if (!DenominationToInteger(denomination, denominationValue)) {
             throw runtime_error(
-                "mintzerocoin <amount>(0.1, 0.5, 1, 10, 100) (\"shroudaddress\")\n");
+                "mintzerocoin <amount>(0.1, 0.5, 1, 10, 100) (\"fivegaddress\")\n");
         }
 
         int64_t coinCount = denominationPair.second;
@@ -4621,7 +4621,7 @@ bool CWallet::CreateSigmaMintModel(
             denominationValue, coinCount);
 
         if(coinCount < 0) {
-            throw runtime_error("Coin count negative (\"shroudaddress\")\n");
+            throw runtime_error("Coin count negative (\"fivegaddress\")\n");
         }
 
         sigma::Params* sigmaParams = sigma::Params::get_default();
@@ -4739,7 +4739,7 @@ bool CWallet::CreateZerocoinMintModelV2(
                 break;
             default:
                 throw runtime_error(
-                    "mintzerocoin <amount>(1,10,25,50,100) (\"shroudaddress\")\n");
+                    "mintzerocoin <amount>(1,10,25,50,100) (\"fivegaddress\")\n");
         }
 
         int64_t amount = denominationPair.second;
@@ -4748,7 +4748,7 @@ bool CWallet::CreateZerocoinMintModelV2(
 
         if(amount < 0){
                 throw runtime_error(
-                    "mintzerocoin <amount>(1,10,25,50,100) (\"shroudaddress\")\n");
+                    "mintzerocoin <amount>(1,10,25,50,100) (\"fivegaddress\")\n");
         }
 
         for(int64_t i=0; i<amount; i++){
@@ -5046,7 +5046,7 @@ bool CWallet::CreateZerocoinToSigmaRemintModel(string &stringError, int version,
         return false;
     }
 
-    if (!params.IsRegtest() && !shroudnodeSync.IsBlockchainSynced()) {
+    if (!params.IsRegtest() && !fivegnodeSync.IsBlockchainSynced()) {
         stringError = "Blockchain is not synced";
         return false;
     }
@@ -5712,7 +5712,7 @@ bool CWallet::CreateZerocoinMintTransaction(const vector <CRecipient> &vecSend, 
 //                }
                 } else{
                     int64_t nPayFee = payTxFee.GetFeePerK() * (1 + (int64_t) GetTransactionWeight(txNew) / 1000);
-                    //                bool fAllowFree = false;                                 // No free TXs in SHROUD
+                    //                bool fAllowFree = false;                                 // No free TXs in FIVEG
                     int64_t nMinFee = wtxNew.GetMinFee(1, false, GMF_SEND);
                     nFeeNeeded = nPayFee;
                     if (nFeeNeeded < nMinFee) {
@@ -5805,10 +5805,10 @@ bool CWallet::CreateZerocoinSpendTransaction(std::string &thirdPartyaddress, int
 
                 CBitcoinAddress address(thirdPartyaddress);
                 if (!address.IsValid()){
-                    strFailReason = _("Invalid Shroud address");
+                    strFailReason = _("Invalid Fiveg address");
                     return false;
                 }
-                // Parse Shroud address
+                // Parse Fiveg address
                 scriptChange = GetScriptForDestination(CBitcoinAddress(thirdPartyaddress).Get());
             }
 
@@ -6054,10 +6054,10 @@ bool CWallet::CreateSigmaSpendTransaction(
             } else {
                 CBitcoinAddress address(thirdPartyaddress);
                 if (!address.IsValid()){
-                    strFailReason = _("Invalid Shroud address");
+                    strFailReason = _("Invalid Fiveg address");
                     return false;
                 }
-                // Parse Shroud address
+                // Parse Fiveg address
                 scriptChange = GetScriptForDestination(CBitcoinAddress(thirdPartyaddress).Get());
             }
 
@@ -6342,10 +6342,10 @@ bool CWallet::CreateMultipleZerocoinSpendTransaction(std::string &thirdPartyaddr
             }else{
                  CBitcoinAddress address(thirdPartyaddress);
                 if (!address.IsValid()){
-                    strFailReason = _("Invalid Shroud address");
+                    strFailReason = _("Invalid Fiveg address");
                     return false;
                 }
-                // Parse Shroud address
+                // Parse Fiveg address
                 scriptChange = GetScriptForDestination(CBitcoinAddress(thirdPartyaddress).Get());
             }
 
@@ -6668,10 +6668,10 @@ bool CWallet::CreateMultipleSigmaSpendTransaction(
             }else{
                 CBitcoinAddress address(thirdPartyaddress);
                 if (!address.IsValid()) {
-                    strFailReason = _("Invalid Shroud address");
+                    strFailReason = _("Invalid Fiveg address");
                     return false;
                 }
-                // Parse Shroud address
+                // Parse Fiveg address
                 scriptChange = GetScriptForDestination(CBitcoinAddress(thirdPartyaddress).Get());
             }
 

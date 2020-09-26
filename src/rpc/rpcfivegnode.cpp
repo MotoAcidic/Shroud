@@ -1,11 +1,11 @@
-#include "activeshroudnode.h"
+#include "activefivegnode.h"
 #include "darksend.h"
 #include "init.h"
 #include "main.h"
-#include "shroudnode-payments.h"
-#include "shroudnode-sync.h"
-#include "shroudnodeconfig.h"
-#include "shroudnodeman.h"
+#include "fivegnode-payments.h"
+#include "fivegnode-sync.h"
+#include "fivegnodeconfig.h"
+#include "fivegnodeman.h"
 #include "rpc/server.h"
 #include "util.h"
 #include "utilmoneystr.h"
@@ -35,8 +35,8 @@ UniValue privatesend(const UniValue &params, bool fHelp) {
             EnsureWalletIsUnlocked();
         }
 
-        if (fShroudNode)
-            return "Mixing is not supported from shroudnodes";
+        if (fFivegNode)
+            return "Mixing is not supported from fivegnodes";
 
         fEnablePrivateSend = true;
         bool result = darkSendPool.DoAutomaticDenominating();
@@ -70,9 +70,9 @@ UniValue getpoolinfo(const UniValue &params, bool fHelp) {
     obj.push_back(Pair("entries", darkSendPool.GetEntriesCount()));
     obj.push_back(Pair("status", darkSendPool.GetStatus()));
 
-    if (darkSendPool.pSubmittedToShroudnode) {
-        obj.push_back(Pair("outpoint", darkSendPool.pSubmittedToShroudnode->vin.prevout.ToStringShort()));
-        obj.push_back(Pair("addr", darkSendPool.pSubmittedToShroudnode->addr.ToString()));
+    if (darkSendPool.pSubmittedToFivegnode) {
+        obj.push_back(Pair("outpoint", darkSendPool.pSubmittedToFivegnode->vin.prevout.ToStringShort()));
+        obj.push_back(Pair("addr", darkSendPool.pSubmittedToFivegnode->addr.ToString()));
     }
 
     if (pwalletMain) {
@@ -85,7 +85,7 @@ UniValue getpoolinfo(const UniValue &params, bool fHelp) {
 }
 
 
-UniValue shroudnode(const UniValue &params, bool fHelp) {
+UniValue fivegnode(const UniValue &params, bool fHelp) {
     std::string strCommand;
     if (params.size() >= 1) {
         strCommand = params[0].get_str();
@@ -102,24 +102,24 @@ UniValue shroudnode(const UniValue &params, bool fHelp) {
          strCommand != "genkey" &&
          strCommand != "connect" && strCommand != "outputs" && strCommand != "status"))
         throw std::runtime_error(
-                "shroudnode \"command\"...\n"
-                        "Set of commands to execute shroudnode related actions\n"
+                "fivegnode \"command\"...\n"
+                        "Set of commands to execute fivegnode related actions\n"
                         "\nArguments:\n"
                         "1. \"command\"        (string or set of strings, required) The command to execute\n"
                         "\nAvailable commands:\n"
-                        "  count        - Print number of all known shroudnodes (optional: 'ps', 'enabled', 'all', 'qualify')\n"
-                        "  current      - Print info on current shroudnode winner to be paid the next block (calculated locally)\n"
-                        "  debug        - Print shroudnode status\n"
-                        "  genkey       - Generate new shroudnodeprivkey\n"
-                        "  outputs      - Print shroudnode compatible outputs\n"
-                        "  start        - Start local Hot shroudnode configured in dash.conf\n"
-                        "  start-alias  - Start single remote shroudnode by assigned alias configured in shroudnode.conf\n"
-                        "  start-<mode> - Start remote shroudnodes configured in shroudnode.conf (<mode>: 'all', 'missing', 'disabled')\n"
-                        "  status       - Print shroudnode status information\n"
-                        "  list         - Print list of all known shroudnodes (see shroudnodelist for more info)\n"
-                        "  list-conf    - Print shroudnode.conf in JSON format\n"
-                        "  winner       - Print info on next shroudnode winner to vote for\n"
-                        "  winners      - Print list of shroudnode winners\n"
+                        "  count        - Print number of all known fivegnodes (optional: 'ps', 'enabled', 'all', 'qualify')\n"
+                        "  current      - Print info on current fivegnode winner to be paid the next block (calculated locally)\n"
+                        "  debug        - Print fivegnode status\n"
+                        "  genkey       - Generate new fivegnodeprivkey\n"
+                        "  outputs      - Print fivegnode compatible outputs\n"
+                        "  start        - Start local Hot fivegnode configured in dash.conf\n"
+                        "  start-alias  - Start single remote fivegnode by assigned alias configured in fivegnode.conf\n"
+                        "  start-<mode> - Start remote fivegnodes configured in fivegnode.conf (<mode>: 'all', 'missing', 'disabled')\n"
+                        "  status       - Print fivegnode status information\n"
+                        "  list         - Print list of all known fivegnodes (see fivegnodelist for more info)\n"
+                        "  list-conf    - Print fivegnode.conf in JSON format\n"
+                        "  winner       - Print info on next fivegnode winner to vote for\n"
+                        "  winners      - Print list of fivegnode winners\n"
         );
 
     if (strCommand == "list") {
@@ -128,12 +128,12 @@ UniValue shroudnode(const UniValue &params, bool fHelp) {
         for (unsigned int i = 1; i < params.size(); i++) {
             newParams.push_back(params[i]);
         }
-        return shroudnodelist(newParams, fHelp);
+        return fivegnodelist(newParams, fHelp);
     }
 
     if (strCommand == "connect") {
         if (params.size() < 2)
-            throw JSONRPCError(RPC_INVALID_PARAMETER, "Shroudnode address required");
+            throw JSONRPCError(RPC_INVALID_PARAMETER, "Fivegnode address required");
 
         std::string strAddress = params[1].get_str();
 
@@ -141,7 +141,7 @@ UniValue shroudnode(const UniValue &params, bool fHelp) {
 
         CNode *pnode = ConnectNode(CAddress(addr, NODE_NETWORK), NULL);
         if (!pnode)
-            throw JSONRPCError(RPC_INTERNAL_ERROR, strprintf("Couldn't connect to shroudnode %s", strAddress));
+            throw JSONRPCError(RPC_INTERNAL_ERROR, strprintf("Couldn't connect to fivegnode %s", strAddress));
 
         return "successfully connected";
     }
@@ -162,7 +162,7 @@ UniValue shroudnode(const UniValue &params, bool fHelp) {
             return mnodeman.CountEnabled();
 
         int nCount;
-        mnodeman.GetNextShroudnodeInQueueForPayment(true, nCount);
+        mnodeman.GetNextFivegnodeInQueueForPayment(true, nCount);
 
         if (strMode == "qualify")
             return nCount;
@@ -176,13 +176,13 @@ UniValue shroudnode(const UniValue &params, bool fHelp) {
     if (strCommand == "current" || strCommand == "winner") {
         int nCount;
         int nHeight;
-        CShroudnode *winner = NULL;
+        CFivegnode *winner = NULL;
         {
             LOCK(cs_main);
             nHeight = chainActive.Height() + (strCommand == "current" ? 1 : 10);
         }
         mnodeman.UpdateLastPaid();
-        winner = mnodeman.GetNextShroudnodeInQueueForPayment(nHeight, true, nCount);
+        winner = mnodeman.GetNextFivegnodeInQueueForPayment(nHeight, true, nCount);
         if (!winner) return "unknown";
 
         UniValue obj(UniValue::VOBJ);
@@ -192,44 +192,44 @@ UniValue shroudnode(const UniValue &params, bool fHelp) {
         obj.push_back(Pair("protocol", (int64_t) winner->nProtocolVersion));
         obj.push_back(Pair("vin", winner->vin.prevout.ToStringShort()));
         obj.push_back(Pair("payee", CBitcoinAddress(winner->pubKeyCollateralAddress.GetID()).ToString()));
-        obj.push_back(Pair("lastseen", (winner->lastPing == CShroudnodePing()) ? winner->sigTime :
+        obj.push_back(Pair("lastseen", (winner->lastPing == CFivegnodePing()) ? winner->sigTime :
                                        winner->lastPing.sigTime));
-        obj.push_back(Pair("activeseconds", (winner->lastPing == CShroudnodePing()) ? 0 :
+        obj.push_back(Pair("activeseconds", (winner->lastPing == CFivegnodePing()) ? 0 :
                                             (winner->lastPing.sigTime - winner->sigTime)));
         obj.push_back(Pair("nBlockLastPaid", winner->nBlockLastPaid));
         return obj;
     }
 
     if (strCommand == "debug") {
-        if (activeShroudnode.nState != ACTIVE_SHROUDNODE_INITIAL || !shroudnodeSync.GetBlockchainSynced())
-            return activeShroudnode.GetStatus();
+        if (activeFivegnode.nState != ACTIVE_FIVEGNODE_INITIAL || !fivegnodeSync.GetBlockchainSynced())
+            return activeFivegnode.GetStatus();
 
         CTxIn vin;
         CPubKey pubkey;
         CKey key;
 
-        if (!pwalletMain || !pwalletMain->GetShroudnodeVinAndKeys(vin, pubkey, key))
+        if (!pwalletMain || !pwalletMain->GetFivegnodeVinAndKeys(vin, pubkey, key))
             throw JSONRPCError(RPC_INVALID_PARAMETER,
-                               "Missing shroudnode input, please look at the documentation for instructions on shroudnode creation");
+                               "Missing fivegnode input, please look at the documentation for instructions on fivegnode creation");
 
-        return activeShroudnode.GetStatus();
+        return activeFivegnode.GetStatus();
     }
 
     if (strCommand == "start") {
-        if (!fShroudNode)
-            throw JSONRPCError(RPC_INTERNAL_ERROR, "You must set shroudnode=1 in the configuration");
+        if (!fFivegNode)
+            throw JSONRPCError(RPC_INTERNAL_ERROR, "You must set fivegnode=1 in the configuration");
 
         {
             LOCK(pwalletMain->cs_wallet);
             EnsureWalletIsUnlocked();
         }
 
-        if (activeShroudnode.nState != ACTIVE_SHROUDNODE_STARTED) {
-            activeShroudnode.nState = ACTIVE_SHROUDNODE_INITIAL; // TODO: consider better way
-            activeShroudnode.ManageState();
+        if (activeFivegnode.nState != ACTIVE_FIVEGNODE_STARTED) {
+            activeFivegnode.nState = ACTIVE_FIVEGNODE_INITIAL; // TODO: consider better way
+            activeFivegnode.ManageState();
         }
 
-        return activeShroudnode.GetStatus();
+        return activeFivegnode.GetStatus();
     }
 
     if (strCommand == "start-alias") {
@@ -248,23 +248,23 @@ UniValue shroudnode(const UniValue &params, bool fHelp) {
         UniValue statusObj(UniValue::VOBJ);
         statusObj.push_back(Pair("alias", strAlias));
 
-        BOOST_FOREACH(CShroudnodeConfig::CShroudnodeEntry mne, shroudnodeConfig.getEntries()) {
+        BOOST_FOREACH(CFivegnodeConfig::CFivegnodeEntry mne, fivegnodeConfig.getEntries()) {
             if (mne.getAlias() == strAlias) {
                 fFound = true;
                 std::string strError;
-                CShroudnodeBroadcast mnb;
+                CFivegnodeBroadcast mnb;
 
-                bool fResult = CShroudnodeBroadcast::Create(mne.getIp(), mne.getPrivKey(), mne.getTxHash(),
+                bool fResult = CFivegnodeBroadcast::Create(mne.getIp(), mne.getPrivKey(), mne.getTxHash(),
                                                             mne.getOutputIndex(), strError, mnb);
                 statusObj.push_back(Pair("result", fResult ? "successful" : "failed"));
                 if (fResult) {
-                    mnodeman.UpdateShroudnodeList(mnb);
-                    mnb.RelayShroudNode();
+                    mnodeman.UpdateFivegnodeList(mnb);
+                    mnb.RelayFivegNode();
                 } else {
                     LogPrintf("Start-alias: errorMessage = %s\n", strError);
                     statusObj.push_back(Pair("errorMessage", strError));
                 }
-                mnodeman.NotifyShroudnodeUpdates();
+                mnodeman.NotifyFivegnodeUpdates();
                 break;
             }
         }
@@ -287,9 +287,9 @@ UniValue shroudnode(const UniValue &params, bool fHelp) {
         }
 
         if ((strCommand == "start-missing" || strCommand == "start-disabled") &&
-            !shroudnodeSync.IsShroudnodeListSynced()) {
+            !fivegnodeSync.IsFivegnodeListSynced()) {
             throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD,
-                               "You can't use this command until shroudnode list is synced");
+                               "You can't use this command until fivegnode list is synced");
         }
 
         int nSuccessful = 0;
@@ -297,17 +297,17 @@ UniValue shroudnode(const UniValue &params, bool fHelp) {
 
         UniValue resultsObj(UniValue::VOBJ);
 
-        BOOST_FOREACH(CShroudnodeConfig::CShroudnodeEntry mne, shroudnodeConfig.getEntries()) {
+        BOOST_FOREACH(CFivegnodeConfig::CFivegnodeEntry mne, fivegnodeConfig.getEntries()) {
             std::string strError;
 
             CTxIn vin = CTxIn(uint256S(mne.getTxHash()), uint32_t(atoi(mne.getOutputIndex().c_str())));
-            CShroudnode *pmn = mnodeman.Find(vin);
-            CShroudnodeBroadcast mnb;
+            CFivegnode *pmn = mnodeman.Find(vin);
+            CFivegnodeBroadcast mnb;
 
             if (strCommand == "start-missing" && pmn) continue;
             if (strCommand == "start-disabled" && pmn && pmn->IsEnabled()) continue;
 
-            bool fResult = CShroudnodeBroadcast::Create(mne.getIp(), mne.getPrivKey(), mne.getTxHash(),
+            bool fResult = CFivegnodeBroadcast::Create(mne.getIp(), mne.getPrivKey(), mne.getTxHash(),
                                                         mne.getOutputIndex(), strError, mnb);
 
             UniValue statusObj(UniValue::VOBJ);
@@ -316,8 +316,8 @@ UniValue shroudnode(const UniValue &params, bool fHelp) {
 
             if (fResult) {
                 nSuccessful++;
-                mnodeman.UpdateShroudnodeList(mnb);
-                mnb.RelayShroudNode();
+                mnodeman.UpdateFivegnodeList(mnb);
+                mnb.RelayFivegNode();
             } else {
                 nFailed++;
                 statusObj.push_back(Pair("errorMessage", strError));
@@ -325,11 +325,11 @@ UniValue shroudnode(const UniValue &params, bool fHelp) {
 
             resultsObj.push_back(Pair("status", statusObj));
         }
-        mnodeman.NotifyShroudnodeUpdates();
+        mnodeman.NotifyFivegnodeUpdates();
 
         UniValue returnObj(UniValue::VOBJ);
         returnObj.push_back(Pair("overall",
-                                 strprintf("Successfully started %d shroudnodes, failed to start %d, total %d",
+                                 strprintf("Successfully started %d fivegnodes, failed to start %d, total %d",
                                            nSuccessful, nFailed, nSuccessful + nFailed)));
         returnObj.push_back(Pair("detail", resultsObj));
 
@@ -346,9 +346,9 @@ UniValue shroudnode(const UniValue &params, bool fHelp) {
     if (strCommand == "list-conf") {
         UniValue resultObj(UniValue::VOBJ);
 
-        BOOST_FOREACH(CShroudnodeConfig::CShroudnodeEntry mne, shroudnodeConfig.getEntries()) {
+        BOOST_FOREACH(CFivegnodeConfig::CFivegnodeEntry mne, fivegnodeConfig.getEntries()) {
             CTxIn vin = CTxIn(uint256S(mne.getTxHash()), uint32_t(atoi(mne.getOutputIndex().c_str())));
-            CShroudnode *pmn = mnodeman.Find(vin);
+            CFivegnode *pmn = mnodeman.Find(vin);
 
             std::string strStatus = pmn ? pmn->GetStatus() : "MISSING";
 
@@ -359,7 +359,7 @@ UniValue shroudnode(const UniValue &params, bool fHelp) {
             mnObj.push_back(Pair("txHash", mne.getTxHash()));
             mnObj.push_back(Pair("outputIndex", mne.getOutputIndex()));
             mnObj.push_back(Pair("status", strStatus));
-            resultObj.push_back(Pair("shroudnode", mnObj));
+            resultObj.push_back(Pair("fivegnode", mnObj));
         }
 
         return resultObj;
@@ -381,20 +381,20 @@ UniValue shroudnode(const UniValue &params, bool fHelp) {
     }
 
     if (strCommand == "status") {
-        if (!fShroudNode)
-            throw JSONRPCError(RPC_INTERNAL_ERROR, "This is not a shroudnode");
+        if (!fFivegNode)
+            throw JSONRPCError(RPC_INTERNAL_ERROR, "This is not a fivegnode");
 
         UniValue mnObj(UniValue::VOBJ);
 
-        mnObj.push_back(Pair("vin", activeShroudnode.vin.ToString()));
-        mnObj.push_back(Pair("service", activeShroudnode.service.ToString()));
+        mnObj.push_back(Pair("vin", activeFivegnode.vin.ToString()));
+        mnObj.push_back(Pair("service", activeFivegnode.service.ToString()));
 
-        CShroudnode mn;
-        if (mnodeman.Get(activeShroudnode.vin, mn)) {
+        CFivegnode mn;
+        if (mnodeman.Get(activeFivegnode.vin, mn)) {
             mnObj.push_back(Pair("payee", CBitcoinAddress(mn.pubKeyCollateralAddress.GetID()).ToString()));
         }
 
-        mnObj.push_back(Pair("status", activeShroudnode.GetStatus()));
+        mnObj.push_back(Pair("status", activeFivegnode.GetStatus()));
         return mnObj;
     }
 
@@ -420,7 +420,7 @@ UniValue shroudnode(const UniValue &params, bool fHelp) {
         }
 
         if (params.size() > 3)
-            throw JSONRPCError(RPC_INVALID_PARAMETER, "Correct usage is 'shroudnode winners ( \"count\" \"filter\" )'");
+            throw JSONRPCError(RPC_INVALID_PARAMETER, "Correct usage is 'fivegnode winners ( \"count\" \"filter\" )'");
 
         UniValue obj(UniValue::VOBJ);
 
@@ -436,7 +436,7 @@ UniValue shroudnode(const UniValue &params, bool fHelp) {
     return NullUniValue;
 }
 
-UniValue shroudnodelist(const UniValue &params, bool fHelp) {
+UniValue fivegnodelist(const UniValue &params, bool fHelp) {
     std::string strMode = "status";
     std::string strFilter = "";
 
@@ -449,27 +449,27 @@ UniValue shroudnodelist(const UniValue &params, bool fHelp) {
             strMode != "protocol" && strMode != "payee" && strMode != "rank" && strMode != "qualify" &&
             strMode != "status")) {
         throw std::runtime_error(
-                "shroudnodelist ( \"mode\" \"filter\" )\n"
-                        "Get a list of shroudnodes in different modes\n"
+                "fivegnodelist ( \"mode\" \"filter\" )\n"
+                        "Get a list of fivegnodes in different modes\n"
                         "\nArguments:\n"
                         "1. \"mode\"      (string, optional/required to use filter, defaults = status) The mode to run list in\n"
                         "2. \"filter\"    (string, optional) Filter results. Partial match by outpoint by default in all modes,\n"
                         "                                    additional matches in some modes are also available\n"
                         "\nAvailable modes:\n"
-                        "  activeseconds  - Print number of seconds shroudnode recognized by the network as enabled\n"
-                        "                   (since latest issued \"shroudnode start/start-many/start-alias\")\n"
-                        "  addr           - Print ip address associated with a shroudnode (can be additionally filtered, partial match)\n"
+                        "  activeseconds  - Print number of seconds fivegnode recognized by the network as enabled\n"
+                        "                   (since latest issued \"fivegnode start/start-many/start-alias\")\n"
+                        "  addr           - Print ip address associated with a fivegnode (can be additionally filtered, partial match)\n"
                         "  full           - Print info in format 'status protocol payee lastseen activeseconds lastpaidtime lastpaidblock IP'\n"
                         "                   (can be additionally filtered, partial match)\n"
                         "  lastpaidblock  - Print the last block height a node was paid on the network\n"
                         "  lastpaidtime   - Print the last time a node was paid on the network\n"
-                        "  lastseen       - Print timestamp of when a shroudnode was last seen on the network\n"
-                        "  payee          - Print Shroud address associated with a shroudnode (can be additionally filtered,\n"
+                        "  lastseen       - Print timestamp of when a fivegnode was last seen on the network\n"
+                        "  payee          - Print Fiveg address associated with a fivegnode (can be additionally filtered,\n"
                         "                   partial match)\n"
-                        "  protocol       - Print protocol of a shroudnode (can be additionally filtered, exact match))\n"
-                        "  rank           - Print rank of a shroudnode based on current block\n"
-                        "  qualify        - Print qualify status of a shroudnode based on current block\n"
-                        "  status         - Print shroudnode status: PRE_ENABLED / ENABLED / EXPIRED / WATCHDOG_EXPIRED / NEW_START_REQUIRED /\n"
+                        "  protocol       - Print protocol of a fivegnode (can be additionally filtered, exact match))\n"
+                        "  rank           - Print rank of a fivegnode based on current block\n"
+                        "  qualify        - Print qualify status of a fivegnode based on current block\n"
+                        "  status         - Print fivegnode status: PRE_ENABLED / ENABLED / EXPIRED / WATCHDOG_EXPIRED / NEW_START_REQUIRED /\n"
                         "                   UPDATE_REQUIRED / POSE_BAN / OUTPOINT_SPENT (can be additionally filtered, partial match)\n"
         );
     }
@@ -480,16 +480,16 @@ UniValue shroudnodelist(const UniValue &params, bool fHelp) {
 
     UniValue obj(UniValue::VOBJ);
     if (strMode == "rank") {
-        std::vector <std::pair<int, CShroudnode>> vShroudnodeRanks = mnodeman.GetShroudnodeRanks();
-        BOOST_FOREACH(PAIRTYPE(int, CShroudnode) & s, vShroudnodeRanks)
+        std::vector <std::pair<int, CFivegnode>> vFivegnodeRanks = mnodeman.GetFivegnodeRanks();
+        BOOST_FOREACH(PAIRTYPE(int, CFivegnode) & s, vFivegnodeRanks)
         {
             std::string strOutpoint = s.second.vin.prevout.ToStringShort();
             if (strFilter != "" && strOutpoint.find(strFilter) == std::string::npos) continue;
             obj.push_back(Pair(strOutpoint, s.first));
         }
     } else {
-        std::vector <CShroudnode> vShroudnodes = mnodeman.GetFullShroudnodeVector();
-        BOOST_FOREACH(CShroudnode & mn, vShroudnodes)
+        std::vector <CFivegnode> vFivegnodes = mnodeman.GetFullFivegnodeVector();
+        BOOST_FOREACH(CFivegnode & mn, vFivegnodes)
         {
             std::string strOutpoint = mn.vin.prevout.ToStringShort();
             if (strMode == "activeseconds") {
@@ -564,7 +564,7 @@ UniValue shroudnodelist(const UniValue &params, bool fHelp) {
     return obj;
 }
 
-bool DecodeHexVecMnb(std::vector <CShroudnodeBroadcast> &vecMnb, std::string strHexMnb) {
+bool DecodeHexVecMnb(std::vector <CFivegnodeBroadcast> &vecMnb, std::string strHexMnb) {
 
     if (!IsHex(strHexMnb))
         return false;
@@ -581,7 +581,7 @@ bool DecodeHexVecMnb(std::vector <CShroudnodeBroadcast> &vecMnb, std::string str
     return true;
 }
 
-UniValue shroudnodebroadcast(const UniValue &params, bool fHelp) {
+UniValue fivegnodebroadcast(const UniValue &params, bool fHelp) {
     std::string strCommand;
     if (params.size() >= 1)
         strCommand = params[0].get_str();
@@ -589,15 +589,15 @@ UniValue shroudnodebroadcast(const UniValue &params, bool fHelp) {
     if (fHelp ||
         (strCommand != "create-alias" && strCommand != "create-all" && strCommand != "decode" && strCommand != "relay"))
         throw std::runtime_error(
-                "shroudnodebroadcast \"command\"...\n"
-                        "Set of commands to create and relay shroudnode broadcast messages\n"
+                "fivegnodebroadcast \"command\"...\n"
+                        "Set of commands to create and relay fivegnode broadcast messages\n"
                         "\nArguments:\n"
                         "1. \"command\"        (string or set of strings, required) The command to execute\n"
                         "\nAvailable commands:\n"
-                        "  create-alias  - Create single remote shroudnode broadcast message by assigned alias configured in shroudnode.conf\n"
-                        "  create-all    - Create remote shroudnode broadcast messages for all shroudnodes configured in shroudnode.conf\n"
-                        "  decode        - Decode shroudnode broadcast message\n"
-                        "  relay         - Relay shroudnode broadcast message to the network\n"
+                        "  create-alias  - Create single remote fivegnode broadcast message by assigned alias configured in fivegnode.conf\n"
+                        "  create-all    - Create remote fivegnode broadcast messages for all fivegnodes configured in fivegnode.conf\n"
+                        "  decode        - Decode fivegnode broadcast message\n"
+                        "  relay         - Relay fivegnode broadcast message to the network\n"
         );
 
     if (strCommand == "create-alias") {
@@ -617,18 +617,18 @@ UniValue shroudnodebroadcast(const UniValue &params, bool fHelp) {
         std::string strAlias = params[1].get_str();
 
         UniValue statusObj(UniValue::VOBJ);
-        std::vector <CShroudnodeBroadcast> vecMnb;
+        std::vector <CFivegnodeBroadcast> vecMnb;
 
         statusObj.push_back(Pair("alias", strAlias));
 
-        BOOST_FOREACH(CShroudnodeConfig::CShroudnodeEntry
-        mne, shroudnodeConfig.getEntries()) {
+        BOOST_FOREACH(CFivegnodeConfig::CFivegnodeEntry
+        mne, fivegnodeConfig.getEntries()) {
             if (mne.getAlias() == strAlias) {
                 fFound = true;
                 std::string strError;
-                CShroudnodeBroadcast mnb;
+                CFivegnodeBroadcast mnb;
 
-                bool fResult = CShroudnodeBroadcast::Create(mne.getIp(), mne.getPrivKey(), mne.getTxHash(),
+                bool fResult = CFivegnodeBroadcast::Create(mne.getIp(), mne.getPrivKey(), mne.getTxHash(),
                                                             mne.getOutputIndex(), strError, mnb, true);
 
                 statusObj.push_back(Pair("result", fResult ? "successful" : "failed"));
@@ -663,21 +663,21 @@ UniValue shroudnodebroadcast(const UniValue &params, bool fHelp) {
             EnsureWalletIsUnlocked();
         }
 
-        std::vector <CShroudnodeConfig::CShroudnodeEntry> mnEntries;
-        mnEntries = shroudnodeConfig.getEntries();
+        std::vector <CFivegnodeConfig::CFivegnodeEntry> mnEntries;
+        mnEntries = fivegnodeConfig.getEntries();
 
         int nSuccessful = 0;
         int nFailed = 0;
 
         UniValue resultsObj(UniValue::VOBJ);
-        std::vector <CShroudnodeBroadcast> vecMnb;
+        std::vector <CFivegnodeBroadcast> vecMnb;
 
-        BOOST_FOREACH(CShroudnodeConfig::CShroudnodeEntry
-        mne, shroudnodeConfig.getEntries()) {
+        BOOST_FOREACH(CFivegnodeConfig::CFivegnodeEntry
+        mne, fivegnodeConfig.getEntries()) {
             std::string strError;
-            CShroudnodeBroadcast mnb;
+            CFivegnodeBroadcast mnb;
 
-            bool fResult = CShroudnodeBroadcast::Create(mne.getIp(), mne.getPrivKey(), mne.getTxHash(),
+            bool fResult = CFivegnodeBroadcast::Create(mne.getIp(), mne.getPrivKey(), mne.getTxHash(),
                                                         mne.getOutputIndex(), strError, mnb, true);
 
             UniValue statusObj(UniValue::VOBJ);
@@ -699,7 +699,7 @@ UniValue shroudnodebroadcast(const UniValue &params, bool fHelp) {
         ssVecMnb << vecMnb;
         UniValue returnObj(UniValue::VOBJ);
         returnObj.push_back(Pair("overall", strprintf(
-                "Successfully created broadcast messages for %d shroudnodes, failed to create %d, total %d",
+                "Successfully created broadcast messages for %d fivegnodes, failed to create %d, total %d",
                 nSuccessful, nFailed, nSuccessful + nFailed)));
         returnObj.push_back(Pair("detail", resultsObj));
         returnObj.push_back(Pair("hex", HexStr(ssVecMnb.begin(), ssVecMnb.end())));
@@ -709,19 +709,19 @@ UniValue shroudnodebroadcast(const UniValue &params, bool fHelp) {
 
     if (strCommand == "decode") {
         if (params.size() != 2)
-            throw JSONRPCError(RPC_INVALID_PARAMETER, "Correct usage is 'shroudnodebroadcast decode \"hexstring\"'");
+            throw JSONRPCError(RPC_INVALID_PARAMETER, "Correct usage is 'fivegnodebroadcast decode \"hexstring\"'");
 
-        std::vector <CShroudnodeBroadcast> vecMnb;
+        std::vector <CFivegnodeBroadcast> vecMnb;
 
         if (!DecodeHexVecMnb(vecMnb, params[1].get_str()))
-            throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Shroudnode broadcast message decode failed");
+            throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Fivegnode broadcast message decode failed");
 
         int nSuccessful = 0;
         int nFailed = 0;
         int nDos = 0;
         UniValue returnObj(UniValue::VOBJ);
 
-        BOOST_FOREACH(CShroudnodeBroadcast & mnb, vecMnb)
+        BOOST_FOREACH(CFivegnodeBroadcast & mnb, vecMnb)
         {
             UniValue resultObj(UniValue::VOBJ);
 
@@ -731,7 +731,7 @@ UniValue shroudnodebroadcast(const UniValue &params, bool fHelp) {
                 resultObj.push_back(Pair("addr", mnb.addr.ToString()));
                 resultObj.push_back(Pair("pubKeyCollateralAddress",
                                          CBitcoinAddress(mnb.pubKeyCollateralAddress.GetID()).ToString()));
-                resultObj.push_back(Pair("pubKeyShroudnode", CBitcoinAddress(mnb.pubKeyShroudnode.GetID()).ToString()));
+                resultObj.push_back(Pair("pubKeyFivegnode", CBitcoinAddress(mnb.pubKeyFivegnode.GetID()).ToString()));
                 resultObj.push_back(Pair("vchSig", EncodeBase64(&mnb.vchSig[0], mnb.vchSig.size())));
                 resultObj.push_back(Pair("sigTime", mnb.sigTime));
                 resultObj.push_back(Pair("protocolVersion", mnb.nProtocolVersion));
@@ -747,14 +747,14 @@ UniValue shroudnodebroadcast(const UniValue &params, bool fHelp) {
                 resultObj.push_back(Pair("lastPing", lastPingObj));
             } else {
                 nFailed++;
-                resultObj.push_back(Pair("errorMessage", "Shroudnode broadcast signature verification failed"));
+                resultObj.push_back(Pair("errorMessage", "Fivegnode broadcast signature verification failed"));
             }
 
             returnObj.push_back(Pair(mnb.GetHash().ToString(), resultObj));
         }
 
         returnObj.push_back(Pair("overall", strprintf(
-                "Successfully decoded broadcast messages for %d shroudnodes, failed to decode %d, total %d",
+                "Successfully decoded broadcast messages for %d fivegnodes, failed to decode %d, total %d",
                 nSuccessful, nFailed, nSuccessful + nFailed)));
 
         return returnObj;
@@ -762,15 +762,15 @@ UniValue shroudnodebroadcast(const UniValue &params, bool fHelp) {
 
     if (strCommand == "relay") {
         if (params.size() < 2 || params.size() > 3)
-            throw JSONRPCError(RPC_INVALID_PARAMETER, "shroudnodebroadcast relay \"hexstring\" ( fast )\n"
+            throw JSONRPCError(RPC_INVALID_PARAMETER, "fivegnodebroadcast relay \"hexstring\" ( fast )\n"
                     "\nArguments:\n"
                     "1. \"hex\"      (string, required) Broadcast messages hex string\n"
                     "2. fast       (string, optional) If none, using safe method\n");
 
-        std::vector <CShroudnodeBroadcast> vecMnb;
+        std::vector <CFivegnodeBroadcast> vecMnb;
 
         if (!DecodeHexVecMnb(vecMnb, params[1].get_str()))
-            throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Shroudnode broadcast message decode failed");
+            throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Fivegnode broadcast message decode failed");
 
         int nSuccessful = 0;
         int nFailed = 0;
@@ -778,7 +778,7 @@ UniValue shroudnodebroadcast(const UniValue &params, bool fHelp) {
         UniValue returnObj(UniValue::VOBJ);
 
         // verify all signatures first, bailout if any of them broken
-        BOOST_FOREACH(CShroudnodeBroadcast & mnb, vecMnb)
+        BOOST_FOREACH(CFivegnodeBroadcast & mnb, vecMnb)
         {
             UniValue resultObj(UniValue::VOBJ);
 
@@ -789,13 +789,13 @@ UniValue shroudnodebroadcast(const UniValue &params, bool fHelp) {
             bool fResult;
             if (mnb.CheckSignature(nDos)) {
                 if (fSafe) {
-                    fResult = mnodeman.CheckMnbAndUpdateShroudnodeList(NULL, mnb, nDos);
+                    fResult = mnodeman.CheckMnbAndUpdateFivegnodeList(NULL, mnb, nDos);
                 } else {
-                    mnodeman.UpdateShroudnodeList(mnb);
-                    mnb.RelayShroudNode();
+                    mnodeman.UpdateFivegnodeList(mnb);
+                    mnb.RelayFivegNode();
                     fResult = true;
                 }
-                mnodeman.NotifyShroudnodeUpdates();
+                mnodeman.NotifyFivegnodeUpdates();
             } else fResult = false;
 
             if (fResult) {
@@ -803,14 +803,14 @@ UniValue shroudnodebroadcast(const UniValue &params, bool fHelp) {
                 resultObj.push_back(Pair(mnb.GetHash().ToString(), "successful"));
             } else {
                 nFailed++;
-                resultObj.push_back(Pair("errorMessage", "Shroudnode broadcast signature verification failed"));
+                resultObj.push_back(Pair("errorMessage", "Fivegnode broadcast signature verification failed"));
             }
 
             returnObj.push_back(Pair(mnb.GetHash().ToString(), resultObj));
         }
 
         returnObj.push_back(Pair("overall", strprintf(
-                "Successfully relayed broadcast messages for %d shroudnodes, failed to relay %d, total %d", nSuccessful,
+                "Successfully relayed broadcast messages for %d fivegnodes, failed to relay %d, total %d", nSuccessful,
                 nFailed, nSuccessful + nFailed)));
 
         return returnObj;

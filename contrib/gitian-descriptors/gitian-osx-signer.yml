@@ -1,5 +1,5 @@
 ---
-name: "shroud-dmg-signer"
+name: "fiveg-dmg-signer"
 suites:
 - "bionic"
 architectures:
@@ -27,8 +27,8 @@ script: |
     chmod +x ${WRAP_DIR}/${prog}
   done
 
-  UNSIGNED=shroud-osx-unsigned.tar.gz
-  SIGNED=shroud-osx-signed.dmg
+  UNSIGNED=fiveg-osx-unsigned.tar.gz
+  SIGNED=fiveg-osx-signed.dmg
 
   tar -xf ${UNSIGNED}
   OSX_VOLNAME="$(cat osx_volname)"

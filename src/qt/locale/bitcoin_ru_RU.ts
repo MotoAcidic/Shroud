@@ -58,8 +58,8 @@
 <context>
     <name>ZcoinGUI</name>
     <message>
-        <source>Shroud</source>
-        <translation>Shroud Core</translation>
+        <source>Fiveg</source>
+        <translation>Fiveg Core</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
@@ -216,14 +216,14 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>shroud-core</name>
+    <name>fiveg-core</name>
     <message>
-        <source>Shroud Core</source>
-        <translation>Shroud Core</translation>
+        <source>Fiveg Core</source>
+        <translation>Fiveg Core</translation>
     </message>
     <message>
         <source>Whitelisted peers cannot be DoS banned and their transactions are always relayed, even if they are already in the mempool, useful e.g. for a gateway</source>
-        <translation>shroud-core</translation>
+        <translation>fiveg-core</translation>
     </message>
     <message>
         <source>Information</source>

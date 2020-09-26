@@ -158,8 +158,8 @@
         <translation>Besig met herindeksering van blokke op hardeskyf...</translation>
     </message>
     <message>
-        <source>Send coins to a Shroud address</source>
-        <translation>Stuur munte na 'n Shroud adres</translation>
+        <source>Send coins to a Fiveg address</source>
+        <translation>Stuur munte na 'n Fiveg adres</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -170,8 +170,8 @@
         <translation>Verander die wagwoord wat ek vir kodifikasie van my beursie gebruik</translation>
     </message>
     <message>
-        <source>Shroud</source>
-        <translation>Shroud</translation>
+        <source>Fiveg</source>
+        <translation>Fiveg</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -194,12 +194,12 @@
         <translation>Kodifiseer die private sleutes wat aan jou beursie gekoppel is.</translation>
     </message>
     <message>
-        <source>Sign messages with your Shroud addresses to prove you own them</source>
-        <translation>Onderteken boodskappe met u Shroud adresse om u eienaarskap te bewys</translation>
+        <source>Sign messages with your Fiveg addresses to prove you own them</source>
+        <translation>Onderteken boodskappe met u Fiveg adresse om u eienaarskap te bewys</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Shroud addresses</source>
-        <translation>Verifieër boodskappe om seker te maak dat dit met die gespesifiseerde Shroud adresse</translation>
+        <source>Verify messages to ensure they were signed with specified Fiveg addresses</source>
+        <translation>Verifieër boodskappe om seker te maak dat dit met die gespesifiseerde Fiveg adresse</translation>
     </message>
     <message>
         <source>&amp;Help</source>
@@ -210,8 +210,8 @@
         <translation>Orebalk</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and shroud: URIs)</source>
-        <translation>Versoek betalings (genereer QR-kodes en shroud: URI's)</translation>
+        <source>Request payments (generates QR codes and fiveg: URIs)</source>
+        <translation>Versoek betalings (genereer QR-kodes en fiveg: URI's)</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -222,8 +222,8 @@
         <translation>Vertoon die lys van gebruikte ontvangers-adresse en etikette</translation>
     </message>
     <message>
-        <source>Open a shroud: URI or payment request</source>
-        <translation>Skep 'n shroud: URI of betalingsversoek</translation>
+        <source>Open a fiveg: URI or payment request</source>
+        <translation>Skep 'n fiveg: URI of betalingsversoek</translation>
     </message>
     <message>
         <source>Indexing blocks on disk...</source>
@@ -708,10 +708,10 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>shroud-core</name>
+    <name>fiveg-core</name>
     <message>
-        <source>Shroud Core</source>
-        <translation>Shroud Kern</translation>
+        <source>Fiveg Core</source>
+        <translation>Fiveg Kern</translation>
     </message>
     <message>
         <source>Information</source>

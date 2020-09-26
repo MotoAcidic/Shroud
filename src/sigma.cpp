@@ -13,8 +13,8 @@
 #include "sigma/coinspend.h"
 #include "sigma/coin.h"
 #include "sigma/remint.h"
-#include "shroudnode-payments.h"
-#include "shroudnode-sync.h"
+#include "fivegnode-payments.h"
+#include "fivegnode-sync.h"
 #include "primitives/zerocoin.h"
 
 #include <atomic>

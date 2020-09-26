@@ -42,12 +42,12 @@ bool CZMQAbstract::NotifyAPIStatus()
     return true;
 }
 
-bool CZMQAbstract::NotifyShroudnodeList()
+bool CZMQAbstract::NotifyFivegnodeList()
 {
     return true;
 }
 
-bool CZMQAbstract::NotifyShroudnodeUpdate(CShroudnode &shroudnode)
+bool CZMQAbstract::NotifyFivegnodeUpdate(CFivegnode &fivegnode)
 {
     return true;
 }

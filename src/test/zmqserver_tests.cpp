@@ -25,14 +25,14 @@
 #include "main.h"
 #include "consensus/validation.h"
 #include "core_io.h"
-#include "shroudnode-sync.h"
-#include "shroudnodeconfig.h"
+#include "fivegnode-sync.h"
+#include "fivegnodeconfig.h"
 
 #include "zmqserver/zmqinterface.h"
 #include "zmqserver/zmqabstract.h"
 
-#include "shroudnodeman.h"
-#include "shroudnode.h"
+#include "fivegnodeman.h"
+#include "fivegnode.h"
 
 #include "validationinterface.h"
 
@@ -271,9 +271,9 @@ struct ZmqServerTestingSetup : public TestingSetup {
     }
 
     CBlock CreateBlock(const std::vector<CMutableTransaction>& txns,
-                       const CScript& scriptPubKeyShroudnode, bool mtp = false) {
+                       const CScript& scriptPubKeyFivegnode, bool mtp = false) {
         const CChainParams& chainparams = Params();
-        CBlockTemplate *pblocktemplate = BlockAssembler(chainparams).CreateNewBlock(scriptPubKeyShroudnode);
+        CBlockTemplate *pblocktemplate = BlockAssembler(chainparams).CreateNewBlock(scriptPubKeyFivegnode);
         CBlock& block = pblocktemplate->block;
 
         // Replace mempool-selected txns with just coinbase plus passed-in txns:
@@ -311,11 +311,11 @@ struct ZmqServerTestingSetup : public TestingSetup {
     }
 
     // Create a new block with just given transactions, coinbase paying to
-    // scriptPubKeyShroudnode, and try to add it to the current chain.
+    // scriptPubKeyFivegnode, and try to add it to the current chain.
     CBlock CreateAndProcessBlock(const std::vector<CMutableTransaction>& txns,
-                                 const CScript& scriptPubKeyShroudnode, bool mtp = false){
+                                 const CScript& scriptPubKeyFivegnode, bool mtp = false){
 
-        CBlock block = CreateBlock(txns, scriptPubKeyShroudnode, mtp);
+        CBlock block = CreateBlock(txns, scriptPubKeyFivegnode, mtp);
         BOOST_CHECK_MESSAGE(ProcessBlock(block), "Processing block failed");
         return block;
     }

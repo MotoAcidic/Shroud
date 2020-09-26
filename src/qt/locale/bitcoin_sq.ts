@@ -94,8 +94,8 @@
         <translation>Ndrysho frazkalimin e përdorur per enkriptimin e portofolit</translation>
     </message>
     <message>
-        <source>Shroud</source>
-        <translation>Shroud</translation>
+        <source>Fiveg</source>
+        <translation>Fiveg</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -432,14 +432,14 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>shroud-core</name>
+    <name>fiveg-core</name>
     <message>
         <source>Options:</source>
         <translation>Opsionet:</translation>
     </message>
     <message>
-        <source>Shroud Core</source>
-        <translation>Berthama Shroud</translation>
+        <source>Fiveg Core</source>
+        <translation>Berthama Fiveg</translation>
     </message>
     <message>
         <source>Information</source>

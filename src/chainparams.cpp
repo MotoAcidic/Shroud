@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2020 The ShroudX Project developers
+// Copyright (c) 2020 The FivegX Project developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -115,7 +115,7 @@ public:
         consensus.nMinimumChainWork = uint256S("00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 
         consensus.nCheckBugFixedAtBlock = ZC_CHECK_BUG_FIXED_AT_BLOCK;
-        consensus.nShroudnodePaymentsBugFixedAtBlock = ZC_SHROUDNODE_PAYMENT_BUG_FIXED_AT_BLOCK;
+        consensus.nFivegnodePaymentsBugFixedAtBlock = ZC_FIVEGNODE_PAYMENT_BUG_FIXED_AT_BLOCK;
         consensus.nSpendV15StartBlock = ZC_V1_5_STARTING_BLOCK;
         consensus.nSpendV2ID_1 = ZC_V2_SWITCH_ID_1;
         consensus.nSpendV2ID_10 = ZC_V2_SWITCH_ID_10;
@@ -128,8 +128,8 @@ public:
         consensus.nMultipleSpendInputsInOneTxStartBlock = ZC_MULTIPLE_SPEND_INPUT_STARTING_BLOCK;
         consensus.nDontAllowDupTxsStartBlock = 1;
 
-        // Shroudnode params
-        consensus.nShroudnodePaymentsStartBlock = HF_SHROUDNODE_PAYMENT_START; // not true, but it's ok as long as it's less then nShroudnodePaymentsIncreaseBlock
+        // Fivegnode params
+        consensus.nFivegnodePaymentsStartBlock = HF_FIVEGNODE_PAYMENT_START; // not true, but it's ok as long as it's less then nFivegnodePaymentsIncreaseBlock
 
 
         consensus.nDisableZerocoinStartBlock = 1;
@@ -143,7 +143,7 @@ public:
         strSporkPubKey = "042664030452c2ecf01079bcf526176638f9da98a2c20a78a606e15aa1086c1b0401ce84907471550c54e7eadbf5c7194cc43337b6d885dec6f462f486a8dff3e3";
         
         //Stake parameters
-        consensus.nFirstPOSBlock = 10081;
+        consensus.nFirstPOSBlock = 10000;
         consensus.nStakeTimestampMask = 0xf; // 15
         consensus.posLimit = uint256S("00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 
@@ -155,12 +155,12 @@ public:
          * The characters are rarely used upper ASCII, not valid as UTF-8, and produce
        `  * a large 32-bit integer with any alignment.
          */
-        //btzc: update shroud pchMessage
-        pchMessageStart[0] = 0x61;
-        pchMessageStart[1] = 0x26;
-        pchMessageStart[2] = 0xfe;
-        pchMessageStart[3] = 0x7a;
-        nDefaultPort = 42998;
+        //btzc: update fiveg pchMessage
+        pchMessageStart[0] = 0xfc;
+        pchMessageStart[1] = 0x3b;
+        pchMessageStart[2] = 0xa6;
+        pchMessageStart[3] = 0xc8;
+        nDefaultPort = 23020;
         nPruneAfterHeight = 100000;
 
 
@@ -172,46 +172,6 @@ public:
         
         genesis = CreateGenesisBlock(ZC_GENESIS_BLOCK_TIME, 2046200, 0x1e00ffff, 2, 0 * COIN, extraNonce);
 
-        /*
-        uint32_t nGenesisTime = ZC_GENESIS_BLOCK_TIME;
-        arith_uint256 test;
-        bool fNegative;
-        bool fOverflow;
-        test.SetCompact(0x1e00ffff, &fNegative, &fOverflow);
-        std::cout << "Test threshold: " << test.GetHex() << "\n\n";
-        int genesisNonce = 0;
-        uint256 TempHashHolding = uint256S("0x0000000000000000000000000000000000000000000000000000000000000000");
-        uint256 BestBlockHash = uint256S("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        for (int i=0;i<40000000;i++) {
-            genesis = CreateGenesisBlock(nGenesisTime, i, 0x1e00ffff, 2, 0 * COIN,extraNonce);
-            //genesis.hashPrevBlock = TempHashHolding;
-            consensus.hashGenesisBlock = genesis.GetHash();
-            arith_uint256 BestBlockHashArith = UintToArith256(BestBlockHash);
-            if (UintToArith256(consensus.hashGenesisBlock) < BestBlockHashArith) {
-                BestBlockHash = consensus.hashGenesisBlock;
-                std::cout << BestBlockHash.GetHex() << " Nonce: " << i << "\n";
-                std::cout << "   PrevBlockHash: " << genesis.hashPrevBlock.GetHex() << "\n";
-        	std::cout << "hashGenesisBlock to 0x" << BestBlockHash.GetHex() << std::endl;
-        	std::cout << "Genesis Nonce to " << genesisNonce << std::endl;
-        	std::cout << "Genesis Merkle " << genesis.hashMerkleRoot.GetHex() << std::endl;
-            }
-            TempHashHolding = consensus.hashGenesisBlock;
-            if (BestBlockHashArith < test) {
-                genesisNonce = i - 1;
-                break;
-            }
-            //std::cout << consensus.hashGenesisBlock.GetHex() << "\n";
-        }
-        std::cout << "\n";
-        std::cout << "\n";
-        std::cout << "\n";
-        std::cout << "hashGenesisBlock to 0x" << BestBlockHash.GetHex() << std::endl;
-        std::cout << "Genesis Nonce to " << genesisNonce << std::endl;
-        std::cout << "Genesis Merkle " << genesis.hashMerkleRoot.GetHex() << std::endl;
-        std::cout << "\n";
-        return;
-        */
-
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock == uint256S("0x000000b3cf5064a01dcdc8931f5bae3cc38c6af1aec07f4459903e9eebae986a"));
         assert(genesis.hashMerkleRoot == uint256S("0x9ad9f892d158cf38d7e39dfaf2e63cfa62322993f7831aec160f0adb7a668c82"));
@@ -219,18 +179,19 @@ public:
         //vFixedSeeds.clear();
         //vSeeds.clear();
         //Initial seeders to use
-        vSeeds.push_back(CDNSSeedData("", "", false));
+        vSeeds.push_back(CDNSSeedData("fiveg.cash", "node1.fiveg.cash"));
+        vSeeds.push_back(CDNSSeedData("n2.fiveg.cash", "node2.fiveg.cash"));
 
         // Single trusted IPs incase of seeder failure / downtime
         vSeeds.push_back(CDNSSeedData("", "", false));
 
 
         // Note that of those with the service bits flag, most only support a subset of possible options
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector < unsigned char > (1, 63);//Shroud address starts with 'S'
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector < unsigned char > (1, 10);
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector < unsigned char > (1, 10);
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector < unsigned char > (1, 11);
         base58Prefixes[SECRET_KEY] = std::vector < unsigned char > (1, 210);
-        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x88)(0xB2)(0x1E).convert_to_container < std::vector < unsigned char > > ();
-        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x88)(0xAD)(0xE4).convert_to_container < std::vector < unsigned char > > ();
+        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x02)(0x2D)(0x25)(0x33).convert_to_container<std::vector<unsigned char> >();
+        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x02)(0x21)(0x31)(0x2B).convert_to_container<std::vector<unsigned char> >();
 
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
 
@@ -344,7 +305,7 @@ public:
 
         consensus.nSpendV15StartBlock = 5000;
         consensus.nCheckBugFixedAtBlock = 1;
-        consensus.nShroudnodePaymentsBugFixedAtBlock = 1;
+        consensus.nFivegnodePaymentsBugFixedAtBlock = 1;
 
         consensus.nSpendV2ID_1 = ZC_V2_TESTNET_SWITCH_ID_1;
         consensus.nSpendV2ID_10 = ZC_V2_TESTNET_SWITCH_ID_10;
@@ -357,8 +318,8 @@ public:
         consensus.nMultipleSpendInputsInOneTxStartBlock = 1;
         consensus.nDontAllowDupTxsStartBlock = 18825;
 
-        // Shroudnode params testnet
-        consensus.nShroudnodePaymentsStartBlock = 2200;
+        // Fivegnode params testnet
+        consensus.nFivegnodePaymentsStartBlock = 2200;
         nMaxTipAge = 0x7fffffff; // allow mining on top of old blocks for testnet
 
 
@@ -367,7 +328,7 @@ public:
         nPoolMaxTransactions = 3;
         nFulfilledRequestExpireTime = 5*60; // fulfilled requests expire in 5 minutes
         strSporkPubKey = "04c034bd223c7fc5a0a2c0e737b5e1beabfea1aca6e1f29840723cc78c8bd71871bd12b40d897154ea6b42b428479d6e1ec7ce29f257a5d7abc8dfe4df2b7fd641";
-        strShroudnodePaymentsPubKey = "04c034bd223c7fc5a0a2c0e737b5e1beabfea1aca6e1f29840723cc78c8bd71871bd12b40d897154ea6b42b428479d6e1ec7ce29f257a5d7abc8dfe4df2b7fd641";
+        strFivegnodePaymentsPubKey = "04c034bd223c7fc5a0a2c0e737b5e1beabfea1aca6e1f29840723cc78c8bd71871bd12b40d897154ea6b42b428479d6e1ec7ce29f257a5d7abc8dfe4df2b7fd641";
 
         pchMessageStart[0] = 0xa5;
         pchMessageStart[1] = 0x92;
@@ -391,8 +352,8 @@ public:
         //vFixedSeeds.clear();
         //vSeeds.clear();
         // nodes with support for servicebits filtering should be at the top
-        // shroud test seeds
-        // vSeeds.push_back(CDNSSeedData("test1.shroudx.org", "test1.shroudx.org", false));
+        // fiveg test seeds
+        // vSeeds.push_back(CDNSSeedData("test1.fivegx.org", "test1.fivegx.org", false));
 
         // Single trusted IPs incase of seeder failure / downtime
         vSeeds.push_back(CDNSSeedData("", ""));
@@ -476,7 +437,7 @@ public:
         consensus.nPowTargetSpacing = 1; // 10 minute blocks
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = true;
-        consensus.nShroudnodePaymentsStartBlock = 120;
+        consensus.nFivegnodePaymentsStartBlock = 120;
         consensus.nRuleChangeActivationThreshold = 108; // 75% for testchains
         consensus.nMinerConfirmationWindow = 144; // Faster than normal for regtest (144 instead of 2016)
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
@@ -491,12 +452,12 @@ public:
 
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork = uint256S("0x00");
-        // Shroudnode code
+        // Fivegnode code
         nFulfilledRequestExpireTime = 5*60; // fulfilled requests expire in 5 minutes
         nMaxTipAge = 6 * 60 * 60; // ~144 blocks behind -> 2 x fork detection time, was 24 * 60 * 60 in bitcoin
 
         consensus.nCheckBugFixedAtBlock = 120;
-        consensus.nShroudnodePaymentsBugFixedAtBlock = 1;
+        consensus.nFivegnodePaymentsBugFixedAtBlock = 1;
         consensus.nSpendV15StartBlock = 1;
         consensus.nSpendV2ID_1 = 2;
         consensus.nSpendV2ID_10 = 3;

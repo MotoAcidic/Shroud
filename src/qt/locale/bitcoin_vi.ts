@@ -156,6 +156,6 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>shroud-core</name>
+    <name>fiveg-core</name>
     </context>
 </TS>

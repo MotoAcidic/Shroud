@@ -114,8 +114,8 @@
         <translation>Reindexando bloques en el disco...</translation>
     </message>
     <message>
-        <source>Send coins to a Shroud address</source>
-        <translation>Enviar monedas a una dirección Shroud</translation>
+        <source>Send coins to a Fiveg address</source>
+        <translation>Enviar monedas a una dirección Fiveg</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -130,8 +130,8 @@
         <translation>Abre la consola de depuración y diágnostico</translation>
     </message>
     <message>
-        <source>Shroud</source>
-        <translation>Shroud</translation>
+        <source>Fiveg</source>
+        <translation>Fiveg</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -158,12 +158,12 @@
         <translation>Encriptar las llaves privadas que pertenecen a tu billetera</translation>
     </message>
     <message>
-        <source>Sign messages with your Shroud addresses to prove you own them</source>
-        <translation>Firma mensajes con tus direcciones Shroud para probar que eres dueño de ellas</translation>
+        <source>Sign messages with your Fiveg addresses to prove you own them</source>
+        <translation>Firma mensajes con tus direcciones Fiveg para probar que eres dueño de ellas</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Shroud addresses</source>
-        <translation>Verificar mensajes para asegurar que estaban firmados con direcciones Shroud especificas</translation>
+        <source>Verify messages to ensure they were signed with specified Fiveg addresses</source>
+        <translation>Verificar mensajes para asegurar que estaban firmados con direcciones Fiveg especificas</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -588,7 +588,7 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>shroud-core</name>
+    <name>fiveg-core</name>
     <message>
         <source>Options:</source>
         <translation>Opciones:</translation>
@@ -614,8 +614,8 @@
         <translation>Correr en segundo plano como daemon y aceptar comandos</translation>
     </message>
     <message>
-        <source>Shroud Core</source>
-        <translation>Shroud Core</translation>
+        <source>Fiveg Core</source>
+        <translation>Fiveg Core</translation>
     </message>
     <message>
         <source>Bind to given address and always listen on it. Use [host]:port notation for IPv6</source>

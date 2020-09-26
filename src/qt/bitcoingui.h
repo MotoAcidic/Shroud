@@ -124,7 +124,7 @@ private:
     QAction *showHelpMessageAction;
     QAction *sigmaAction;
     QAction *zc2SigmaAction;
-    QAction *shroudnodeAction;
+    QAction *fivegnodeAction;
 
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
@@ -218,8 +218,8 @@ private Q_SLOTS:
     void gotoHistoryPage();
     /** Switch directly to Index history tab */
     void gotoBitcoinHistoryTab();
-    /** Switch to shroudnode page */
-    void gotoShroudnodePage();
+    /** Switch to fivegnode page */
+    void gotoFivegnodePage();
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */

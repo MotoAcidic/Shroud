@@ -142,8 +142,8 @@
         <translation>Bloku reindeksēšana no diska...</translation>
     </message>
     <message>
-        <source>Send coins to a Shroud address</source>
-        <translation>Nosūtīt bitkoinus uz Shroud adresi</translation>
+        <source>Send coins to a Fiveg address</source>
+        <translation>Nosūtīt bitkoinus uz Fiveg adresi</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -166,8 +166,8 @@
         <translation>&amp;Pārbaudīt ziņojumu...</translation>
     </message>
     <message>
-        <source>Shroud</source>
-        <translation>Shroud</translation>
+        <source>Fiveg</source>
+        <translation>Fiveg</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -194,12 +194,12 @@
         <translation>Šifrēt privātās atslēgas kuras pieder tavam maciņam</translation>
     </message>
     <message>
-        <source>Sign messages with your Shroud addresses to prove you own them</source>
-        <translation>Parakstīt ziņojumus ar savām Shroud adresēm lai pierādītu ka tās pieder tev</translation>
+        <source>Sign messages with your Fiveg addresses to prove you own them</source>
+        <translation>Parakstīt ziņojumus ar savām Fiveg adresēm lai pierādītu ka tās pieder tev</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Shroud addresses</source>
-        <translation>Pārbaudīt ziņojumus lai pārliecinātos, ka tie tika parakstīti ar norādītajām Shroud adresēm</translation>
+        <source>Verify messages to ensure they were signed with specified Fiveg addresses</source>
+        <translation>Pārbaudīt ziņojumus lai pārliecinātos, ka tie tika parakstīti ar norādītajām Fiveg adresēm</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -218,11 +218,11 @@
         <translation>Ciļņu rīkjosla</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and shroud: URIs)</source>
-        <translation>Pieprasīt maksājumus (izveido QR kodu un shroud: URIs)</translation>
+        <source>Request payments (generates QR codes and fiveg: URIs)</source>
+        <translation>Pieprasīt maksājumus (izveido QR kodu un fiveg: URIs)</translation>
     </message>
     <message>
-        <source>Open a shroud: URI or payment request</source>
+        <source>Open a fiveg: URI or payment request</source>
         <translation>Atvērt index URI vai maksājuma pieprasījumu</translation>
     </message>
     <message>
@@ -511,8 +511,8 @@
         <translation>&amp;Tērēt neapstiprinātu atlikumu</translation>
     </message>
     <message>
-        <source>Automatically open the Shroud client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Uz rūtera automātiski atvērt Shroud klienta portu. Tas strādā tikai tad, ja rūteris atbalsta UPnP un tas ir ieslēgts.</translation>
+        <source>Automatically open the Fiveg client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Uz rūtera automātiski atvērt Fiveg klienta portu. Tas strādā tikai tad, ja rūteris atbalsta UPnP un tas ir ieslēgts.</translation>
     </message>
     <message>
         <source>Map port using &amp;UPnP</source>
@@ -564,7 +564,7 @@
     </message>
     <message>
         <source>Whether to show coin control features or not.</source>
-        <translation>Vai rādīt Shroud kontroles funkcijas vai nē.</translation>
+        <translation>Vai rādīt Fiveg kontroles funkcijas vai nē.</translation>
     </message>
     <message>
         <source>&amp;OK</source>
@@ -598,8 +598,8 @@
         <translation>Forma</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Shroud network after a connection is established, but this process has not completed yet.</source>
-        <translation>Attēlotā informācija var būt novecojusi. Jūsu maciņš pēc savienojuma izveides automātiski sinhronizējas ar Shroud tīklu, taču šis process vēl nav beidzies.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Fiveg network after a connection is established, but this process has not completed yet.</source>
+        <translation>Attēlotā informācija var būt novecojusi. Jūsu maciņš pēc savienojuma izveides automātiski sinhronizējas ar Fiveg tīklu, taču šis process vēl nav beidzies.</translation>
     </message>
     <message>
         <source>Available:</source>
@@ -850,7 +850,7 @@
     </message>
     <message>
         <source>Coin Control Features</source>
-        <translation>Shroud Kontroles Funkcijas</translation>
+        <translation>Fiveg Kontroles Funkcijas</translation>
     </message>
     <message>
         <source>Inputs...</source>
@@ -1029,8 +1029,8 @@
         <translation>Kopēt parakstu uz sistēmas starpliktuvi</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Shroud address</source>
-        <translation>Parakstīt ziņojumu lai pierādītu, ka esi šīs Shroud adreses īpašnieks.</translation>
+        <source>Sign the message to prove you own this Fiveg address</source>
+        <translation>Parakstīt ziņojumu lai pierādītu, ka esi šīs Fiveg adreses īpašnieks.</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -1100,7 +1100,7 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>shroud-core</name>
+    <name>fiveg-core</name>
     <message>
         <source>Options:</source>
         <translation>Iespējas:</translation>
@@ -1126,8 +1126,8 @@
         <translation>Darbināt fonā kā servisu un pieņemt komandas</translation>
     </message>
     <message>
-        <source>Shroud Core</source>
-        <translation>Shroud Core</translation>
+        <source>Fiveg Core</source>
+        <translation>Fiveg Core</translation>
     </message>
     <message>
         <source>&lt;category&gt; can be:</source>

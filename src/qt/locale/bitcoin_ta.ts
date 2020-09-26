@@ -90,8 +90,8 @@
         <translation>&amp;செய்தியை சரிசெய்...</translation>
     </message>
     <message>
-        <source>Shroud</source>
-        <translation>Shroud</translation>
+        <source>Fiveg</source>
+        <translation>Fiveg</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -712,10 +712,10 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>shroud-core</name>
+    <name>fiveg-core</name>
     <message>
-        <source>Shroud Core</source>
-        <translation>Shroud மையம்</translation>
+        <source>Fiveg Core</source>
+        <translation>Fiveg மையம்</translation>
     </message>
     <message>
         <source>(default: %u)</source>

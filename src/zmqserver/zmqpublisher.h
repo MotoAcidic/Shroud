@@ -7,7 +7,7 @@
 
 #include "zmqabstract.h"
 #include "univalue.h"
-#include "shroudnode.h"
+#include "fivegnode.h"
 #include "client-api/server.h"
 #include <boost/thread/thread.hpp>
 #include <boost/chrono.hpp>
@@ -92,12 +92,12 @@ public:
     bool NotifyAPIStatus();
 };
 
-class CZMQShroudnodeListEvent : virtual public CZMQAbstractPublisher
+class CZMQFivegnodeListEvent : virtual public CZMQAbstractPublisher
 {
-    /* Shroudnode List notification
+    /* Fivegnode List notification
     */
 public:
-    bool NotifyShroudnodeList();
+    bool NotifyFivegnodeList();
 };
 
 class CZMQSettingsEvent : virtual public CZMQAbstractPublisher
@@ -108,17 +108,17 @@ public:
     bool NotifySettingsUpdate(std::string update);
 };
 
-class CZMQShroudnodeEvent : virtual public CZMQAbstractPublisher
+class CZMQFivegnodeEvent : virtual public CZMQAbstractPublisher
 {
-    /* Data related to an updated Shroudnode
+    /* Data related to an updated Fivegnode
     */
 public:
-    bool NotifyShroudnodeUpdate(CShroudnode &shroudnode);
+    bool NotifyFivegnodeUpdate(CFivegnode &fivegnode);
 };
 
 class CZMQMintStatusEvent : virtual public CZMQAbstractPublisher
 {
-    /* Data related to an updated Shroudnode
+    /* Data related to an updated Fivegnode
     */
 public:
     bool NotifyMintStatusUpdate(std::string update);
@@ -182,18 +182,18 @@ public:
     void SetMethod(){ method= "apiStatus";}
 };
 
-class CZMQShroudnodeListTopic : public CZMQShroudnodeListEvent
+class CZMQFivegnodeListTopic : public CZMQFivegnodeListEvent
 {
 public:
-    void SetTopic(){ topic = "shroudnodeList";}
-    void SetMethod(){ method= "shroudnodeList";}
+    void SetTopic(){ topic = "fivegnodeList";}
+    void SetMethod(){ method= "fivegnodeList";}
 };
 
-class CZMQShroudnodeTopic : public CZMQShroudnodeEvent
+class CZMQFivegnodeTopic : public CZMQFivegnodeEvent
 {
 public:
-    void SetTopic(){ topic = "shroudnode";}
-    void SetMethod(){ method= "shroudnodeUpdate";}
+    void SetTopic(){ topic = "fivegnode";}
+    void SetMethod(){ method= "fivegnodeUpdate";}
 };
 
 class CZMQMintStatusTopic : public CZMQMintStatusEvent

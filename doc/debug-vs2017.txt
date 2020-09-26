@@ -1,4 +1,4 @@
-Debugging Shroud code using Visual Studio 2017
+Debugging Fiveg code using Visual Studio 2017
 ---------------------------------------------
 
 Prerequisites:
@@ -35,13 +35,13 @@ Building
     and then create a link from the WSL to it.
 
     From Explorer create a directory named
-      C:\Users\<username>\shroud
+      C:\Users\<username>\fiveg
     From Ubuntu bash window create a link to it
-      ln -s /mnt/c/Users/<username>/shroud shroud 
+      ln -s /mnt/c/Users/<username>/fiveg fiveg 
 
  4. Clone git resository into newly created directory and go to the right branch
-      git clone https://github.com/ShroudXProject/Shroud.git
-      cd shroud
+      git clone https://github.com/FivegXProject/Fiveg.git
+      cd fiveg
       git checkout core_upgrade
     Configure git to always use LF and (optionally) specify your name/email. Global Windows git settings (if set)
     won't be inherited if git is invoked from Ubuntu shell
@@ -62,35 +62,35 @@ Building
 
  7. Dependencies won't compile in a directory shared with Windows. We need to copy everything to the space private to
     WSL. Do not use .. here as it will lead you into different directory
-      cp -r depends ~/shroud-depends
+      cp -r depends ~/fiveg-depends
 
  8. Go to depends folder and build dependencies (you may wish to build only 32-bit or 64-bit version)
-      cd ~/shroud-depends
+      cd ~/fiveg-depends
       make HOST=i686-w64-mingw32 -j4
       make HOST=x86_64-w64-mingw32 -j4
-      cd ~/shroud
-    It takes a while. You need to do it only once unless you delete shroud-depends directory
+      cd ~/fiveg
+    It takes a while. You need to do it only once unless you delete fiveg-depends directory
 
  9. Generate configure script
       ./autogen.sh
     Now do either step 10 or step 11, not both. Add -Wno-deprecated-declarations to CXXFLAGS if you want to reduce
     nonessential output
 
-10. Build 32-bit debug build (from the Shroud root directory)
+10. Build 32-bit debug build (from the Fiveg root directory)
       make clean
-      ./configure "LDFLAGS=-g -Wl,--no-dynamicbase" --enable-debug --disable-hardening --disable-gcc-hardening --disable-linker-hardening --prefix=$HOME/shroud-depends/i686-w64-mingw32
+      ./configure "LDFLAGS=-g -Wl,--no-dynamicbase" --enable-debug --disable-hardening --disable-gcc-hardening --disable-linker-hardening --prefix=$HOME/fiveg-depends/i686-w64-mingw32
       make -j4
 
-11. Build 64-bit debug build (from the Shroud root directory)
+11. Build 64-bit debug build (from the Fiveg root directory)
       make clean
-      ./configure "CXXFLAGS=-Og -g" "CFLAGS=-Og -g" "LDFLAGS=-g -Wl,--no-dynamicbase" --disable-hardening --disable-gcc-hardening --disable-linker-hardening --prefix=$HOME/shroud-depends/x86_64-w64-mingw32
+      ./configure "CXXFLAGS=-Og -g" "CFLAGS=-Og -g" "LDFLAGS=-g -Wl,--no-dynamicbase" --disable-hardening --disable-gcc-hardening --disable-linker-hardening --prefix=$HOME/fiveg-depends/x86_64-w64-mingw32
       make -j4
     Note that --enable-debug won't work here because of buggy mingw toolchain
 
     If you want to compile release build replace ./configure command in steps 10 and 11 with these commands for
     32-bit and 64-bit respectively
-      ./configure --prefix=$HOME/shroud-depends/i686-w64-mingw32
-      ./configure --prefix=$HOME/shroud-depends/x86_64-w64-mingw32
+      ./configure --prefix=$HOME/fiveg-depends/i686-w64-mingw32
+      ./configure --prefix=$HOME/fiveg-depends/x86_64-w64-mingw32
 
 
 Preparations for debugging
@@ -118,27 +118,27 @@ Free option
 
 2. Create a new project with Visual Studio. Select "General\Makefile project" as a project type (DO NOT create a
    cross-platform Linux project).
-     Name: shroud
-     Location: C:\Users\<username>\shroud
+     Name: fiveg
+     Location: C:\Users\<username>\fiveg
      Solution: Create new solution
      Solution name: vsdebug
 
    Then
-     Build command line: C:\Windows\SysNative\bash.exe -c "LANG=en_US.ISO-8859-15 make -C ~/shroud -j4"
-     Clean command line: C:\Windows\SysNative\bash.exe -c "LANG=en_US.ISO-8859-15 make -C ~/shroud clean"
+     Build command line: C:\Windows\SysNative\bash.exe -c "LANG=en_US.ISO-8859-15 make -C ~/fiveg -j4"
+     Clean command line: C:\Windows\SysNative\bash.exe -c "LANG=en_US.ISO-8859-15 make -C ~/fiveg clean"
 
    Now you can build and clean the project from within Visual Studio
 
-3. Create an XML file C:\Users\<username>\shroud\vsdebug\debug.xml
+3. Create an XML file C:\Users\<username>\fiveg\vsdebug\debug.xml
    Replace all the paths with actual ones, adjust architecture if needed, set executable you want to debug and set
    needed arguments for the program
 
      <PipeLaunchOptions xmlns="http://schemas.microsoft.com/vstudio/MDDDebuggerOptions/2014"
         PipePath="C:\msys64\usr\bin\gdb.exe"
         PipeArguments="--interpreter=mi"
-        ExePath="C:/Users/<username>/shroud/src/shroudd.exe" ExeArguments=""
+        ExePath="C:/Users/<username>/fiveg/src/fivegd.exe" ExeArguments=""
         TargetArchitecture="X64"
-        WorkingDirectory="C:/Users/<username>/shroud"
+        WorkingDirectory="C:/Users/<username>/fiveg"
         AdditionalSOLibSearchPath="">
      </PipeLaunchOptions>
 
@@ -146,13 +146,13 @@ Free option
    it there
 
 5. To launch a debugger you have to go to Command Window (View\Other Windows\Command Window) and issue a command
-     Debug.MIDebugLaunch /Executable:shroud /OptionsFile:"C:\Users\<username>\shroud\vsdebug\debug.xml"
+     Debug.MIDebugLaunch /Executable:fiveg /OptionsFile:"C:\Users\<username>\fiveg\vsdebug\debug.xml"
 
 
 VisualGDB
 
 1. Launch Visual Studio 2017. If you installed VisualGDB there will be "Debug\Quick Debug with GDB" menu item. Choose it.
-   Select Taget="MinGW/Cygwin", Debugged program is "src\shroud-cli.exe" in the directory mentioned above
+   Select Taget="MinGW/Cygwin", Debugged program is "src\fiveg-cli.exe" in the directory mentioned above
 
    GDB toolchain is either MinGW32 or MinGW64 depending on how you built the code
 

@@ -626,7 +626,7 @@ circuit_build_times_rewind_history(circuit_build_times_t *cbt, int n)
   }
 
   log_info(LD_CIRC,
-          "Rewound history by %d places. Current shroud: %d. "
+          "Rewound history by %d places. Current fiveg: %d. "
           "Total: %d", n, cbt->build_times_idx, cbt->total_build_times);
 }
 #endif /* 0 */

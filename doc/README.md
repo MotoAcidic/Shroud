@@ -1,28 +1,28 @@
-Shroud Core 0.1.1.x
+Fiveg Core 0.1.1.x
 =====================
 
 Setup
 ---------------------
-[Shroud Core] (https://shroudx.org/get-shroud/) is the original Shroud client and it builds the backbone of the network. However, it downloads and stores the entire history of Shroud transactions (which is currently several hundreds MBs); depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more.
+[Fiveg Core] (https://fivegx.org/get-fiveg/) is the original Fiveg client and it builds the backbone of the network. However, it downloads and stores the entire history of Fiveg transactions (which is currently several hundreds MBs); depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more.
 
 Running
 ---------------------
-The following are some helpful notes on how to run Shroud on your native platform.
+The following are some helpful notes on how to run Fiveg on your native platform.
 
 ### Unix
 
 Unpack the files into a directory and run:
 
-- `bin/shroud-qt` (GUI) or
-- `bin/shroudd` (headless)
+- `bin/fiveg-qt` (GUI) or
+- `bin/fivegd` (headless)
 
 ### Windows
 
-Unpack the files into a directory, and then run shroud-qt.exe.
+Unpack the files into a directory, and then run fiveg-qt.exe.
 
 ### OS X
 
-Drag Shroud-Core to your applications folder, and then run Shroud-Core.
+Drag Fiveg-Core to your applications folder, and then run Fiveg-Core.
 
 ### Need Help?
 
@@ -33,7 +33,7 @@ for help and more information.
 
 Building
 ---------------------
-The following are developer notes on how to build Shroud on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
+The following are developer notes on how to build Fiveg on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
 
 - [OS X Build Notes](build-osx.md)
 - [Unix Build Notes](build-unix.md)
@@ -43,7 +43,7 @@ The following are developer notes on how to build Shroud on your native platform
 
 Development
 ---------------------
-The Shroud repo's [root README](/README.md) contains relevant information on the development process and automated testing.
+The Fiveg repo's [root README](/README.md) contains relevant information on the development process and automated testing.
 
 - [Developer Notes](developer-notes.md)
 - [Multiwallet Qt Development](multiwallet-qt.md)

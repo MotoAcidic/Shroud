@@ -13,8 +13,8 @@ from crontab import CronTab
 SERVER_IP = urlopen('http://ip.42.pl/raw').read()
 # BOOTSTRAP_URL = 
 #Change this to match your coin releases
-GITHUB_REPO = 'ShroudXProject/Shroud'
-BINARY_PREFIX = 'shroud-'
+GITHUB_REPO = 'FivegXProject/Fiveg'
+BINARY_PREFIX = 'fiveg-'
 BINARY_SUFFIX='-x86_64-linux-gnu.tar.gz'
 
 DEFAULT_COLOR = "\x1b[0m"
@@ -60,7 +60,7 @@ def print_welcome():
     print("")
     print("")
     print("")
-    print_info("ShroudXProject masternode installer v1.0")
+    print_info("FivegXProject masternode installer v1.0")
     print("")
     print("")
     print("")
@@ -83,17 +83,17 @@ def secure_server():
     print_info("Securing server...")
     run_command("apt-get --assume-yes install ufw")
     run_command("ufw allow OpenSSH")
-    run_command("ufw allow 42998")
+    run_command("ufw allow 23020")
     run_command("ufw default deny incoming")
     run_command("ufw default allow outgoing")
     run_command("ufw --force enable")
 
 def checkdaemon():
-    return os.path.isfile('/usr/local/bin/shroudd')
+    return os.path.isfile('/usr/local/bin/fivegd')
 
 # Helper functions for automating updating and installing daemon
 def getlatestrelease():
-    r = requests.get(url='https://api.github.com/repos/ShroudXProject/Shroud/releases/latest')
+    r = requests.get(url='https://api.github.com/repos/FivegXProject/Fiveg/releases/latest')
     data = json.loads(r.text)['assets']
     for x in range(len(data)):
         if 'x86_64-linux-gnu.tar.gz' in data[x]['browser_download_url']:
@@ -116,7 +116,7 @@ def compile_wallet():
         installdaemon(False)
 
 def installdaemon(fupdate):
-    os.system('su - mn1 -c "{}" '.format('shroud-cli stop &> /dev/null'))
+    os.system('su - mn1 -c "{}" '.format('fiveg-cli stop &> /dev/null'))
     print_info("Downloading daemon files...")
     binraryurl = getlatestrelease()
     binaryname = getbinaryname(binraryurl)
@@ -126,7 +126,7 @@ def installdaemon(fupdate):
     run_command("cd " + foldername +" && cp bin/* /usr/local/bin/ && cd ~")
     if fupdate:
         print_info("Finished updating,now starting mn back up")
-        os.system('su - mn1 -c "{}" '.format('shroudd -daemon &> /dev/null'))
+        os.system('su - mn1 -c "{}" '.format('fivegd -daemon &> /dev/null'))
     else:
         print_info("Finished downloading and installing daemon")
 
@@ -134,7 +134,7 @@ def get_total_memory():
     return (os.sysconf('SC_PAGE_SIZE') * os.sysconf('SC_PHYS_PAGES'))/(1024*1024)
 
 def autostart_masternode(user):
-    job = "/usr/local/bin/shroudd"
+    job = "/usr/local/bin/fivegd"
     p = subprocess.Popen("crontab -l -u {} 2> /dev/null".format(user), stderr=STDOUT, stdout=PIPE, shell=True)
     p.wait()
     lines = p.stdout.readlines()
@@ -149,14 +149,14 @@ def autostart_masternode(user):
 def setup_first_masternode():
     print_info("Setting up first masternode")
     run_command("useradd --create-home -G sudo mn1")
-    print_info("Open your desktop wallet config file (%appdata%/ShroudXProject/shroud.conf) and copy your rpc username and password! If it is not there create one! E.g.:\n\trpcuser=[SomeUserName]\n\trpcpassword=[DifficultAndLongPassword]")
+    print_info("Open your desktop wallet config file (%appdata%/FivegXProject/fiveg.conf) and copy your rpc username and password! If it is not there create one! E.g.:\n\trpcuser=[SomeUserName]\n\trpcpassword=[DifficultAndLongPassword]")
     global rpc_username
     global rpc_password
     rpc_username = input("rpcuser: ")
     rpc_password = input("rpcpassword: ")
 
-    print_info("Open your wallet console (Help => Debug window => Console) and create a new masternode private key: shroudnode genkey")
-    masternode_priv_key = input("shroudnodeprivkey: ")
+    print_info("Open your wallet console (Help => Debug window => Console) and create a new masternode private key: fivegnode genkey")
+    masternode_priv_key = input("fivegnodeprivkey: ")
     PRIVATE_KEYS.append(masternode_priv_key)
     
     config = """rpcuser={}
@@ -166,41 +166,41 @@ def setup_first_masternode():
     listen=1
     daemon=1
     logtimestamps=1
-    shroudnode=1
-    shroudnodeprivkey={}
+    fivegnode=1
+    fivegnodeprivkey={}
     """.format(rpc_username, rpc_password, masternode_priv_key)
 
     print_info("Saving config file...")
     #make inital dirs and logs required
-    run_command('su - mn1 -c "mkdir /home/mn1/.shroud"')
-    run_command('su - mn1 -c "touch /home/mn1/.shroud/shroud.conf"')
-    run_command('su - mn1 -c "touch /home/mn1/.shroud/exodus.log"')
-    run_command('su - mn1 -c "touch /home/mn1/.shroud/debug.log"')
-    f = open('/home/mn1/.shroud/shroud.conf', 'w')
+    run_command('su - mn1 -c "mkdir /home/mn1/.fiveg"')
+    run_command('su - mn1 -c "touch /home/mn1/.fiveg/fiveg.conf"')
+    run_command('su - mn1 -c "touch /home/mn1/.fiveg/exodus.log"')
+    run_command('su - mn1 -c "touch /home/mn1/.fiveg/debug.log"')
+    f = open('/home/mn1/.fiveg/fiveg.conf', 'w')
     f.write(config)
     f.close()
 
     autostart_masternode('mn1')
-    os.system('su - mn1 -c "{}" '.format('shroudd -daemon &> /dev/null'))
+    os.system('su - mn1 -c "{}" '.format('fivegd -daemon &> /dev/null'))
     print_warning("Masternode started syncing in the background...")
 
 def setup_xth_masternode(xth):
     print_info("Setting up {}th masternode".format(xth))
     run_command("useradd --create-home -G sudo mn{}".format(xth))
-    run_command("rm -rf /home/mn{}/.shroud/".format(xth))
+    run_command("rm -rf /home/mn{}/.fiveg/".format(xth))
 
     print_info('Copying wallet data from the first masternode...')
-    run_command("cp -rf /home/mn1/.shroud /home/mn{}/".format(xth))
-    run_command("sudo chown -R mn{}:mn{} /home/mn{}/.shroud".format(xth, xth, xth))
-    run_command("rm /home/mn{}/.shroud/peers.dat &> /dev/null".format(xth))
-    run_command("rm /home/mn{}/.shroud/wallet.dat &> /dev/null".format(xth))
+    run_command("cp -rf /home/mn1/.fiveg /home/mn{}/".format(xth))
+    run_command("sudo chown -R mn{}:mn{} /home/mn{}/.fiveg".format(xth, xth, xth))
+    run_command("rm /home/mn{}/.fiveg/peers.dat &> /dev/null".format(xth))
+    run_command("rm /home/mn{}/.fiveg/wallet.dat &> /dev/null".format(xth))
 
-    print_info("Open your wallet console (Help => Debug window => Console) and create a new masternode private key: shroudnode genkey")
-    masternode_priv_key = input("shroudnodeprivkey: ")
+    print_info("Open your wallet console (Help => Debug window => Console) and create a new masternode private key: fivegnode genkey")
+    masternode_priv_key = input("fivegnodeprivkey: ")
     PRIVATE_KEYS.append(masternode_priv_key)
 
     BASE_RPC_PORT = 42999
-    BASE_PORT = 42998
+    BASE_PORT = 23020
     
     config = """rpcuser={}
     rpcpassword={}
@@ -211,17 +211,17 @@ def setup_xth_masternode(xth):
     listen=1
     daemon=1
     logtimestamps=1
-    shroudnode=1
-    shroudnodeprivkey={}
+    fivegnode=1
+    fivegnodeprivkey={}
     """.format(rpc_username, rpc_password, BASE_RPC_PORT + xth - 1, BASE_PORT + xth - 1, masternode_priv_key)
     
     print_info("Saving config file...")
-    f = open('/home/mn{}/.shroud/shroud.conf'.format(xth), 'w')
+    f = open('/home/mn{}/.fiveg/fiveg.conf'.format(xth), 'w')
     f.write(config)
     f.close()
     
     autostart_masternode('mn'+str(xth))
-    os.system('su - mn{} -c "{}" '.format(xth, 'shroudd  -daemon &> /dev/null'))
+    os.system('su - mn{} -c "{}" '.format(xth, 'fivegd  -daemon &> /dev/null'))
     print_warning("Masternode started syncing in the background...")
     
 
@@ -235,8 +235,8 @@ def porologe():
     Alias: zn{}
     IP: {}
     Private key: {}
-    Transaction ID: [10k SHROUD deposit transaction id. 'shroudnode outputs']
-    Transaction shroud: [10k SHROUD deposit transaction shroud. 'shroudnode outputs']
+    Transaction ID: [10k FIVEG deposit transaction id. 'fivegnode outputs']
+    Transaction fiveg: [10k FIVEG deposit transaction fiveg. 'fivegnode outputs']
     mnconf line :
     {} {} {} txhash txindex
     --------------------------------------------------
@@ -244,7 +244,7 @@ def porologe():
 
     mn_data = ""
     for idx, val in enumerate(PRIVATE_KEYS):
-        SERVER_IP_STRING = SERVER_IP + ":".encode('utf-8') + str(42998).encode('utf-8')
+        SERVER_IP_STRING = SERVER_IP + ":".encode('utf-8') + str(23020).encode('utf-8')
         MN_STRING = "zn".encode('ascii') + str(idx+1).encode('ascii')
         mn_data += mn_base_data.format(idx+1, SERVER_IP_STRING.decode(), val, MN_STRING.decode(), SERVER_IP_STRING.decode(), val)
 
@@ -254,7 +254,7 @@ def porologe():
     """Masternode setup finished!
     \tWait until masternode is fully synced. To check the progress login the 
     \tmasternode account (su mn1, where 1 is the number of the masternode) and run
-    \tthe 'shroud-cli getinfo' to get actual block number. Go to
+    \tthe 'fiveg-cli getinfo' to get actual block number. Go to
     \t the explorer website to check the latest block number. After the
     \tsyncronization is done add your masternodes to your desktop wallet.
     Datas:""" + mn_data)

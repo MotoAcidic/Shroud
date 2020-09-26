@@ -81,7 +81,7 @@ WalletView::WalletView(const PlatformStyle *platformStyle, QWidget *parent):
 #ifdef ENABLE_ELYSIUM
     toolboxPage = new QWidget(this);
 #endif
-    shroudnodeListPage = new ShroudnodeList(platformStyle);
+    fivegnodeListPage = new FivegnodeList(platformStyle);
 
     setupTransactionPage();
     setupSendCoinPage();
@@ -103,7 +103,7 @@ WalletView::WalletView(const PlatformStyle *platformStyle, QWidget *parent):
 #ifdef ENABLE_ELYSIUM
     addWidget(toolboxPage);
 #endif
-    addWidget(shroudnodeListPage);
+    addWidget(fivegnodeListPage);
 
     // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), this, SLOT(focusBitcoinHistoryTab(QModelIndex)));
@@ -153,7 +153,7 @@ void WalletView::setupTransactionPage()
         elysiumTransactionsView = new TXHistoryDialog();
 
         transactionTabs = new QTabWidget();
-        transactionTabs->addTab(indexTransactionsView, tr("Shroud"));
+        transactionTabs->addTab(indexTransactionsView, tr("Fiveg"));
         transactionTabs->addTab(elysiumTransactionsView, tr("Elysium"));
     }
 #endif
@@ -183,7 +183,7 @@ void WalletView::setupSendCoinPage()
         sendElysiumView = new SendMPDialog(platformStyle);
 
         sendCoinsTabs = new QTabWidget();
-        sendCoinsTabs->addTab(sendZcoinView, tr("Shroud"));
+        sendCoinsTabs->addTab(sendZcoinView, tr("Fiveg"));
         sendCoinsTabs->addTab(sendElysiumView, tr("Elysium"));
     }
 #endif
@@ -267,7 +267,7 @@ void WalletView::setClientModel(ClientModel *clientModel)
 
     overviewPage->setClientModel(clientModel);
     sendZcoinView->setClientModel(clientModel);
-    shroudnodeListPage->setClientModel(clientModel);
+    fivegnodeListPage->setClientModel(clientModel);
 #ifdef ENABLE_ELYSIUM
     elyAssetsPage->setClientModel(clientModel);
 #endif
@@ -302,7 +302,7 @@ void WalletView::setWalletModel(WalletModel *walletModel)
     zc2SigmaPage->createModel();
     usedReceivingAddressesPage->setModel(walletModel->getAddressTableModel());
     usedSendingAddressesPage->setModel(walletModel->getAddressTableModel());
-    shroudnodeListPage->setWalletModel(walletModel);
+    fivegnodeListPage->setWalletModel(walletModel);
     sendZcoinView->setModel(walletModel);
     zc2SigmaPage->setWalletModel(walletModel);
 #ifdef ENABLE_ELYSIUM
@@ -416,9 +416,9 @@ void WalletView::focusBitcoinHistoryTab(const QModelIndex &idx)
     indexTransactionList->focusTransaction(idx);
 }
 
-void WalletView::gotoShroudnodePage()
+void WalletView::gotoFivegnodePage()
 {
-    setCurrentWidget(shroudnodeListPage);
+    setCurrentWidget(fivegnodeListPage);
 }
 
 void WalletView::gotoReceiveCoinsPage()

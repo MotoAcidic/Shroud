@@ -23,7 +23,7 @@
 #include "spork.h"
 #ifdef ENABLE_WALLET
 #include "wallet/wallet.h"
-#include "shroudnode-sync.h"
+#include "fivegnode-sync.h"
 #endif
 #include "utilstrencodings.h"
 #include "validationinterface.h"
@@ -497,13 +497,13 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
             "  \"curtime\" : ttt,                  (numeric) current timestamp in seconds since epoch (Jan 1 1970 GMT)\n"
             "  \"bits\" : \"xxxxxxxx\",              (string) compressed target of next block\n"
             "  \"height\" : n                      (numeric) The height of the next block\n"
-            "  \"shroudnode\" : {                  (json object) required shroudnode payee that must be included in the next block\n"
+            "  \"fivegnode\" : {                  (json object) required fivegnode payee that must be included in the next block\n"
             "      \"payee\" : \"xxxx\",             (string) payee address\n"
             "      \"script\" : \"xxxx\",            (string) payee scriptPubKey\n"
             "      \"amount\": n                   (numeric) required amount to pay\n"
             "  },\n"
-            "  \"shroudnode_payments_started\" :  true|false, (boolean) true, if shroudnode payments started\n"
-            "  \"shroudnode_payments_enforced\" : true|false, (boolean) true, if shroudnode payments are enforced\n"
+            "  \"fivegnode_payments_started\" :  true|false, (boolean) true, if fivegnode payments started\n"
+            "  \"fivegnode_payments_enforced\" : true|false, (boolean) true, if fivegnode payments are enforced\n"
             "}\n"
 
             "\nExamples:\n"
@@ -580,12 +580,12 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid mode");
 
     if (vNodes.empty() && chainActive.Tip()->nHeight > 100)
-        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "Shroud is not connected!");
+        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "Fiveg is not connected!");
     if (IsInitialBlockDownload())
-        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Shroud is downloading blocks...");
+        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Fiveg is downloading blocks...");
 
-    if (!shroudnodeSync.IsSynced() && chainActive.Tip()->nHeight > 20000)
-        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Shroud Core is syncing with network...");
+    if (!fivegnodeSync.IsSynced() && chainActive.Tip()->nHeight > 20000)
+        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Fiveg Core is syncing with network...");
 
     static unsigned int nTransactionsUpdatedLast;
     if (!lpval.isNull())
@@ -801,18 +801,18 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
     result.push_back(Pair("bits", strprintf("%08x", pblock->nBits)));
     result.push_back(Pair("height", (int64_t)(pindexPrev->nHeight+1)));
 
-    UniValue shroudnodeObj(UniValue::VOBJ);
-    if(pblock->txoutShroudnode != CTxOut()) {
+    UniValue fivegnodeObj(UniValue::VOBJ);
+    if(pblock->txoutFivegnode != CTxOut()) {
         CTxDestination address1;
-        ExtractDestination(pblock->txoutShroudnode.scriptPubKey, address1);
+        ExtractDestination(pblock->txoutFivegnode.scriptPubKey, address1);
         CBitcoinAddress address2(address1);
-        shroudnodeObj.push_back(Pair("payee", address2.ToString().c_str()));
-        shroudnodeObj.push_back(Pair("script", HexStr(pblock->txoutShroudnode.scriptPubKey.begin(), pblock->txoutShroudnode.scriptPubKey.end())));
-        shroudnodeObj.push_back(Pair("amount", pblock->txoutShroudnode.nValue));
+        fivegnodeObj.push_back(Pair("payee", address2.ToString().c_str()));
+        fivegnodeObj.push_back(Pair("script", HexStr(pblock->txoutFivegnode.scriptPubKey.begin(), pblock->txoutFivegnode.scriptPubKey.end())));
+        fivegnodeObj.push_back(Pair("amount", pblock->txoutFivegnode.nValue));
     }
-    result.push_back(Pair("shroudnode", shroudnodeObj));
-    result.push_back(Pair("shroudnode_payments_started", pindexPrev->nHeight + 1 > Params().GetConsensus().nShroudnodePaymentsStartBlock));
-    result.push_back(Pair("shroudnode_payments_enforced", sporkManager.IsSporkActive(SPORK_8_SHROUDNODE_PAYMENT_ENFORCEMENT)));
+    result.push_back(Pair("fivegnode", fivegnodeObj));
+    result.push_back(Pair("fivegnode_payments_started", pindexPrev->nHeight + 1 > Params().GetConsensus().nFivegnodePaymentsStartBlock));
+    result.push_back(Pair("fivegnode_payments_enforced", sporkManager.IsSporkActive(SPORK_8_FIVEGNODE_PAYMENT_ENFORCEMENT)));
 
     const struct BIP9DeploymentInfo& segwit_info = VersionBitsDeploymentInfo[Consensus::DEPLOYMENT_SEGWIT];
     if (!pblocktemplate->vchCoinbaseCommitment.empty() && setClientRules.find(segwit_info.name) != setClientRules.end()) {

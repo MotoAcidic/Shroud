@@ -132,7 +132,7 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>shroud-core</name>
+    <name>fiveg-core</name>
     <message>
         <source>Transaction amounts must be positive</source>
         <translation>转账额度须为正数</translation>

@@ -1,5 +1,5 @@
 // Copyright (c) 2012-2014 The Bitcoin Core developers
-// Copyright (c) 2020 The ShroudX Project developers
+// Copyright (c) 2020 The FivegX Project developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -21,7 +21,7 @@ static const int GETHEADERS_VERSION = 90010;
 //! disconnect from peers older than this proto version
 static const int MIN_PEER_PROTO_VERSION = PROTOCOL_VERSION - 1;
 
-//! disconnect from all older peers after Shroudnode payment HF
+//! disconnect from all older peers after Fivegnode payment HF
 static const int MIN_PEER_PROTO_VERSION_AFTER_UPDATE = PROTOCOL_VERSION;
 
 //! nTime field added to CAddress, starting with this version;

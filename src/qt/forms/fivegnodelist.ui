@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ShroudnodeList</class>
- <widget class="QWidget" name="ShroudnodeList">
+ <class>FivegnodeList</class>
+ <widget class="QWidget" name="FivegnodeList">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -49,9 +49,9 @@
        <property name="currentIndex">
         <number>1</number>
        </property>
-       <widget class="QWidget" name="tabMyShroudnodes">
+       <widget class="QWidget" name="tabMyFivegnodes">
         <attribute name="title">
-         <string>My Shroudnodes</string>
+         <string>My Fivegnodes</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout_2">
          <item row="0" column="0">
@@ -67,14 +67,14 @@
              <item>
               <widget class="QLabel" name="updateNote">
                <property name="text">
-                <string>Note: Status of your shroudnodes in local wallet can potentially be slightly incorrect.&lt;br /&gt;Always wait for wallet to sync additional data and then double check from another node&lt;br /&gt;if your shroudnode should be running but you still do not see &quot;ENABLED&quot; in &quot;Status&quot; field.</string>
+                <string>Note: Status of your fivegnodes in local wallet can potentially be slightly incorrect.&lt;br /&gt;Always wait for wallet to sync additional data and then double check from another node&lt;br /&gt;if your fivegnode should be running but you still do not see &quot;ENABLED&quot; in &quot;Status&quot; field.</string>
                </property>
               </widget>
              </item>
             </layout>
            </item>
            <item>
-            <widget class="QTableWidget" name="tableWidgetMyShroudnodes">
+            <widget class="QTableWidget" name="tableWidgetMyFivegnodes">
              <property name="minimumSize">
               <size>
                <width>695</width>
@@ -202,13 +202,13 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="tabAllShroudnodes">
+       <widget class="QWidget" name="tabAllFivegnodes">
         <attribute name="title">
-         <string>All Shroudnodes</string>
+         <string>All Fivegnodes</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout">
          <item row="1" column="0">
-          <widget class="QTableWidget" name="tableWidgetShroudnodes">
+          <widget class="QTableWidget" name="tableWidgetFivegnodes">
            <property name="editTriggers">
             <set>QAbstractItemView::NoEditTriggers</set>
            </property>
@@ -271,7 +271,7 @@
            <item>
             <widget class="QLineEdit" name="filterLineEdit">
              <property name="toolTip">
-              <string>Filter shroudnode list</string>
+              <string>Filter fivegnode list</string>
              </property>
             </widget>
            </item>

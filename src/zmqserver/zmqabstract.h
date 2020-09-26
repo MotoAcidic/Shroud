@@ -58,8 +58,8 @@ public:
     virtual bool NotifyConnections();
     virtual bool NotifyStatus();
     virtual bool NotifyAPIStatus();
-    virtual bool NotifyShroudnodeList();
-    virtual bool NotifyShroudnodeUpdate(CShroudnode &shroudnode);
+    virtual bool NotifyFivegnodeList();
+    virtual bool NotifyFivegnodeUpdate(CFivegnode &fivegnode);
     virtual bool NotifyMintStatusUpdate(std::string update);
     virtual bool NotifySettingsUpdate(std::string update);
     virtual bool NotifyBalance();

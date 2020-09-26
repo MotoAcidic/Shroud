@@ -186,7 +186,7 @@ basic_ostream<Char, Traits>& operator<<(basic_ostream<Char, Traits>& os, const S
 template<class Char, class Traits>
 basic_ostream<Char, Traits>& operator<<(basic_ostream<Char, Traits>& os, const SigmaMintChainState& state)
 {
-    return os << "{block: " << state.block << ", group: " << state.group << ", shroud: " << state.index << '}';
+    return os << "{block: " << state.block << ", group: " << state.group << ", fiveg: " << state.index << '}';
 }
 
 template<class Char, class Traits>

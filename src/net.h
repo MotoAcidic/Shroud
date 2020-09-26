@@ -94,7 +94,7 @@ CNode* FindNode(const std::string& addrName);
 CNode* FindNode(const CService& ip);
 CNode* FindNode(const NodeId id); //TODO: Remove this
 
-CNode* ConnectNode(CAddress addrConnect, const char *pszDest = NULL, bool fCountFailure = false, bool fConnectToShroudnode = false);
+CNode* ConnectNode(CAddress addrConnect, const char *pszDest = NULL, bool fCountFailure = false, bool fConnectToFivegnode = false);
 
 bool OpenNetworkConnection(const CAddress& addrConnect, bool fCountFailure, CSemaphoreGrant *grantOutbound = NULL, const char *strDest = NULL, bool fOneShot = false, bool fFeeler = false);
 void MapPort(bool fUseUPnP);
@@ -378,8 +378,8 @@ public:
 
     bool fSupportsDandelion = false;
     NodeId id;
-    // shroudnode from dash
-    bool fShroudnode;
+    // fivegnode from dash
+    bool fFivegnode;
 
     const uint64_t nKeyedNetGroup;
 protected:

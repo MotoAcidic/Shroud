@@ -1,10 +1,10 @@
 // Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2020 The ShroudX Project developers
+// Copyright (c) 2020 The FivegX Project developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SHROUDNODE_H
-#define SHROUDNODE_H
+#ifndef FIVEGNODE_H
+#define FIVEGNODE_H
 
 #include "key.h"
 #include "main.h"
@@ -13,24 +13,24 @@
 #include "timedata.h"
 #include "utiltime.h"
 
-class CShroudnode;
-class CShroudnodeBroadcast;
-class CShroudnodePing;
+class CFivegnode;
+class CFivegnodeBroadcast;
+class CFivegnodePing;
 
-static const int SHROUDNODE_CHECK_SECONDS               =   5;
-static const int SHROUDNODE_MIN_MNB_SECONDS             =   5 * 60; //BROADCAST_TIME
-static const int SHROUDNODE_MIN_MNP_SECONDS             =  10 * 60; //PRE_ENABLE_TIME
-static const int SHROUDNODE_EXPIRATION_SECONDS          =  65 * 60;
-static const int SHROUDNODE_WATCHDOG_MAX_SECONDS        = 120 * 60;
-static const int SHROUDNODE_NEW_START_REQUIRED_SECONDS  = 180 * 60;
-static const int SHROUDNODE_COIN_REQUIRED  = 10000; //10k COLLATERAL
+static const int FIVEGNODE_CHECK_SECONDS               =   5;
+static const int FIVEGNODE_MIN_MNB_SECONDS             =   5 * 60; //BROADCAST_TIME
+static const int FIVEGNODE_MIN_MNP_SECONDS             =  10 * 60; //PRE_ENABLE_TIME
+static const int FIVEGNODE_EXPIRATION_SECONDS          =  65 * 60;
+static const int FIVEGNODE_WATCHDOG_MAX_SECONDS        = 120 * 60;
+static const int FIVEGNODE_NEW_START_REQUIRED_SECONDS  = 180 * 60;
+static const int FIVEGNODE_COIN_REQUIRED  = 1000; //1k COLLATERAL
 
-static const int SHROUDNODE_POSE_BAN_MAX_SCORE          = 5;
+static const int FIVEGNODE_POSE_BAN_MAX_SCORE          = 5;
 //
-// The Shroudnode Ping Class : Contains a different serialize method for sending pings from shroudnodes throughout the network
+// The Fivegnode Ping Class : Contains a different serialize method for sending pings from fivegnodes throughout the network
 //
 
-class CShroudnodePing
+class CFivegnodePing
 {
 public:
     CTxIn vin;
@@ -39,14 +39,14 @@ public:
     std::vector<unsigned char> vchSig;
     //removed stop
 
-    CShroudnodePing() :
+    CFivegnodePing() :
         vin(),
         blockHash(),
         sigTime(0),
         vchSig()
         {}
 
-    CShroudnodePing(CTxIn& vinNew);
+    CFivegnodePing(CTxIn& vinNew);
 
     ADD_SERIALIZE_METHODS;
 
@@ -58,7 +58,7 @@ public:
         READWRITE(vchSig);
     }
 
-    void swap(CShroudnodePing& first, CShroudnodePing& second) // nothrow
+    void swap(CFivegnodePing& first, CFivegnodePing& second) // nothrow
     {
         // enable ADL (not necessary in our case, but good practice)
         using std::swap;
@@ -79,37 +79,37 @@ public:
         return ss.GetHash();
     }
 
-    bool IsExpired() { return GetTime() - sigTime > SHROUDNODE_NEW_START_REQUIRED_SECONDS; }
+    bool IsExpired() { return GetTime() - sigTime > FIVEGNODE_NEW_START_REQUIRED_SECONDS; }
 
-    bool Sign(CKey& keyShroudnode, CPubKey& pubKeyShroudnode);
-    bool CheckSignature(CPubKey& pubKeyShroudnode, int &nDos);
+    bool Sign(CKey& keyFivegnode, CPubKey& pubKeyFivegnode);
+    bool CheckSignature(CPubKey& pubKeyFivegnode, int &nDos);
     bool SimpleCheck(int& nDos);
-    bool CheckAndUpdate(CShroudnode* pmn, bool fFromNewBroadcast, int& nDos);
+    bool CheckAndUpdate(CFivegnode* pmn, bool fFromNewBroadcast, int& nDos);
     void Relay();
 
-    CShroudnodePing& operator=(CShroudnodePing from)
+    CFivegnodePing& operator=(CFivegnodePing from)
     {
         swap(*this, from);
         return *this;
     }
-    friend bool operator==(const CShroudnodePing& a, const CShroudnodePing& b)
+    friend bool operator==(const CFivegnodePing& a, const CFivegnodePing& b)
     {
         return a.vin == b.vin && a.blockHash == b.blockHash;
     }
-    friend bool operator!=(const CShroudnodePing& a, const CShroudnodePing& b)
+    friend bool operator!=(const CFivegnodePing& a, const CFivegnodePing& b)
     {
         return !(a == b);
     }
 
 };
 
-struct shroudnode_info_t
+struct fivegnode_info_t
 {
-    shroudnode_info_t()
+    fivegnode_info_t()
         : vin(),
           addr(),
           pubKeyCollateralAddress(),
-          pubKeyShroudnode(),
+          pubKeyFivegnode(),
           sigTime(0),
           nLastDsq(0),
           nTimeLastChecked(0),
@@ -125,7 +125,7 @@ struct shroudnode_info_t
     CTxIn vin;
     CService addr;
     CPubKey pubKeyCollateralAddress;
-    CPubKey pubKeyShroudnode;
+    CPubKey pubKeyFivegnode;
     int64_t sigTime; //mnb message time
     int64_t nLastDsq; //the dsq count from the last dsq broadcast of this node
     int64_t nTimeLastChecked;
@@ -139,10 +139,10 @@ struct shroudnode_info_t
 };
 
 //
-// The Shroudnode Class. For managing the Darksend process. It contains the input of the 1000DRK, signature to prove
+// The Fivegnode Class. For managing the Darksend process. It contains the input of the 1000DRK, signature to prove
 // it's the one who own that ip address and code for calculating the payment election.
 //
-class CShroudnode
+class CFivegnode
 {
 private:
     // critical section to protect the inner data structures
@@ -150,21 +150,21 @@ private:
 
 public:
     enum state {
-        SHROUDNODE_PRE_ENABLED,
-        SHROUDNODE_ENABLED,
-        SHROUDNODE_EXPIRED,
-        SHROUDNODE_OUTPOINT_SPENT,
-        SHROUDNODE_UPDATE_REQUIRED,
-        SHROUDNODE_WATCHDOG_EXPIRED,
-        SHROUDNODE_NEW_START_REQUIRED,
-        SHROUDNODE_POSE_BAN
+        FIVEGNODE_PRE_ENABLED,
+        FIVEGNODE_ENABLED,
+        FIVEGNODE_EXPIRED,
+        FIVEGNODE_OUTPOINT_SPENT,
+        FIVEGNODE_UPDATE_REQUIRED,
+        FIVEGNODE_WATCHDOG_EXPIRED,
+        FIVEGNODE_NEW_START_REQUIRED,
+        FIVEGNODE_POSE_BAN
     };
 
     CTxIn vin;
     CService addr;
     CPubKey pubKeyCollateralAddress;
-    CPubKey pubKeyShroudnode;
-    CShroudnodePing lastPing;
+    CPubKey pubKeyFivegnode;
+    CFivegnodePing lastPing;
     std::vector<unsigned char> vchSig;
     int64_t sigTime; //mnb message time
     int64_t nLastDsq; //the dsq count from the last dsq broadcast of this node
@@ -181,13 +181,13 @@ public:
     bool fAllowMixingTx;
     bool fUnitTest;
 
-    // KEEP TRACK OF GOVERNANCE ITEMS EACH SHROUDNODE HAS VOTE UPON FOR RECALCULATION
+    // KEEP TRACK OF GOVERNANCE ITEMS EACH FIVEGNODE HAS VOTE UPON FOR RECALCULATION
     std::map<uint256, int> mapGovernanceObjectsVotedOn;
 
-    CShroudnode();
-    CShroudnode(const CShroudnode& other);
-    CShroudnode(const CShroudnodeBroadcast& mnb);
-    CShroudnode(CService addrNew, CTxIn vinNew, CPubKey pubKeyCollateralAddressNew, CPubKey pubKeyShroudnodeNew, int nProtocolVersionIn);
+    CFivegnode();
+    CFivegnode(const CFivegnode& other);
+    CFivegnode(const CFivegnodeBroadcast& mnb);
+    CFivegnode(CService addrNew, CTxIn vinNew, CPubKey pubKeyCollateralAddressNew, CPubKey pubKeyFivegnodeNew, int nProtocolVersionIn);
 
     ADD_SERIALIZE_METHODS;
 
@@ -197,7 +197,7 @@ public:
         READWRITE(vin);
         READWRITE(addr);
         READWRITE(pubKeyCollateralAddress);
-        READWRITE(pubKeyShroudnode);
+        READWRITE(pubKeyFivegnode);
         READWRITE(lastPing);
         READWRITE(vchSig);
         READWRITE(sigTime);
@@ -216,7 +216,7 @@ public:
         READWRITE(mapGovernanceObjectsVotedOn);
     }
 
-    void swap(CShroudnode& first, CShroudnode& second) // nothrow
+    void swap(CFivegnode& first, CFivegnode& second) // nothrow
     {
         // enable ADL (not necessary in our case, but good practice)
         using std::swap;
@@ -226,7 +226,7 @@ public:
         swap(first.vin, second.vin);
         swap(first.addr, second.addr);
         swap(first.pubKeyCollateralAddress, second.pubKeyCollateralAddress);
-        swap(first.pubKeyShroudnode, second.pubKeyShroudnode);
+        swap(first.pubKeyFivegnode, second.pubKeyFivegnode);
         swap(first.lastPing, second.lastPing);
         swap(first.vchSig, second.vchSig);
         swap(first.sigTime, second.sigTime);
@@ -249,7 +249,7 @@ public:
     // CALCULATE A RANK AGAINST OF GIVEN BLOCK
     arith_uint256 CalculateScore(const uint256& blockHash);
 
-    bool UpdateFromNewBroadcast(CShroudnodeBroadcast& mnb);
+    bool UpdateFromNewBroadcast(CFivegnodeBroadcast& mnb);
 
     void Check(bool fForce = false);
 
@@ -257,7 +257,7 @@ public:
 
     bool IsPingedWithin(int nSeconds, int64_t nTimeToCheckAt = -1)
     {
-        if(lastPing == CShroudnodePing()) return false;
+        if(lastPing == CFivegnodePing()) return false;
 
         if(nTimeToCheckAt == -1) {
             nTimeToCheckAt = GetAdjustedTime();
@@ -265,36 +265,36 @@ public:
         return nTimeToCheckAt - lastPing.sigTime < nSeconds;
     }
 
-    bool IsEnabled() { return nActiveState == SHROUDNODE_ENABLED; }
-    bool IsPreEnabled() { return nActiveState == SHROUDNODE_PRE_ENABLED; }
-    bool IsPoSeBanned() { return nActiveState == SHROUDNODE_POSE_BAN; }
+    bool IsEnabled() { return nActiveState == FIVEGNODE_ENABLED; }
+    bool IsPreEnabled() { return nActiveState == FIVEGNODE_PRE_ENABLED; }
+    bool IsPoSeBanned() { return nActiveState == FIVEGNODE_POSE_BAN; }
     // NOTE: this one relies on nPoSeBanScore, not on nActiveState as everything else here
-    bool IsPoSeVerified() { return nPoSeBanScore <= -SHROUDNODE_POSE_BAN_MAX_SCORE; }
-    bool IsExpired() { return nActiveState == SHROUDNODE_EXPIRED; }
-    bool IsOutpointSpent() { return nActiveState == SHROUDNODE_OUTPOINT_SPENT; }
-    bool IsUpdateRequired() { return nActiveState == SHROUDNODE_UPDATE_REQUIRED; }
-    bool IsWatchdogExpired() { return nActiveState == SHROUDNODE_WATCHDOG_EXPIRED; }
-    bool IsNewStartRequired() { return nActiveState == SHROUDNODE_NEW_START_REQUIRED; }
+    bool IsPoSeVerified() { return nPoSeBanScore <= -FIVEGNODE_POSE_BAN_MAX_SCORE; }
+    bool IsExpired() { return nActiveState == FIVEGNODE_EXPIRED; }
+    bool IsOutpointSpent() { return nActiveState == FIVEGNODE_OUTPOINT_SPENT; }
+    bool IsUpdateRequired() { return nActiveState == FIVEGNODE_UPDATE_REQUIRED; }
+    bool IsWatchdogExpired() { return nActiveState == FIVEGNODE_WATCHDOG_EXPIRED; }
+    bool IsNewStartRequired() { return nActiveState == FIVEGNODE_NEW_START_REQUIRED; }
 
     static bool IsValidStateForAutoStart(int nActiveStateIn)
     {
-        return  nActiveStateIn == SHROUDNODE_ENABLED ||
-                nActiveStateIn == SHROUDNODE_PRE_ENABLED ||
-                nActiveStateIn == SHROUDNODE_EXPIRED ||
-                nActiveStateIn == SHROUDNODE_WATCHDOG_EXPIRED;
+        return  nActiveStateIn == FIVEGNODE_ENABLED ||
+                nActiveStateIn == FIVEGNODE_PRE_ENABLED ||
+                nActiveStateIn == FIVEGNODE_EXPIRED ||
+                nActiveStateIn == FIVEGNODE_WATCHDOG_EXPIRED;
     }
 
     bool IsValidForPayment();
 
-    bool IsMyShroudnode();
+    bool IsMyFivegnode();
 
     bool IsValidNetAddr();
     static bool IsValidNetAddr(CService addrIn);
 
-    void IncreasePoSeBanScore() { if(nPoSeBanScore < SHROUDNODE_POSE_BAN_MAX_SCORE) nPoSeBanScore++; }
-    void DecreasePoSeBanScore() { if(nPoSeBanScore > -SHROUDNODE_POSE_BAN_MAX_SCORE) nPoSeBanScore--; }
+    void IncreasePoSeBanScore() { if(nPoSeBanScore < FIVEGNODE_POSE_BAN_MAX_SCORE) nPoSeBanScore++; }
+    void DecreasePoSeBanScore() { if(nPoSeBanScore > -FIVEGNODE_POSE_BAN_MAX_SCORE) nPoSeBanScore--; }
 
-    shroudnode_info_t GetInfo();
+    fivegnode_info_t GetInfo();
 
     static std::string StateToString(int nStateIn);
     std::string GetStateString() const;
@@ -303,7 +303,7 @@ public:
     UniValue ToJSON() const;
 
     void SetStatus(int newState);
-    void SetLastPing(CShroudnodePing newShroudnodePing);
+    void SetLastPing(CFivegnodePing newFivegnodePing);
     void SetTimeLastPaid(int64_t newTimeLastPaid);
     void SetBlockLastPaid(int newBlockLastPaid);
     void SetRank(int newRank);
@@ -323,16 +323,16 @@ public:
 
     void UpdateWatchdogVoteTime();
 
-    CShroudnode& operator=(CShroudnode from)
+    CFivegnode& operator=(CFivegnode from)
     {
         swap(*this, from);
         return *this;
     }
-    friend bool operator==(const CShroudnode& a, const CShroudnode& b)
+    friend bool operator==(const CFivegnode& a, const CFivegnode& b)
     {
         return a.vin == b.vin;
     }
-    friend bool operator!=(const CShroudnode& a, const CShroudnode& b)
+    friend bool operator!=(const CFivegnode& a, const CFivegnode& b)
     {
         return !(a.vin == b.vin);
     }
@@ -341,19 +341,19 @@ public:
 
 
 //
-// The Shroudnode Broadcast Class : Contains a different serialize method for sending shroudnodes through the network
+// The Fivegnode Broadcast Class : Contains a different serialize method for sending fivegnodes through the network
 //
 
-class CShroudnodeBroadcast : public CShroudnode
+class CFivegnodeBroadcast : public CFivegnode
 {
 public:
 
     bool fRecovery;
 
-    CShroudnodeBroadcast() : CShroudnode(), fRecovery(false) {}
-    CShroudnodeBroadcast(const CShroudnode& mn) : CShroudnode(mn), fRecovery(false) {}
-    CShroudnodeBroadcast(CService addrNew, CTxIn vinNew, CPubKey pubKeyCollateralAddressNew, CPubKey pubKeyShroudnodeNew, int nProtocolVersionIn) :
-        CShroudnode(addrNew, vinNew, pubKeyCollateralAddressNew, pubKeyShroudnodeNew, nProtocolVersionIn), fRecovery(false) {}
+    CFivegnodeBroadcast() : CFivegnode(), fRecovery(false) {}
+    CFivegnodeBroadcast(const CFivegnode& mn) : CFivegnode(mn), fRecovery(false) {}
+    CFivegnodeBroadcast(CService addrNew, CTxIn vinNew, CPubKey pubKeyCollateralAddressNew, CPubKey pubKeyFivegnodeNew, int nProtocolVersionIn) :
+        CFivegnode(addrNew, vinNew, pubKeyCollateralAddressNew, pubKeyFivegnodeNew, nProtocolVersionIn), fRecovery(false) {}
 
     ADD_SERIALIZE_METHODS;
 
@@ -362,7 +362,7 @@ public:
         READWRITE(vin);
         READWRITE(addr);
         READWRITE(pubKeyCollateralAddress);
-        READWRITE(pubKeyShroudnode);
+        READWRITE(pubKeyFivegnode);
         READWRITE(vchSig);
         READWRITE(sigTime);
         READWRITE(nProtocolVersion);
@@ -378,20 +378,20 @@ public:
         return ss.GetHash();
     }
 
-    /// Create Shroudnode broadcast, needs to be relayed manually after that
-    static bool Create(CTxIn vin, CService service, CKey keyCollateralAddressNew, CPubKey pubKeyCollateralAddressNew, CKey keyShroudnodeNew, CPubKey pubKeyShroudnodeNew, std::string &strErrorRet, CShroudnodeBroadcast &mnbRet);
-    static bool Create(std::string strService, std::string strKey, std::string strTxHash, std::string strOutputIndex, std::string& strErrorRet, CShroudnodeBroadcast &mnbRet, bool fOffline = false);
+    /// Create Fivegnode broadcast, needs to be relayed manually after that
+    static bool Create(CTxIn vin, CService service, CKey keyCollateralAddressNew, CPubKey pubKeyCollateralAddressNew, CKey keyFivegnodeNew, CPubKey pubKeyFivegnodeNew, std::string &strErrorRet, CFivegnodeBroadcast &mnbRet);
+    static bool Create(std::string strService, std::string strKey, std::string strTxHash, std::string strOutputIndex, std::string& strErrorRet, CFivegnodeBroadcast &mnbRet, bool fOffline = false);
 
     bool SimpleCheck(int& nDos);
-    bool Update(CShroudnode* pmn, int& nDos);
+    bool Update(CFivegnode* pmn, int& nDos);
     bool CheckOutpoint(int& nDos);
 
     bool Sign(CKey& keyCollateralAddress);
     bool CheckSignature(int& nDos);
-    void RelayShroudNode();
+    void RelayFivegNode();
 };
 
-class CShroudnodeVerification
+class CFivegnodeVerification
 {
 public:
     CTxIn vin1;
@@ -402,7 +402,7 @@ public:
     std::vector<unsigned char> vchSig1;
     std::vector<unsigned char> vchSig2;
 
-    CShroudnodeVerification() :
+    CFivegnodeVerification() :
         vin1(),
         vin2(),
         addr(),
@@ -412,7 +412,7 @@ public:
         vchSig2()
         {}
 
-    CShroudnodeVerification(CService addr, int nonce, int nBlockHeight) :
+    CFivegnodeVerification(CService addr, int nonce, int nBlockHeight) :
         vin1(),
         vin2(),
         addr(addr),
@@ -448,7 +448,7 @@ public:
 
     void Relay() const
     {
-        CInv inv(MSG_SHROUDNODE_VERIFY, GetHash());
+        CInv inv(MSG_FIVEGNODE_VERIFY, GetHash());
         RelayInv(inv);
     }
 };

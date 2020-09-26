@@ -161,6 +161,6 @@ Alihkan fail data ke dalam tab semasa</translation>
     <name>WalletView</name>
     </context>
 <context>
-    <name>shroud-core</name>
+    <name>fiveg-core</name>
     </context>
 </TS>

@@ -114,8 +114,8 @@
         <translation>Промени &amp;лозинку...</translation>
     </message>
     <message>
-        <source>Send coins to a Shroud address</source>
-        <translation>Пошаљите новац на Shroud адресу</translation>
+        <source>Send coins to a Fiveg address</source>
+        <translation>Пошаљите новац на Fiveg адресу</translation>
     </message>
     <message>
         <source>Change the passphrase used for wallet encryption</source>
@@ -392,7 +392,7 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>shroud-core</name>
+    <name>fiveg-core</name>
     <message>
         <source>Options:</source>
         <translation>Opcije</translation>

@@ -21,9 +21,9 @@
 #include "script/script_error.h"
 #include "script/standard.h"
 #include "utilstrencodings.h"
-#include "shroudnodeman.h"
-#include "shroudnode-sync.h"
-#include "shroudnode-payments.h"
+#include "fivegnodeman.h"
+#include "fivegnode-sync.h"
+#include "fivegnode-payments.h"
 
 #include <map>
 #include <string>

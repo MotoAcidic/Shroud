@@ -36,8 +36,8 @@
 #include "ui_interface.h"
 #include "util.h"
 
-#include "shroudnode-sync.h"
-#include "shroudnodelist.h"
+#include "fivegnode-sync.h"
+#include "fivegnodelist.h"
 #include "elysium_qtutils.h"
 #include "zc2sigmapage.h"
 
@@ -133,7 +133,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *platformStyle, const NetworkStyle *n
     openAction(0),
     showHelpMessageAction(0),
     zc2SigmaAction(0),
-    shroudnodeAction(0),
+    fivegnodeAction(0),
     trayIcon(0),
     trayIconMenu(0),
     notificator(0),
@@ -315,7 +315,7 @@ void BitcoinGUI::createActions()
 	tabGroup->addAction(overviewAction);
 
 	sendCoinsAction = new QAction(platformStyle->MultiStatesIcon(":/icons/send"), tr("&Send"), this);
-	sendCoinsAction->setStatusTip(tr("Send coins to a Shroud address"));
+	sendCoinsAction->setStatusTip(tr("Send coins to a Fiveg address"));
 	sendCoinsAction->setToolTip(sendCoinsAction->statusTip());
 	sendCoinsAction->setCheckable(true);
 	sendCoinsAction->setShortcut(QKeySequence(Qt::ALT + key++));
@@ -326,7 +326,7 @@ void BitcoinGUI::createActions()
 	sendCoinsMenuAction->setToolTip(sendCoinsMenuAction->statusTip());
 
 	receiveCoinsAction = new QAction(platformStyle->MultiStatesIcon(":/icons/receiving_addresses"), tr("&Receive"), this);
-	receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and shroud: URIs)"));
+	receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and fiveg: URIs)"));
 	receiveCoinsAction->setToolTip(receiveCoinsAction->statusTip());
 	receiveCoinsAction->setCheckable(true);
 	receiveCoinsAction->setShortcut(QKeySequence(Qt::ALT + key++));
@@ -362,16 +362,16 @@ void BitcoinGUI::createActions()
 #ifdef ENABLE_WALLET
     // These showNormalIfMinimized are needed because Send Coins and Receive Coins
     // can be triggered from the tray menu, and need to show the GUI to be useful.
-    shroudnodeAction = new QAction(platformStyle->MultiStatesIcon(":/icons/shroudnodes"), tr("&Shroudnodes"), this);
-    shroudnodeAction->setStatusTip(tr("Browse Shroudnodes"));
-    shroudnodeAction->setToolTip(shroudnodeAction->statusTip());
-    shroudnodeAction->setCheckable(true);
+    fivegnodeAction = new QAction(platformStyle->MultiStatesIcon(":/icons/fivegnodes"), tr("&Fivegnodes"), this);
+    fivegnodeAction->setStatusTip(tr("Browse Fivegnodes"));
+    fivegnodeAction->setToolTip(fivegnodeAction->statusTip());
+    fivegnodeAction->setCheckable(true);
 #ifdef Q_OS_MAC
-    shroudnodeAction->setShortcut(QKeySequence(Qt::CTRL + key++));
+    fivegnodeAction->setShortcut(QKeySequence(Qt::CTRL + key++));
 #else
-    shroudnodeAction->setShortcut(QKeySequence(Qt::ALT +  key++));
+    fivegnodeAction->setShortcut(QKeySequence(Qt::ALT +  key++));
 #endif
-    tabGroup->addAction(shroudnodeAction);
+    tabGroup->addAction(fivegnodeAction);
 #endif
 
 #ifdef ENABLE_ELYSIUM
@@ -395,8 +395,8 @@ void BitcoinGUI::createActions()
 #endif
 
 #ifdef ENABLE_WALLET
-    connect(shroudnodeAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
-    connect(shroudnodeAction, SIGNAL(triggered()), this, SLOT(gotoShroudnodePage()));
+    connect(fivegnodeAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(fivegnodeAction, SIGNAL(triggered()), this, SLOT(gotoFivegnodePage()));
 	connect(overviewAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
 	connect(overviewAction, SIGNAL(triggered()), this, SLOT(gotoOverviewPage()));
 	connect(sendCoinsAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
@@ -454,9 +454,9 @@ void BitcoinGUI::createActions()
     changePassphraseAction = new QAction(platformStyle->SingleColorIcon(":/icons/key"), tr("&Change Passphrase..."), this);
     changePassphraseAction->setStatusTip(tr("Change the passphrase used for wallet encryption"));
     signMessageAction = new QAction(platformStyle->SingleColorIcon(":/icons/edit"), tr("Sign &message..."), this);
-    signMessageAction->setStatusTip(tr("Sign messages with your Shroud addresses to prove you own them"));
+    signMessageAction->setStatusTip(tr("Sign messages with your Fiveg addresses to prove you own them"));
     verifyMessageAction = new QAction(platformStyle->SingleColorIcon(":/icons/verify"), tr("&Verify message..."), this);
-    verifyMessageAction->setStatusTip(tr("Verify messages to ensure they were signed with specified Shroud addresses"));
+    verifyMessageAction->setStatusTip(tr("Verify messages to ensure they were signed with specified Fiveg addresses"));
 
     openRepairAction = new QAction(QIcon(":/icons/options"), tr("Wallet &Repair"), this);
     openRepairAction->setStatusTip(tr("Show wallet repair options"));
@@ -473,7 +473,7 @@ void BitcoinGUI::createActions()
     usedReceivingAddressesAction->setStatusTip(tr("Show the list of used receiving addresses and labels"));
 
     openAction = new QAction(platformStyle->SingleColorIcon(":/icons/open"), tr("Open &URI..."), this);
-    openAction->setStatusTip(tr("Open a shroud: URI or payment request"));
+    openAction->setStatusTip(tr("Open a fiveg: URI or payment request"));
 
     showHelpMessageAction = new QAction(platformStyle->SingleColorIcon(":/icons/info"), tr("&Command-line options"), this);
     showHelpMessageAction->setMenuRole(QAction::NoRole);
@@ -571,7 +571,7 @@ void BitcoinGUI::createToolBars()
         appNavigationBar->addAction(receiveCoinsAction);
         appNavigationBar->addAction(historyAction);
         appNavigationBar->addAction(sigmaAction);
-        appNavigationBar->addAction(shroudnodeAction);
+        appNavigationBar->addAction(fivegnodeAction);
 
 #ifdef ENABLE_ELYSIUM
         if (isElysiumEnabled()) {
@@ -697,7 +697,7 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
     receiveCoinsMenuAction->setEnabled(enabled);
     historyAction->setEnabled(enabled);
     sigmaAction->setEnabled(enabled);
-    shroudnodeAction->setEnabled(enabled);
+    fivegnodeAction->setEnabled(enabled);
     encryptWalletAction->setEnabled(enabled);
     unlockWalletForStakingAction->setEnabled(enabled);
     lockWalletAction->setEnabled(enabled);
@@ -869,11 +869,11 @@ void BitcoinGUI::gotoToolboxPage()
 }
 #endif
 
-void BitcoinGUI::gotoShroudnodePage()
+void BitcoinGUI::gotoFivegnodePage()
 {
     QSettings settings;
-    shroudnodeAction->setChecked(true);
-    if (walletFrame) walletFrame->gotoShroudnodePage();
+    fivegnodeAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoFivegnodePage();
 }
 
 void BitcoinGUI::gotoReceiveCoinsPage()
@@ -924,7 +924,7 @@ void BitcoinGUI::setNumConnections(int count)
     if(progressBarLabel->text() == "No block source available..." && count > 1){
         progressBarLabel->setText("Waiting for new block...");
     }
-    labelConnectionsIcon->setToolTip(tr("%n active connection(s) to Shroud network", "", count));
+    labelConnectionsIcon->setToolTip(tr("%n active connection(s) to Fiveg network", "", count));
 }
 
 void BitcoinGUI::setNumBlocks(int count, const QDateTime& blockDate, double nVerificationProgress, bool header)
@@ -972,7 +972,7 @@ void BitcoinGUI::setNumBlocks(int count, const QDateTime& blockDate, double nVer
 
     tooltip = tr("Processed %n block(s) of transaction history.", "", count);
 
-    if(!shroudnodeSync.GetBlockchainSynced())
+    if(!fivegnodeSync.GetBlockchainSynced())
     {
         // Represent time from last generated block in human readable text
         QString timeBehindText;
@@ -1050,12 +1050,12 @@ void BitcoinGUI::setAdditionalDataSyncProgress(int count, double nSyncProgress)
 
     // Set icon state: spinning if catching up, tick otherwise
 
-    if(shroudnodeSync.GetBlockchainSynced())
+    if(fivegnodeSync.GetBlockchainSynced())
     {
         QString strSyncStatus;
         tooltip = tr("Up to date") + QString(".<br>") + tooltip;
 
-        if(shroudnodeSync.IsSynced()) {
+        if(fivegnodeSync.IsSynced()) {
             progressBarLabel->setVisible(false);
             progressBar->setVisible(false);
             labelBlocksIcon->setPixmap(platformStyle->SingleColorIcon(":/icons/synced").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
@@ -1076,7 +1076,7 @@ void BitcoinGUI::setAdditionalDataSyncProgress(int count, double nSyncProgress)
             progressBar->setValue(nSyncProgress * 1000000000.0 + 0.5);
         }
 
-        strSyncStatus = QString(shroudnodeSync.GetSyncStatus().c_str());
+        strSyncStatus = QString(fivegnodeSync.GetSyncStatus().c_str());
         progressBarLabel->setText(strSyncStatus);
         tooltip = strSyncStatus + QString("<br>") + tooltip;
     }
@@ -1092,7 +1092,7 @@ void BitcoinGUI::setAdditionalDataSyncProgress(int count, double nSyncProgress)
 
 void BitcoinGUI::message(const QString &title, const QString &message, unsigned int style, bool *ret)
 {
-    QString strTitle = tr("Shroud"); // default title
+    QString strTitle = tr("Fiveg"); // default title
     // Default to information icon
     int nMBoxIcon = QMessageBox::Information;
     int nNotifyIcon = Notificator::Information;

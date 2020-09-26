@@ -126,8 +126,8 @@
         <translation>Abrir &amp;URL...</translation>
     </message>
     <message>
-        <source>Send coins to a Shroud address</source>
-        <translation>Enviando monedas a una dirección de Shroud</translation>
+        <source>Send coins to a Fiveg address</source>
+        <translation>Enviando monedas a una dirección de Fiveg</translation>
     </message>
     <message>
         <source>Change the passphrase used for wallet encryption</source>
@@ -146,8 +146,8 @@
         <translation>&amp;Verificar Mensaje...</translation>
     </message>
     <message>
-        <source>Shroud</source>
-        <translation>Shroud</translation>
+        <source>Fiveg</source>
+        <translation>Fiveg</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -288,10 +288,10 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>shroud-core</name>
+    <name>fiveg-core</name>
     <message>
-        <source>Shroud Core</source>
-        <translation>Shroud Core</translation>
+        <source>Fiveg Core</source>
+        <translation>Fiveg Core</translation>
     </message>
     <message>
         <source>Insufficient funds</source>

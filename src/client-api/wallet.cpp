@@ -3,7 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "init.h"
-#include "shroudnode-payments.h"
+#include "fivegnode-payments.h"
 #include "rpc/server.h"
 #include "util.h"
 #include "wallet/wallet.h"
@@ -336,8 +336,8 @@ void ListAPITransactions(const CWalletTx& wtx, UniValue& ret, const isminefilter
                 if(txHeight == -1){
                     category = "coinbase";
                 }
-                else if(r.vout==1 && txHeight >= Params().GetConsensus().nShroudnodePaymentsStartBlock){
-                    category = "shroudnode";
+                else if(r.vout==1 && txHeight >= Params().GetConsensus().nFivegnodePaymentsStartBlock){
+                    category = "fivegnode";
                 }
                 else {
                     category = "mined";

@@ -16,7 +16,7 @@
 
 #include "primitives/block.h"
 #include "primitives/transaction.h"
-#include "shroudnode.h"
+#include "fivegnode.h"
 
 void zmqError(const char *str);
 

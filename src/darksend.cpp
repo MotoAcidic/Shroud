@@ -2,16 +2,16 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "activeshroudnode.h"
+#include "activefivegnode.h"
 #include "coincontrol.h"
 #include "consensus/validation.h"
 #include "darksend.h"
 //#include "governance.h"
 #include "init.h"
 #include "instantx.h"
-#include "shroudnode-payments.h"
-#include "shroudnode-sync.h"
-#include "shroudnodeman.h"
+#include "fivegnode-payments.h"
+#include "fivegnode-sync.h"
+#include "fivegnodeman.h"
 #include "script/sign.h"
 #include "txmempool.h"
 #include "util.h"
@@ -33,7 +33,7 @@ std::vector <CAmount> vecPrivateSendDenominations;
 
 void CDarksendPool::ProcessMessage(CNode *pfrom, std::string &strCommand, CDataStream &vRecv) {
     if (fLiteMode) return; // ignore all Index related functionality
-    if (!shroudnodeSync.IsBlockchainSynced()) return;
+    if (!fivegnodeSync.IsBlockchainSynced()) return;
 
     if (strCommand == NetMsgType::DSACCEPT) {
 
@@ -43,8 +43,8 @@ void CDarksendPool::ProcessMessage(CNode *pfrom, std::string &strCommand, CDataS
             return;
         }
 
-        if (!fShroudNode) {
-            LogPrintf("DSACCEPT -- not a Shroudnode!\n");
+        if (!fFivegNode) {
+            LogPrintf("DSACCEPT -- not a Fivegnode!\n");
             PushStatus(pfrom, STATUS_REJECTED, ERR_NOT_A_MN);
             return;
         }
@@ -62,7 +62,7 @@ void CDarksendPool::ProcessMessage(CNode *pfrom, std::string &strCommand, CDataS
 
         LogPrint("privatesend", "DSACCEPT -- nDenom %d (%s)  txCollateral %s", nDenom, GetDenominationsToString(nDenom), txCollateral.ToString());
 
-        CShroudnode *pmn = mnodeman.Find(activeShroudnode.vin);
+        CFivegnode *pmn = mnodeman.Find(activeFivegnode.vin);
         if (pmn == NULL) {
             PushStatus(pfrom, STATUS_REJECTED, ERR_MN_LIST);
             return;
@@ -114,10 +114,10 @@ void CDarksendPool::ProcessMessage(CNode *pfrom, std::string &strCommand, CDataS
 
         if (dsq.IsExpired() || dsq.nTime > GetTime() + PRIVATESEND_QUEUE_TIMEOUT) return;
 
-        CShroudnode *pmn = mnodeman.Find(dsq.vin);
+        CFivegnode *pmn = mnodeman.Find(dsq.vin);
         if (pmn == NULL) return;
 
-        if (!dsq.CheckSignature(pmn->pubKeyShroudnode)) {
+        if (!dsq.CheckSignature(pmn->pubKeyFivegnode)) {
             // we probably have outdated info
             mnodeman.AskForMN(pfrom, dsq.vin);
             return;
@@ -125,14 +125,14 @@ void CDarksendPool::ProcessMessage(CNode *pfrom, std::string &strCommand, CDataS
 
         // if the queue is ready, submit if we can
         if (dsq.fReady) {
-            if (!pSubmittedToShroudnode) return;
-            if ((CNetAddr) pSubmittedToShroudnode->addr != (CNetAddr) pmn->addr) {
-                LogPrintf("DSQUEUE -- message doesn't match current Shroudnode: pSubmittedToShroudnode=%s, addr=%s\n", pSubmittedToShroudnode->addr.ToString(), pmn->addr.ToString());
+            if (!pSubmittedToFivegnode) return;
+            if ((CNetAddr) pSubmittedToFivegnode->addr != (CNetAddr) pmn->addr) {
+                LogPrintf("DSQUEUE -- message doesn't match current Fivegnode: pSubmittedToFivegnode=%s, addr=%s\n", pSubmittedToFivegnode->addr.ToString(), pmn->addr.ToString());
                 return;
             }
 
             if (nState == POOL_STATE_QUEUE) {
-                LogPrint("privatesend", "DSQUEUE -- PrivateSend queue (%s) is ready on shroudnode %s\n", dsq.ToString(), pmn->addr.ToString());
+                LogPrint("privatesend", "DSQUEUE -- PrivateSend queue (%s) is ready on fivegnode %s\n", dsq.ToString(), pmn->addr.ToString());
                 SubmitDenominate();
             }
         } else {
@@ -140,7 +140,7 @@ void CDarksendPool::ProcessMessage(CNode *pfrom, std::string &strCommand, CDataS
             q, vecDarksendQueue) {
                 if (q.vin == dsq.vin) {
                     // no way same mn can send another "not yet ready" dsq this soon
-                    LogPrint("privatesend", "DSQUEUE -- Shroudnode %s is sending WAY too many dsq messages\n", pmn->addr.ToString());
+                    LogPrint("privatesend", "DSQUEUE -- Fivegnode %s is sending WAY too many dsq messages\n", pmn->addr.ToString());
                     return;
                 }
             }
@@ -149,15 +149,15 @@ void CDarksendPool::ProcessMessage(CNode *pfrom, std::string &strCommand, CDataS
             LogPrint("privatesend", "DSQUEUE -- nLastDsq: %d  threshold: %d  nDsqCount: %d\n", pmn->nLastDsq, nThreshold, mnodeman.nDsqCount);
             //don't allow a few nodes to dominate the queuing process
             if (pmn->nLastDsq != 0 && nThreshold > mnodeman.nDsqCount) {
-                LogPrint("privatesend", "DSQUEUE -- Shroudnode %s is sending too many dsq messages\n", pmn->addr.ToString());
+                LogPrint("privatesend", "DSQUEUE -- Fivegnode %s is sending too many dsq messages\n", pmn->addr.ToString());
                 return;
             }
             mnodeman.nDsqCount++;
             pmn->nLastDsq = mnodeman.nDsqCount;
             pmn->fAllowMixingTx = true;
 
-            LogPrint("privatesend", "DSQUEUE -- new PrivateSend queue (%s) from shroudnode %s\n", dsq.ToString(), pmn->addr.ToString());
-            if (pSubmittedToShroudnode && pSubmittedToShroudnode->vin.prevout == dsq.vin.prevout) {
+            LogPrint("privatesend", "DSQUEUE -- new PrivateSend queue (%s) from fivegnode %s\n", dsq.ToString(), pmn->addr.ToString());
+            if (pSubmittedToFivegnode && pSubmittedToFivegnode->vin.prevout == dsq.vin.prevout) {
                 dsq.fTried = true;
             }
             vecDarksendQueue.push_back(dsq);
@@ -172,8 +172,8 @@ void CDarksendPool::ProcessMessage(CNode *pfrom, std::string &strCommand, CDataS
             return;
         }
 
-        if (!fShroudNode) {
-            LogPrintf("DSVIN -- not a Shroudnode!\n");
+        if (!fFivegNode) {
+            LogPrintf("DSVIN -- not a Fivegnode!\n");
             PushStatus(pfrom, STATUS_REJECTED, ERR_NOT_A_MN);
             return;
         }
@@ -283,14 +283,14 @@ void CDarksendPool::ProcessMessage(CNode *pfrom, std::string &strCommand, CDataS
             return;
         }
 
-        if (fShroudNode) {
-            // LogPrintf("DSSTATUSUPDATE -- Can't run on a Shroudnode!\n");
+        if (fFivegNode) {
+            // LogPrintf("DSSTATUSUPDATE -- Can't run on a Fivegnode!\n");
             return;
         }
 
-        if (!pSubmittedToShroudnode) return;
-        if ((CNetAddr) pSubmittedToShroudnode->addr != (CNetAddr) pfrom->addr) {
-            //LogPrintf("DSSTATUSUPDATE -- message doesn't match current Shroudnode: pSubmittedToShroudnode %s addr %s\n", pSubmittedToShroudnode->addr.ToString(), pfrom->addr.ToString());
+        if (!pSubmittedToFivegnode) return;
+        if ((CNetAddr) pSubmittedToFivegnode->addr != (CNetAddr) pfrom->addr) {
+            //LogPrintf("DSSTATUSUPDATE -- message doesn't match current Fivegnode: pSubmittedToFivegnode %s addr %s\n", pSubmittedToFivegnode->addr.ToString(), pfrom->addr.ToString());
             return;
         }
 
@@ -332,8 +332,8 @@ void CDarksendPool::ProcessMessage(CNode *pfrom, std::string &strCommand, CDataS
             return;
         }
 
-        if (!fShroudNode) {
-            LogPrintf("DSSIGNFINALTX -- not a Shroudnode!\n");
+        if (!fFivegNode) {
+            LogPrintf("DSSIGNFINALTX -- not a Fivegnode!\n");
             return;
         }
 
@@ -365,14 +365,14 @@ void CDarksendPool::ProcessMessage(CNode *pfrom, std::string &strCommand, CDataS
             return;
         }
 
-        if (fShroudNode) {
-            // LogPrintf("DSFINALTX -- Can't run on a Shroudnode!\n");
+        if (fFivegNode) {
+            // LogPrintf("DSFINALTX -- Can't run on a Fivegnode!\n");
             return;
         }
 
-        if (!pSubmittedToShroudnode) return;
-        if ((CNetAddr) pSubmittedToShroudnode->addr != (CNetAddr) pfrom->addr) {
-            //LogPrintf("DSFINALTX -- message doesn't match current Shroudnode: pSubmittedToShroudnode %s addr %s\n", pSubmittedToShroudnode->addr.ToString(), pfrom->addr.ToString());
+        if (!pSubmittedToFivegnode) return;
+        if ((CNetAddr) pSubmittedToFivegnode->addr != (CNetAddr) pfrom->addr) {
+            //LogPrintf("DSFINALTX -- message doesn't match current Fivegnode: pSubmittedToFivegnode %s addr %s\n", pSubmittedToFivegnode->addr.ToString(), pfrom->addr.ToString());
             return;
         }
 
@@ -397,14 +397,14 @@ void CDarksendPool::ProcessMessage(CNode *pfrom, std::string &strCommand, CDataS
             return;
         }
 
-        if (fShroudNode) {
-            // LogPrintf("DSCOMPLETE -- Can't run on a Shroudnode!\n");
+        if (fFivegNode) {
+            // LogPrintf("DSCOMPLETE -- Can't run on a Fivegnode!\n");
             return;
         }
 
-        if (!pSubmittedToShroudnode) return;
-        if ((CNetAddr) pSubmittedToShroudnode->addr != (CNetAddr) pfrom->addr) {
-            LogPrint("privatesend", "DSCOMPLETE -- message doesn't match current Shroudnode: pSubmittedToShroudnode=%s  addr=%s\n", pSubmittedToShroudnode->addr.ToString(), pfrom->addr.ToString());
+        if (!pSubmittedToFivegnode) return;
+        if ((CNetAddr) pSubmittedToFivegnode->addr != (CNetAddr) pfrom->addr) {
+            LogPrint("privatesend", "DSCOMPLETE -- message doesn't match current Fivegnode: pSubmittedToFivegnode=%s  addr=%s\n", pSubmittedToFivegnode->addr.ToString(), pfrom->addr.ToString());
             return;
         }
 
@@ -454,7 +454,7 @@ void CDarksendPool::InitDenominations() {
 void CDarksendPool::ResetPool() {
     nCachedLastSuccessBlock = 0;
     txMyCollateral = CMutableTransaction();
-    vecShroudnodesUsed.clear();
+    vecFivegnodesUsed.clear();
     UnlockCoins();
     SetNull();
 }
@@ -466,7 +466,7 @@ void CDarksendPool::SetNull() {
     // Client side
     nEntriesCount = 0;
     fLastEntryAccepted = false;
-    pSubmittedToShroudnode = NULL;
+    pSubmittedToFivegnode = NULL;
 
     // Both sides
     nState = POOL_STATE_IDLE;
@@ -521,7 +521,7 @@ std::string CDarksendPool::GetStatus() {
     nStatusMessageProgress += 10;
     std::string strSuffix = "";
 
-    if ((pCurrentBlockIndex && pCurrentBlockIndex->nHeight - nCachedLastSuccessBlock < nMinBlockSpacing) || !shroudnodeSync.GetBlockchainSynced())
+    if ((pCurrentBlockIndex && pCurrentBlockIndex->nHeight - nCachedLastSuccessBlock < nMinBlockSpacing) || !fivegnodeSync.GetBlockchainSynced())
         return strAutoDenomResult;
 
     switch (nState) {
@@ -531,7 +531,7 @@ std::string CDarksendPool::GetStatus() {
             if (nStatusMessageProgress % 70 <= 30) strSuffix = ".";
             else if (nStatusMessageProgress % 70 <= 50) strSuffix = "..";
             else if (nStatusMessageProgress % 70 <= 70) strSuffix = "...";
-            return strprintf(_("Submitted to shroudnode, waiting in queue %s"), strSuffix);;
+            return strprintf(_("Submitted to fivegnode, waiting in queue %s"), strSuffix);;
         case POOL_STATE_ACCEPTING_ENTRIES:
             if (nEntriesCount == 0) {
                 nStatusMessageProgress = 0;
@@ -543,11 +543,11 @@ std::string CDarksendPool::GetStatus() {
                 }
                 return _("PrivateSend request complete:") + " " + _("Your transaction was accepted into the pool!");
             } else {
-                if (nStatusMessageProgress % 70 <= 40) return strprintf(_("Submitted following entries to shroudnode: %u / %d"), nEntriesCount, GetMaxPoolTransactions());
+                if (nStatusMessageProgress % 70 <= 40) return strprintf(_("Submitted following entries to fivegnode: %u / %d"), nEntriesCount, GetMaxPoolTransactions());
                 else if (nStatusMessageProgress % 70 <= 50) strSuffix = ".";
                 else if (nStatusMessageProgress % 70 <= 60) strSuffix = "..";
                 else if (nStatusMessageProgress % 70 <= 70) strSuffix = "...";
-                return strprintf(_("Submitted to shroudnode, waiting for more entries ( %u / %d ) %s"), nEntriesCount, GetMaxPoolTransactions(), strSuffix);
+                return strprintf(_("Submitted to fivegnode, waiting for more entries ( %u / %d ) %s"), nEntriesCount, GetMaxPoolTransactions(), strSuffix);
             }
         case POOL_STATE_SIGNING:
             if (nStatusMessageProgress % 70 <= 40) return _("Found enough users, signing ...");
@@ -565,10 +565,10 @@ std::string CDarksendPool::GetStatus() {
 }
 
 //
-// Check the mixing progress and send client updates if a Shroudnode
+// Check the mixing progress and send client updates if a Fivegnode
 //
 void CDarksendPool::CheckPool() {
-    if (fShroudNode) {
+    if (fFivegNode) {
         LogPrint("privatesend", "CDarksendPool::CheckPool -- entries count %lu\n", GetEntriesCount());
 
         // If entries are full, create finalized transaction
@@ -623,7 +623,7 @@ void CDarksendPool::CreateFinalTransaction() {
 }
 
 void CDarksendPool::CommitFinalTransaction() {
-    if (!fShroudNode) return; // check and relay final tx only on shroudnode
+    if (!fFivegNode) return; // check and relay final tx only on fivegnode
 
     CTransaction finalTransaction = CTransaction(finalMutableTransaction);
     uint256 hashTx = finalTransaction.GetHash();
@@ -646,9 +646,9 @@ void CDarksendPool::CommitFinalTransaction() {
 
     LogPrintf("CDarksendPool::CommitFinalTransaction -- CREATING DSTX\n");
 
-    // create and sign shroudnode dstx transaction
+    // create and sign fivegnode dstx transaction
     if (!mapDarksendBroadcastTxes.count(hashTx)) {
-        CDarksendBroadcastTx dstx(finalTransaction, activeShroudnode.vin, GetAdjustedTime());
+        CDarksendBroadcastTx dstx(finalTransaction, activeFivegnode.vin, GetAdjustedTime());
         dstx.Sign();
         mapDarksendBroadcastTxes.insert(std::make_pair(hashTx, dstx));
     }
@@ -677,12 +677,12 @@ void CDarksendPool::CommitFinalTransaction() {
 // a client submits a transaction then refused to sign, there must be a cost. Otherwise they
 // would be able to do this over and over again and bring the mixing to a hault.
 //
-// How does this work? Messages to Shroudnodes come in via NetMsgType::DSVIN, these require a valid collateral
-// transaction for the client to be able to enter the pool. This transaction is kept by the Shroudnode
+// How does this work? Messages to Fivegnodes come in via NetMsgType::DSVIN, these require a valid collateral
+// transaction for the client to be able to enter the pool. This transaction is kept by the Fivegnode
 // until the transaction is either complete or fails.
 //
 void CDarksendPool::ChargeFees() {
-    if (!fShroudNode) return;
+    if (!fFivegNode) return;
 
     //we don't need to charge collateral for every offence.
     if (GetRandInt(100) > 33) return;
@@ -762,7 +762,7 @@ void CDarksendPool::ChargeFees() {
     adds up to a cost of 0.001DRK per transaction on average.
 */
 void CDarksendPool::ChargeRandomFees() {
-    if (!fShroudNode) return;
+    if (!fFivegNode) return;
 
     LOCK(cs_main);
 
@@ -802,10 +802,10 @@ void CDarksendPool::CheckTimeout() {
         }
     }
 
-    if (!fEnablePrivateSend && !fShroudNode) return;
+    if (!fEnablePrivateSend && !fFivegNode) return;
 
     // catching hanging sessions
-    if (!fShroudNode) {
+    if (!fFivegNode) {
         switch (nState) {
             case POOL_STATE_ERROR:
                 LogPrint("privatesend", "CDarksendPool::CheckTimeout -- Pool error -- Running CheckPool\n");
@@ -820,7 +820,7 @@ void CDarksendPool::CheckTimeout() {
         }
     }
 
-    int nLagTime = fShroudNode ? 0 : 10000; // if we're the client, give the server a few extra seconds before resetting.
+    int nLagTime = fFivegNode ? 0 : 10000; // if we're the client, give the server a few extra seconds before resetting.
     int nTimeout = (nState == POOL_STATE_SIGNING) ? PRIVATESEND_SIGNING_TIMEOUT : PRIVATESEND_QUEUE_TIMEOUT;
     bool fTimeout = GetTimeMillis() - nTimeLastSuccessfulStep >= nTimeout * 1000 + nLagTime;
 
@@ -841,12 +841,12 @@ void CDarksendPool::CheckTimeout() {
     which is the active state right before merging the transaction
 */
 void CDarksendPool::CheckForCompleteQueue() {
-    if (!fEnablePrivateSend && !fShroudNode) return;
+    if (!fEnablePrivateSend && !fFivegNode) return;
 
     if (nState == POOL_STATE_QUEUE && IsSessionReady()) {
         SetState(POOL_STATE_ACCEPTING_ENTRIES);
 
-        CDarksendQueue dsq(nSessionDenom, activeShroudnode.vin, GetTime(), true);
+        CDarksendQueue dsq(nSessionDenom, activeFivegnode.vin, GetTime(), true);
         LogPrint("privatesend", "CDarksendPool::CheckForCompleteQueue -- queue is ready, signing and relaying (%s)\n", dsq.ToString());
         dsq.Sign();
         dsq.Relay();
@@ -960,7 +960,7 @@ bool CDarksendPool::IsCollateralValid(const CTransaction &txCollateral) {
 // Add a clients transaction to the pool
 //
 bool CDarksendPool::AddEntry(const CDarkSendEntry &entryNew, PoolMessage &nMessageIDRet) {
-    if (!fShroudNode) return false;
+    if (!fFivegNode) return false;
 
     BOOST_FOREACH(CTxIn
     txin, entryNew.vecTxDSIn) {
@@ -1060,12 +1060,12 @@ bool CDarksendPool::IsSignaturesComplete() {
 }
 
 //
-// Execute a mixing denomination via a Shroudnode.
+// Execute a mixing denomination via a Fivegnode.
 // This is only ran from clients
 //
 bool CDarksendPool::SendDenominate(const std::vector <CTxIn> &vecTxIn, const std::vector <CTxOut> &vecTxOut) {
-    if (fShroudNode) {
-        LogPrintf("CDarksendPool::SendDenominate -- PrivateSend from a Shroudnode is not supported currently.\n");
+    if (fFivegNode) {
+        LogPrintf("CDarksendPool::SendDenominate -- PrivateSend from a Fivegnode is not supported currently.\n");
         return false;
     }
 
@@ -1083,9 +1083,9 @@ bool CDarksendPool::SendDenominate(const std::vector <CTxIn> &vecTxIn, const std
     txin, vecTxIn)
     vecOutPointLocked.push_back(txin.prevout);
 
-    // we should already be connected to a Shroudnode
+    // we should already be connected to a Fivegnode
     if (!nSessionID) {
-        LogPrintf("CDarksendPool::SendDenominate -- No Shroudnode has been selected yet.\n");
+        LogPrintf("CDarksendPool::SendDenominate -- No Fivegnode has been selected yet.\n");
         UnlockCoins();
         SetNull();
         return false;
@@ -1142,18 +1142,18 @@ bool CDarksendPool::SendDenominate(const std::vector <CTxIn> &vecTxIn, const std
     return true;
 }
 
-// Incoming message from Shroudnode updating the progress of mixing
+// Incoming message from Fivegnode updating the progress of mixing
 bool CDarksendPool::CheckPoolStateUpdate(PoolState nStateNew, int nEntriesCountNew, PoolStatusUpdate nStatusUpdate, PoolMessage nMessageID, int nSessionIDNew) {
-    if (fShroudNode) return false;
+    if (fFivegNode) return false;
 
     // do not update state when mixing client state is one of these
     if (nState == POOL_STATE_IDLE || nState == POOL_STATE_ERROR || nState == POOL_STATE_SUCCESS) return false;
 
-    strAutoDenomResult = _("Shroudnode:") + " " + GetMessageByID(nMessageID);
+    strAutoDenomResult = _("Fivegnode:") + " " + GetMessageByID(nMessageID);
 
     // if rejected at any state
     if (nStatusUpdate == STATUS_REJECTED) {
-        LogPrintf("CDarksendPool::CheckPoolStateUpdate -- entry is rejected by Shroudnode\n");
+        LogPrintf("CDarksendPool::CheckPoolStateUpdate -- entry is rejected by Fivegnode\n");
         UnlockCoins();
         SetNull();
         SetState(POOL_STATE_ERROR);
@@ -1182,12 +1182,12 @@ bool CDarksendPool::CheckPoolStateUpdate(PoolState nStateNew, int nEntriesCountN
 }
 
 //
-// After we receive the finalized transaction from the Shroudnode, we must
+// After we receive the finalized transaction from the Fivegnode, we must
 // check it to make sure it's what we want, then sign it if we agree.
 // If we refuse to sign, it's possible we'll be charged collateral
 //
 bool CDarksendPool::SignFinalTransaction(const CTransaction &finalTransactionNew, CNode *pnode) {
-    if (fShroudNode || pnode == NULL) return false;
+    if (fFivegNode || pnode == NULL) return false;
 
     finalMutableTransaction = finalTransactionNew;
     LogPrintf("CDarksendPool::SignFinalTransaction -- finalMutableTransaction=%s", finalMutableTransaction.ToString());
@@ -1265,8 +1265,8 @@ bool CDarksendPool::SignFinalTransaction(const CTransaction &finalTransactionNew
         return false;
     }
 
-    // push all of our signatures to the Shroudnode
-    LogPrintf("CDarksendPool::SignFinalTransaction -- pushing sigs to the shroudnode, finalMutableTransaction=%s", finalMutableTransaction.ToString());
+    // push all of our signatures to the Fivegnode
+    LogPrintf("CDarksendPool::SignFinalTransaction -- pushing sigs to the fivegnode, finalMutableTransaction=%s", finalMutableTransaction.ToString());
     pnode->PushMessage(NetMsgType::DSSIGNFINALTX, sigs);
     SetState(POOL_STATE_SIGNING);
     nTimeLastSuccessfulStep = GetTimeMillis();
@@ -1287,7 +1287,7 @@ void CDarksendPool::NewBlock() {
 
 // mixing transaction was completed (failed or successful)
 void CDarksendPool::CompletedTransaction(PoolMessage nMessageID) {
-    if (fShroudNode) return;
+    if (fFivegNode) return;
 
     if (nMessageID == MSG_SUCCESS) {
         LogPrintf("CompletedTransaction -- success\n");
@@ -1304,11 +1304,11 @@ void CDarksendPool::CompletedTransaction(PoolMessage nMessageID) {
 // Passively run mixing in the background to anonymize funds based on the given configuration.
 //
 bool CDarksendPool::DoAutomaticDenominating(bool fDryRun) {
-    if (!fEnablePrivateSend || fShroudNode || !pCurrentBlockIndex) return false;
+    if (!fEnablePrivateSend || fFivegNode || !pCurrentBlockIndex) return false;
     if (!pwalletMain || pwalletMain->IsLocked(true)) return false;
     if (nState != POOL_STATE_IDLE) return false;
 
-    if (!shroudnodeSync.IsShroudnodeListSynced()) {
+    if (!fivegnodeSync.IsFivegnodeListSynced()) {
         strAutoDenomResult = _("Can't mix while sync in progress.");
         return false;
     }
@@ -1396,8 +1396,8 @@ bool CDarksendPool::DoAutomaticDenominating(bool fDryRun) {
     }
 
     if (mnodeman.size() == 0) {
-        LogPrint("privatesend", "CDarksendPool::DoAutomaticDenominating -- No Shroudnodes detected\n");
-        strAutoDenomResult = _("No Shroudnodes detected.");
+        LogPrint("privatesend", "CDarksendPool::DoAutomaticDenominating -- No Fivegnodes detected\n");
+        strAutoDenomResult = _("No Fivegnodes detected.");
         return false;
     }
 
@@ -1451,7 +1451,7 @@ bool CDarksendPool::DoAutomaticDenominating(bool fDryRun) {
         return false;
     }
 
-    // Initial phase, find a Shroudnode
+    // Initial phase, find a Fivegnode
     // Clean if there is anything left from previous session
     UnlockCoins();
     SetNull();
@@ -1482,14 +1482,14 @@ bool CDarksendPool::DoAutomaticDenominating(bool fDryRun) {
 
     int nMnCountEnabled = mnodeman.CountEnabled(MIN_PRIVATESEND_PEER_PROTO_VERSION);
 
-    // If we've used 90% of the Shroudnode list then drop the oldest first ~30%
+    // If we've used 90% of the Fivegnode list then drop the oldest first ~30%
     int nThreshold_high = nMnCountEnabled * 0.9;
     int nThreshold_low = nThreshold_high * 0.7;
-    LogPrint("privatesend", "Checking vecShroudnodesUsed: size: %d, threshold: %d\n", (int) vecShroudnodesUsed.size(), nThreshold_high);
+    LogPrint("privatesend", "Checking vecFivegnodesUsed: size: %d, threshold: %d\n", (int) vecFivegnodesUsed.size(), nThreshold_high);
 
-    if ((int) vecShroudnodesUsed.size() > nThreshold_high) {
-        vecShroudnodesUsed.erase(vecShroudnodesUsed.begin(), vecShroudnodesUsed.begin() + vecShroudnodesUsed.size() - nThreshold_low);
-        LogPrint("privatesend", "  vecShroudnodesUsed: new size: %d, threshold: %d\n", (int) vecShroudnodesUsed.size(), nThreshold_high);
+    if ((int) vecFivegnodesUsed.size() > nThreshold_high) {
+        vecFivegnodesUsed.erase(vecFivegnodesUsed.begin(), vecFivegnodesUsed.begin() + vecFivegnodesUsed.size() - nThreshold_low);
+        LogPrint("privatesend", "  vecFivegnodesUsed: new size: %d, threshold: %d\n", (int) vecFivegnodesUsed.size(), nThreshold_high);
     }
 
     bool fUseQueue = GetRandInt(100) > 33;
@@ -1505,9 +1505,9 @@ bool CDarksendPool::DoAutomaticDenominating(bool fDryRun) {
 
             if (dsq.IsExpired()) continue;
 
-            CShroudnode *pmn = mnodeman.Find(dsq.vin);
+            CFivegnode *pmn = mnodeman.Find(dsq.vin);
             if (pmn == NULL) {
-                LogPrintf("CDarksendPool::DoAutomaticDenominating -- dsq shroudnode is not in shroudnode list, shroudnode=%s\n", dsq.vin.prevout.ToStringShort());
+                LogPrintf("CDarksendPool::DoAutomaticDenominating -- dsq fivegnode is not in fivegnode list, fivegnode=%s\n", dsq.vin.prevout.ToStringShort());
                 continue;
             }
 
@@ -1535,7 +1535,7 @@ bool CDarksendPool::DoAutomaticDenominating(bool fDryRun) {
                 continue;
             }
 
-            vecShroudnodesUsed.push_back(dsq.vin);
+            vecFivegnodesUsed.push_back(dsq.vin);
 
             CNode *pnodeFound = NULL;
             {
@@ -1550,11 +1550,11 @@ bool CDarksendPool::DoAutomaticDenominating(bool fDryRun) {
                 }
             }
 
-            LogPrintf("CDarksendPool::DoAutomaticDenominating -- attempt to connect to shroudnode from queue, addr=%s\n", pmn->addr.ToString());
-            // connect to Shroudnode and submit the queue request
-            CNode *pnode = (pnodeFound && pnodeFound->fShroudnode) ? pnodeFound : ConnectNode(CAddress(pmn->addr, NODE_NETWORK), NULL, false, true);
+            LogPrintf("CDarksendPool::DoAutomaticDenominating -- attempt to connect to fivegnode from queue, addr=%s\n", pmn->addr.ToString());
+            // connect to Fivegnode and submit the queue request
+            CNode *pnode = (pnodeFound && pnodeFound->fFivegnode) ? pnodeFound : ConnectNode(CAddress(pmn->addr, NODE_NETWORK), NULL, false, true);
             if (pnode) {
-                pSubmittedToShroudnode = pmn;
+                pSubmittedToFivegnode = pmn;
                 nSessionDenom = dsq.nDenom;
 
                 pnode->PushMessage(NetMsgType::DSACCEPT, nSessionDenom, txMyCollateral);
@@ -1569,7 +1569,7 @@ bool CDarksendPool::DoAutomaticDenominating(bool fDryRun) {
                 return true;
             } else {
                 LogPrintf("CDarksendPool::DoAutomaticDenominating -- can't connect, addr=%s\n", pmn->addr.ToString());
-                strAutoDenomResult = _("Error connecting to Shroudnode.");
+                strAutoDenomResult = _("Error connecting to Fivegnode.");
                 continue;
             }
         }
@@ -1592,17 +1592,17 @@ bool CDarksendPool::DoAutomaticDenominating(bool fDryRun) {
 
     // otherwise, try one randomly
     while (nTries < 10) {
-        CShroudnode *pmn = mnodeman.FindRandomNotInVec(vecShroudnodesUsed, MIN_PRIVATESEND_PEER_PROTO_VERSION);
+        CFivegnode *pmn = mnodeman.FindRandomNotInVec(vecFivegnodesUsed, MIN_PRIVATESEND_PEER_PROTO_VERSION);
         if (pmn == NULL) {
-            LogPrintf("CDarksendPool::DoAutomaticDenominating -- Can't find random shroudnode!\n");
-            strAutoDenomResult = _("Can't find random Shroudnode.");
+            LogPrintf("CDarksendPool::DoAutomaticDenominating -- Can't find random fivegnode!\n");
+            strAutoDenomResult = _("Can't find random Fivegnode.");
             return false;
         }
-        vecShroudnodesUsed.push_back(pmn->vin);
+        vecFivegnodesUsed.push_back(pmn->vin);
 
         if (pmn->nLastDsq != 0 && pmn->nLastDsq + nMnCountEnabled / 5 > mnodeman.nDsqCount) {
-            LogPrintf("CDarksendPool::DoAutomaticDenominating -- Too early to mix on this shroudnode!"
-                              " shroudnode=%s  addr=%s  nLastDsq=%d  CountEnabled/5=%d  nDsqCount=%d\n",
+            LogPrintf("CDarksendPool::DoAutomaticDenominating -- Too early to mix on this fivegnode!"
+                              " fivegnode=%s  addr=%s  nLastDsq=%d  CountEnabled/5=%d  nDsqCount=%d\n",
                       pmn->vin.prevout.ToStringShort(), pmn->addr.ToString(), pmn->nLastDsq,
                       nMnCountEnabled / 5, mnodeman.nDsqCount);
             nTries++;
@@ -1623,11 +1623,11 @@ bool CDarksendPool::DoAutomaticDenominating(bool fDryRun) {
             }
         }
 
-        LogPrintf("CDarksendPool::DoAutomaticDenominating -- attempt %d connection to Shroudnode %s\n", nTries, pmn->addr.ToString());
-        CNode *pnode = (pnodeFound && pnodeFound->fShroudnode) ? pnodeFound : ConnectNode(CAddress(pmn->addr, NODE_NETWORK), NULL, false, true);
+        LogPrintf("CDarksendPool::DoAutomaticDenominating -- attempt %d connection to Fivegnode %s\n", nTries, pmn->addr.ToString());
+        CNode *pnode = (pnodeFound && pnodeFound->fFivegnode) ? pnodeFound : ConnectNode(CAddress(pmn->addr, NODE_NETWORK), NULL, false, true);
         if (pnode) {
             LogPrintf("CDarksendPool::DoAutomaticDenominating -- connected, addr=%s\n", pmn->addr.ToString());
-            pSubmittedToShroudnode = pmn;
+            pSubmittedToFivegnode = pmn;
 
             std::vector <CAmount> vecAmounts;
             pwalletMain->ConvertList(vecTxIn, vecAmounts);
@@ -1653,7 +1653,7 @@ bool CDarksendPool::DoAutomaticDenominating(bool fDryRun) {
         }
     }
 
-    strAutoDenomResult = _("No compatible Shroudnode found.");
+    strAutoDenomResult = _("No compatible Fivegnode found.");
     return false;
 }
 
@@ -2041,7 +2041,7 @@ bool CDarksendPool::IsOutputsCompatibleWithSessionDenom(const std::vector <CTxDS
 }
 
 bool CDarksendPool::IsAcceptableDenomAndCollateral(int nDenom, CTransaction txCollateral, PoolMessage &nMessageIDRet) {
-    if (!fShroudNode) return false;
+    if (!fFivegNode) return false;
 
     // is denom even smth legit?
     std::vector<int> vecBits;
@@ -2062,7 +2062,7 @@ bool CDarksendPool::IsAcceptableDenomAndCollateral(int nDenom, CTransaction txCo
 }
 
 bool CDarksendPool::CreateNewSession(int nDenom, CTransaction txCollateral, PoolMessage &nMessageIDRet) {
-    if (!fShroudNode || nSessionID != 0) return false;
+    if (!fFivegNode || nSessionID != 0) return false;
 
     // new session can only be started in idle mode
     if (nState != POOL_STATE_IDLE) {
@@ -2085,7 +2085,7 @@ bool CDarksendPool::CreateNewSession(int nDenom, CTransaction txCollateral, Pool
 
     if (!fUnitTest) {
         //broadcast that I'm accepting entries, only if it's the first entry through
-        CDarksendQueue dsq(nDenom, activeShroudnode.vin, GetTime(), false);
+        CDarksendQueue dsq(nDenom, activeFivegnode.vin, GetTime(), false);
         LogPrint("privatesend", "CDarksendPool::CreateNewSession -- signing and relaying new queue: %s\n", dsq.ToString());
         dsq.Sign();
         dsq.Relay();
@@ -2100,7 +2100,7 @@ bool CDarksendPool::CreateNewSession(int nDenom, CTransaction txCollateral, Pool
 }
 
 bool CDarksendPool::AddUserToExistingSession(int nDenom, CTransaction txCollateral, PoolMessage &nMessageIDRet) {
-    if (!fShroudNode || nSessionID == 0 || IsSessionReady()) return false;
+    if (!fFivegNode || nSessionID == 0 || IsSessionReady()) return false;
 
     if (!IsAcceptableDenomAndCollateral(nDenom, txCollateral, nMessageIDRet)) {
         return false;
@@ -2275,15 +2275,15 @@ std::string CDarksendPool::GetMessageByID(PoolMessage nMessageID) {
         case ERR_MAXIMUM:
             return _("Value more than PrivateSend pool maximum allows.");
         case ERR_MN_LIST:
-            return _("Not in the Shroudnode list.");
+            return _("Not in the Fivegnode list.");
         case ERR_MODE:
             return _("Incompatible mode.");
         case ERR_NON_STANDARD_PUBKEY:
             return _("Non-standard public key detected.");
         case ERR_NOT_A_MN:
-            return _("This is not a Shroudnode.");
+            return _("This is not a Fivegnode.");
         case ERR_QUEUE_FULL:
-            return _("Shroudnode queue is full.");
+            return _("Fivegnode queue is full.");
         case ERR_RECENT:
             return _("Last PrivateSend was too recent.");
         case ERR_SESSION:
@@ -2311,7 +2311,7 @@ bool CDarkSendSigner::IsVinAssociatedWithPubkey(const CTxIn &txin, const CPubKey
     uint256 hash;
     if (GetTransaction(txin.prevout.hash, tx, Params().GetConsensus(), hash, true)) {
         BOOST_FOREACH(CTxOut out, tx.vout)
-        if (out.nValue == SHROUDNODE_COIN_REQUIRED * COIN && out.scriptPubKey == payee) return true;
+        if (out.nValue == FIVEGNODE_COIN_REQUIRED * COIN && out.scriptPubKey == payee) return true;
     }
 
     return false;
@@ -2375,24 +2375,24 @@ bool CDarkSendEntry::AddScriptSig(const CTxIn &txin) {
 }
 
 bool CDarksendQueue::Sign() {
-    if (!fShroudNode) return false;
+    if (!fFivegNode) return false;
 
     std::string strMessage = vin.ToString() + boost::lexical_cast<std::string>(nDenom) + boost::lexical_cast<std::string>(nTime) + boost::lexical_cast<std::string>(fReady);
 
-    if (!darkSendSigner.SignMessage(strMessage, vchSig, activeShroudnode.keyShroudnode)) {
+    if (!darkSendSigner.SignMessage(strMessage, vchSig, activeFivegnode.keyFivegnode)) {
         LogPrintf("CDarksendQueue::Sign -- SignMessage() failed, %s\n", ToString());
         return false;
     }
 
-    return CheckSignature(activeShroudnode.pubKeyShroudnode);
+    return CheckSignature(activeFivegnode.pubKeyFivegnode);
 }
 
-bool CDarksendQueue::CheckSignature(const CPubKey &pubKeyShroudnode) {
+bool CDarksendQueue::CheckSignature(const CPubKey &pubKeyFivegnode) {
     std::string strMessage = vin.ToString() + boost::lexical_cast<std::string>(nDenom) + boost::lexical_cast<std::string>(nTime) + boost::lexical_cast<std::string>(fReady);
     std::string strError = "";
 
-    if (!darkSendSigner.VerifyMessage(pubKeyShroudnode, vchSig, strMessage, strError)) {
-        LogPrintf("CDarksendQueue::CheckSignature -- Got bad Shroudnode queue signature: %s; error: %s\n", ToString(), strError);
+    if (!darkSendSigner.VerifyMessage(pubKeyFivegnode, vchSig, strMessage, strError)) {
+        LogPrintf("CDarksendQueue::CheckSignature -- Got bad Fivegnode queue signature: %s; error: %s\n", ToString(), strError);
         return false;
     }
 
@@ -2410,23 +2410,23 @@ bool CDarksendQueue::Relay() {
 }
 
 bool CDarksendBroadcastTx::Sign() {
-    if (!fShroudNode) return false;
+    if (!fFivegNode) return false;
 
     std::string strMessage = tx.GetHash().ToString() + boost::lexical_cast<std::string>(sigTime);
 
-    if (!darkSendSigner.SignMessage(strMessage, vchSig, activeShroudnode.keyShroudnode)) {
+    if (!darkSendSigner.SignMessage(strMessage, vchSig, activeFivegnode.keyFivegnode)) {
         LogPrintf("CDarksendBroadcastTx::Sign -- SignMessage() failed\n");
         return false;
     }
 
-    return CheckSignature(activeShroudnode.pubKeyShroudnode);
+    return CheckSignature(activeFivegnode.pubKeyFivegnode);
 }
 
-bool CDarksendBroadcastTx::CheckSignature(const CPubKey &pubKeyShroudnode) {
+bool CDarksendBroadcastTx::CheckSignature(const CPubKey &pubKeyFivegnode) {
     std::string strMessage = tx.GetHash().ToString() + boost::lexical_cast<std::string>(sigTime);
     std::string strError = "";
 
-    if (!darkSendSigner.VerifyMessage(pubKeyShroudnode, vchSig, strMessage, strError)) {
+    if (!darkSendSigner.VerifyMessage(pubKeyFivegnode, vchSig, strMessage, strError)) {
         LogPrintf("CDarksendBroadcastTx::CheckSignature -- Got bad dstx signature, error: %s\n", strError);
         return false;
     }
@@ -2442,9 +2442,9 @@ void CDarksendPool::RelayFinalTransaction(const CTransaction &txFinal) {
 }
 
 void CDarksendPool::RelayIn(const CDarkSendEntry &entry) {
-    if (!pSubmittedToShroudnode) return;
+    if (!pSubmittedToFivegnode) return;
 
-    CNode *pnode = FindNode(pSubmittedToShroudnode->addr);
+    CNode *pnode = FindNode(pSubmittedToFivegnode->addr);
     if (pnode != NULL) {
         LogPrintf("CDarksendPool::RelayIn -- found master, relaying message to %s\n", pnode->addr.ToString());
         pnode->PushMessage(NetMsgType::DSVIN, entry);
@@ -2471,8 +2471,8 @@ void CDarksendPool::RelayCompletedTransaction(PoolMessage nMessageID) {
 }
 
 void CDarksendPool::SetState(PoolState nStateNew) {
-    if (fShroudNode && (nStateNew == POOL_STATE_ERROR || nStateNew == POOL_STATE_SUCCESS)) {
-        LogPrint("privatesend", "CDarksendPool::SetState -- Can't set state to ERROR or SUCCESS as a Shroudnode. \n");
+    if (fFivegNode && (nStateNew == POOL_STATE_ERROR || nStateNew == POOL_STATE_SUCCESS)) {
+        LogPrint("privatesend", "CDarksendPool::SetState -- Can't set state to ERROR or SUCCESS as a Fivegnode. \n");
         return;
     }
 
@@ -2484,7 +2484,7 @@ void CDarksendPool::UpdatedBlockTip(const CBlockIndex *pindex) {
     pCurrentBlockIndex = pindex;
     LogPrint("privatesend", "CDarksendPool::UpdatedBlockTip -- pCurrentBlockIndex->nHeight: %d\n", pCurrentBlockIndex->nHeight);
 
-    if (!fLiteMode && shroudnodeSync.IsShroudnodeListSynced()) {
+    if (!fLiteMode && fivegnodeSync.IsFivegnodeListSynced()) {
         NewBlock();
     }
 }
@@ -2507,28 +2507,28 @@ void ThreadCheckDarkSendPool() {
         MilliSleep(1000);
 
         // try to sync from all available nodes, one step at a time
-        shroudnodeSync.ProcessTick();
+        fivegnodeSync.ProcessTick();
 
-        if (shroudnodeSync.GetBlockchainSynced() && !ShutdownRequested()) {
+        if (fivegnodeSync.GetBlockchainSynced() && !ShutdownRequested()) {
 
             nTick++;
 
-            // make sure to check all shroudnodes first
+            // make sure to check all fivegnodes first
             mnodeman.Check();
 
             // check if we should activate or ping every few minutes,
             // slightly postpone first run to give net thread a chance to connect to some peers
-            if (nTick % SHROUDNODE_MIN_MNP_SECONDS == 15)
-                activeShroudnode.ManageState();
+            if (nTick % FIVEGNODE_MIN_MNP_SECONDS == 15)
+                activeFivegnode.ManageState();
 
             if (nTick % 60 == 0) {
-                mnodeman.ProcessShroudnodeConnections();
+                mnodeman.ProcessFivegnodeConnections();
                 mnodeman.CheckAndRemove();
                 mnpayments.CheckAndRemove();
                 instantsend.CheckAndRemove();
-                GetMainSignals().NotifyShroudnodeList();
+                GetMainSignals().NotifyFivegnodeList();
             }
-            if (fShroudNode && (nTick % (60 * 5) == 0)) {
+            if (fFivegNode && (nTick % (60 * 5) == 0)) {
                 mnodeman.DoFullVerificationStep();
             }
 

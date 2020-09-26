@@ -2,12 +2,12 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "activeshroudnode.h"
+#include "activefivegnode.h"
 #include "validationinterface.h"
-#include "shroudnodeman.h"
+#include "fivegnodeman.h"
 #include "univalue.h"
-#include "shroudnode-sync.h"
-#include "shroudnodeconfig.h"
+#include "fivegnode-sync.h"
+#include "fivegnodeconfig.h"
 #include "client-api/server.h"
 #include "client-api/protocol.h"
 #include <client-api/wallet.h>
@@ -15,7 +15,7 @@
 
 using namespace std;
 
-bool GetShroudnodePayeeAddress(const std::string& txHash, const std::string& n, CBitcoinAddress& address){
+bool GetFivegnodePayeeAddress(const std::string& txHash, const std::string& n, CBitcoinAddress& address){
 
     const CWalletTx* wtx = pwalletMain->GetWalletTx(uint256S(txHash));
     if(wtx==NULL)
@@ -31,7 +31,7 @@ bool GetShroudnodePayeeAddress(const std::string& txHash, const std::string& n, 
     return true;
 }
 
-UniValue shroudnodekey(Type type, const UniValue& data, const UniValue& auth, bool fHelp){
+UniValue fivegnodekey(Type type, const UniValue& data, const UniValue& auth, bool fHelp){
 
     switch(type){
         case Update: {
@@ -51,7 +51,7 @@ UniValue shroudnodekey(Type type, const UniValue& data, const UniValue& auth, bo
     return true;
 }
 
-UniValue shroudnodecontrol(Type type, const UniValue& data, const UniValue& auth, bool fHelp){
+UniValue fivegnodecontrol(Type type, const UniValue& data, const UniValue& auth, bool fHelp){
 
     switch(type){
         case Update: {
@@ -83,24 +83,24 @@ UniValue shroudnodecontrol(Type type, const UniValue& data, const UniValue& auth
                 UniValue status(UniValue::VOBJ);
                 status.push_back(Pair("alias", alias));
 
-                BOOST_FOREACH(CShroudnodeConfig::CShroudnodeEntry mne, shroudnodeConfig.getEntries()) {
+                BOOST_FOREACH(CFivegnodeConfig::CFivegnodeEntry mne, fivegnodeConfig.getEntries()) {
                     if (mne.getAlias() == alias) {
                         fFound = true;
                         std::string strError;
-                        CShroudnodeBroadcast mnb;
+                        CFivegnodeBroadcast mnb;
 
-                        bool fResult = CShroudnodeBroadcast::Create(mne.getIp(), mne.getPrivKey(), mne.getTxHash(),
+                        bool fResult = CFivegnodeBroadcast::Create(mne.getIp(), mne.getPrivKey(), mne.getTxHash(),
                                                                     mne.getOutputIndex(), strError, mnb);
                         status.push_back(Pair("success", fResult));
                         if (fResult) {
                             nSuccessful++;
-                            mnodeman.UpdateShroudnodeList(mnb);
-                            mnb.RelayShroudNode();
+                            mnodeman.UpdateFivegnodeList(mnb);
+                            mnb.RelayFivegNode();
                         } else {
                             nFailed++;
                             status.push_back(Pair("info", strError));
                         }
-                        mnodeman.NotifyShroudnodeUpdates();
+                        mnodeman.NotifyFivegnodeUpdates();
                         break;
                     }
                 }
@@ -120,21 +120,21 @@ UniValue shroudnodecontrol(Type type, const UniValue& data, const UniValue& auth
                     EnsureWalletIsUnlocked();
                 }
 
-                if ((method == "start-missing") && !shroudnodeSync.IsShroudnodeListSynced()) {
+                if ((method == "start-missing") && !fivegnodeSync.IsFivegnodeListSynced()) {
                     throw JSONAPIError(API_CLIENT_IN_INITIAL_DOWNLOAD,
-                                       "You can't use this command until shroudnode list is synced");
+                                       "You can't use this command until fivegnode list is synced");
                 }
 
-                BOOST_FOREACH(CShroudnodeConfig::CShroudnodeEntry mne, shroudnodeConfig.getEntries()) {
+                BOOST_FOREACH(CFivegnodeConfig::CFivegnodeEntry mne, fivegnodeConfig.getEntries()) {
                     std::string strError;
 
                     CTxIn vin = CTxIn(uint256S(mne.getTxHash()), uint32_t(atoi(mne.getOutputIndex().c_str())));
-                    CShroudnode *pmn = mnodeman.Find(vin);
-                    CShroudnodeBroadcast mnb;
+                    CFivegnode *pmn = mnodeman.Find(vin);
+                    CFivegnodeBroadcast mnb;
 
                     if (method == "start-missing" && pmn) continue;
 
-                    bool fResult = CShroudnodeBroadcast::Create(mne.getIp(), mne.getPrivKey(), mne.getTxHash(),
+                    bool fResult = CFivegnodeBroadcast::Create(mne.getIp(), mne.getPrivKey(), mne.getTxHash(),
                                                                 mne.getOutputIndex(), strError, mnb);
 
                     UniValue status(UniValue::VOBJ);
@@ -143,8 +143,8 @@ UniValue shroudnodecontrol(Type type, const UniValue& data, const UniValue& auth
 
                     if (fResult) {
                         nSuccessful++;
-                        mnodeman.UpdateShroudnodeList(mnb);
-                        mnb.RelayShroudNode();
+                        mnodeman.UpdateFivegnodeList(mnb);
+                        mnb.RelayFivegNode();
                     } else {
                         nFailed++;
                         status.push_back(Pair("info", strError));
@@ -152,7 +152,7 @@ UniValue shroudnodecontrol(Type type, const UniValue& data, const UniValue& auth
 
                     detail.push_back(Pair("status", status));
                 }
-                mnodeman.NotifyShroudnodeUpdates();
+                mnodeman.NotifyFivegnodeUpdates();
 
             }
 
@@ -180,7 +180,7 @@ UniValue shroudnodecontrol(Type type, const UniValue& data, const UniValue& auth
     return true;
 }
 
-UniValue shroudnodelist(Type type, const UniValue& data, const UniValue& auth, bool fHelp){
+UniValue fivegnodelist(Type type, const UniValue& data, const UniValue& auth, bool fHelp){
 
     switch(type){
         case Initial: {
@@ -188,18 +188,18 @@ UniValue shroudnodelist(Type type, const UniValue& data, const UniValue& auth, b
             UniValue nodes(UniValue::VOBJ);
 
             int fIndex = 0;
-            BOOST_FOREACH(CShroudnodeConfig::CShroudnodeEntry mne, shroudnodeConfig.getEntries()) {
+            BOOST_FOREACH(CFivegnodeConfig::CFivegnodeEntry mne, fivegnodeConfig.getEntries()) {
                 const std::string& txHash = mne.getTxHash();
                 const std::string& outputIndex = mne.getOutputIndex();
                 CBitcoinAddress address;
                 std::string key = txHash + outputIndex;
-                CShroudnode* mn = mnodeman.Find(txHash, outputIndex);
+                CFivegnode* mn = mnodeman.Find(txHash, outputIndex);
 
                 UniValue node(UniValue::VOBJ);
                 if(mn==NULL){
                     node = mne.ToJSON();
                     node.push_back(Pair("position", fIndex++));
-                    if(GetShroudnodePayeeAddress(txHash, outputIndex, address))
+                    if(GetFivegnodePayeeAddress(txHash, outputIndex, address))
                         node.push_back(Pair("payeeAddress", address.ToString()));
                 }else{
                     node = mn->ToJSON();
@@ -208,29 +208,29 @@ UniValue shroudnodelist(Type type, const UniValue& data, const UniValue& auth, b
             }
 
             /*
-             * If the Shroudnode list is not yet synced, return the wallet Shroudnodes, as described in shroudnode.conf
-             * if it is, process all Shroudnodes, and return along with wallet Shroudnodes.
-             * (if the wallet Shroudnode has started, it will be replaced in the synced list).
+             * If the Fivegnode list is not yet synced, return the wallet Fivegnodes, as described in fivegnode.conf
+             * if it is, process all Fivegnodes, and return along with wallet Fivegnodes.
+             * (if the wallet Fivegnode has started, it will be replaced in the synced list).
              */
-            if(!shroudnodeSync.IsSynced()){
+            if(!fivegnodeSync.IsSynced()){
                 data.push_back(Pair("nodes", nodes));
-                data.push_back(Pair("total", mnodeman.CountShroudnodes()));
+                data.push_back(Pair("total", mnodeman.CountFivegnodes()));
                 return data;
             }
 
-            std::vector <CShroudnode> vShroudnodes = mnodeman.GetFullShroudnodeVector();
-            BOOST_FOREACH(CShroudnode & mn, vShroudnodes) {
+            std::vector <CFivegnode> vFivegnodes = mnodeman.GetFullFivegnodeVector();
+            BOOST_FOREACH(CFivegnode & mn, vFivegnodes) {
                 std::string txHash = mn.vin.prevout.hash.ToString().substr(0,64);
                 std::string outputIndex = to_string(mn.vin.prevout.n);
                 std::string key = txHash + outputIndex;
 
-                // only process wallet Shroudnodes - they are already in "nodes", so if we find it, replace with update
+                // only process wallet Fivegnodes - they are already in "nodes", so if we find it, replace with update
                 if(!find_value(nodes, key).isNull())
                     nodes.replace(key, mn.ToJSON());
             }
 
             data.push_back(Pair("nodes", nodes));
-            data.push_back(Pair("total", mnodeman.CountShroudnodes()));
+            data.push_back(Pair("total", mnodeman.CountFivegnodes()));
             return data;
             break;
         }
@@ -242,7 +242,7 @@ UniValue shroudnodelist(Type type, const UniValue& data, const UniValue& auth, b
     return true;
 }
 
-UniValue shroudnodeupdate(Type type, const UniValue& data, const UniValue& auth, bool fHelp){
+UniValue fivegnodeupdate(Type type, const UniValue& data, const UniValue& auth, bool fHelp){
     UniValue ret(UniValue::VOBJ);
     UniValue outpoint(UniValue::VOBJ);
     string key;
@@ -260,12 +260,12 @@ UniValue shroudnodeupdate(Type type, const UniValue& data, const UniValue& auth,
 static const CAPICommand commands[] =
 { //  category              collection         actor (function)          authPort   authPassphrase   warmupOk
   //  --------------------- ------------       ----------------          -------- --------------   --------
-    { "shroudnode",              "shroudnodeControl",    &shroudnodecontrol,            true,      true,            false  },
-    { "shroudnode",              "shroudnodeKey",        &shroudnodekey,                true,      false,           false  },
-    { "shroudnode",              "shroudnodeList",       &shroudnodelist,               true,      false,           false  },
-    { "shroudnode",              "shroudnodeUpdate",     &shroudnodeupdate,             true,      false,           false  }
+    { "fivegnode",              "fivegnodeControl",    &fivegnodecontrol,            true,      true,            false  },
+    { "fivegnode",              "fivegnodeKey",        &fivegnodekey,                true,      false,           false  },
+    { "fivegnode",              "fivegnodeList",       &fivegnodelist,               true,      false,           false  },
+    { "fivegnode",              "fivegnodeUpdate",     &fivegnodeupdate,             true,      false,           false  }
 };
-void RegisterShroudnodeAPICommands(CAPITable &tableAPI)
+void RegisterFivegnodeAPICommands(CAPITable &tableAPI)
 {
     for (unsigned int vcidx = 0; vcidx < ARRAYLEN(commands); vcidx++)
         tableAPI.appendCommand(commands[vcidx].collection, &commands[vcidx]);

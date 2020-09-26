@@ -11,13 +11,13 @@
   </array>
 
   <key>CFBundleIconFile</key>
-  <string>shroud.icns</string>
+  <string>fiveg.icns</string>
 
   <key>CFBundlePackageType</key>
   <string>APPL</string>
 
   <key>CFBundleGetInfoString</key>
-  <string>@CLIENT_VERSION_MAJOR@.@CLIENT_VERSION_MINOR@.@CLIENT_VERSION_REVISION@.@CLIENT_VERSION_BUILD@, Copyright © 2009-@COPYRIGHT_YEAR@ The Bitcoin Core developers, @COPYRIGHT_YEAR@ The Shroud Core developers</string>
+  <string>@CLIENT_VERSION_MAJOR@.@CLIENT_VERSION_MINOR@.@CLIENT_VERSION_REVISION@.@CLIENT_VERSION_BUILD@, Copyright © 2009-@COPYRIGHT_YEAR@ The Bitcoin Core developers, @COPYRIGHT_YEAR@ The Fiveg Core developers</string>
 
   <key>CFBundleShortVersionString</key>
   <string>@CLIENT_VERSION_MAJOR@.@CLIENT_VERSION_MINOR@.@CLIENT_VERSION_REVISION@</string>
@@ -29,16 +29,16 @@
   <string>????</string>
 
   <key>CFBundleExecutable</key>
-  <string>Shroud-Qt</string>
+  <string>Fiveg-Qt</string>
   
   <key>CFBundleName</key>
-  <string>Shroud-Qt</string>
+  <string>Fiveg-Qt</string>
 
   <key>LSHasLocalizedDisplayName</key>
   <true/>
 
   <key>CFBundleIdentifier</key>
-  <string>io.shroud.Shroud-Qt</string>
+  <string>io.fiveg.Fiveg-Qt</string>
 
   <key>CFBundleURLTypes</key>
   <array>
@@ -49,7 +49,7 @@
       <string>org.bitcoin.BitcoinPayment</string>
       <key>CFBundleURLSchemes</key>
       <array>
-        <string>shroud</string>
+        <string>fiveg</string>
       </array>
     </dict>
   </array>

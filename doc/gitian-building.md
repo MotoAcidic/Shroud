@@ -1,7 +1,7 @@
 Gitian building
 ================
 
-*Setup instructions for a Gitian build of Shroud Core using a Debian VM or physical system.*
+*Setup instructions for a Gitian build of Fiveg Core using a Debian VM or physical system.*
 
 Gitian is the deterministic build process that is used to build the Bitcoin
 Core executables. It provides a way to be reasonably sure that the
@@ -26,7 +26,7 @@ Table of Contents
 - [Installing Gitian](#installing-gitian)
 - [Setting up the Gitian image](#setting-up-the-gitian-image)
 - [Getting and building the inputs](#getting-and-building-the-inputs)
-- [Building Shroud Core](#building-bitcoin-core)
+- [Building Fiveg Core](#building-bitcoin-core)
 - [Building an alternative repository](#building-an-alternative-repository)
 - [Signing externally](#signing-externally)
 - [Uploading signatures](#uploading-signatures)
@@ -309,7 +309,7 @@ Clone the git repositories for bitcoin and Gitian.
 
 ```bash
 git clone https://github.com/devrandom/gitian-builder.git
-git clone https://github.com/ShroudXProject/Shroud
+git clone https://github.com/FivegXProject/Fiveg
 git clone https://github.com/bitcoin-core/gitian.sigs.git
 ```
 
@@ -342,10 +342,10 @@ manual intervention. Also optionally follow the next step: 'Seed the Gitian sour
 and offline git repositories' which will fetch the remaining files required for building
 offline.
 
-Building Shroud Core
+Building Fiveg Core
 ----------------
 
-To build Shroud Core (for Linux, OS X and Windows) just follow the steps under 'perform
+To build Fiveg Core (for Linux, OS X and Windows) just follow the steps under 'perform
 Gitian builds' in [doc/release-process.md](release-process.md#perform-gitian-builds) in the bitcoin repository.
 
 This may take some time as it will build all the dependencies needed for each descriptor.
@@ -393,9 +393,9 @@ For example:
 ```bash
 URL=https://github.com/snguyen-vn/index.git
 COMMIT=2014_03_windows_unicode_path
-./bin/gbuild --commit shroud=${COMMIT} --url bitcoin=${URL} ../bitcoin/contrib/gitian-descriptors/gitian-linux.yml
-./bin/gbuild --commit shroud=${COMMIT} --url bitcoin=${URL} ../bitcoin/contrib/gitian-descriptors/gitian-win.yml
-./bin/gbuild --commit shroud=${COMMIT} --url bitcoin=${URL} ../bitcoin/contrib/gitian-descriptors/gitian-osx.yml
+./bin/gbuild --commit fiveg=${COMMIT} --url bitcoin=${URL} ../bitcoin/contrib/gitian-descriptors/gitian-linux.yml
+./bin/gbuild --commit fiveg=${COMMIT} --url bitcoin=${URL} ../bitcoin/contrib/gitian-descriptors/gitian-win.yml
+./bin/gbuild --commit fiveg=${COMMIT} --url bitcoin=${URL} ../bitcoin/contrib/gitian-descriptors/gitian-osx.yml
 ```
 
 Building fully offline

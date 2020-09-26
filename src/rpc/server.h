@@ -203,9 +203,9 @@ extern UniValue getaddressbalance(const UniValue& params, bool fHelp);
 extern UniValue getpoolinfo(const UniValue& params, bool fHelp);
 extern UniValue spork(const UniValue& params, bool fHelp);
 extern UniValue createsporkkeypair(const UniValue& params, bool fHelp);
-extern UniValue shroudnode(const UniValue& params, bool fHelp);
-extern UniValue shroudnodelist(const UniValue& params, bool fHelp);
-extern UniValue shroudnodebroadcast(const UniValue& params, bool fHelp);
+extern UniValue fivegnode(const UniValue& params, bool fHelp);
+extern UniValue fivegnodelist(const UniValue& params, bool fHelp);
+extern UniValue fivegnodebroadcast(const UniValue& params, bool fHelp);
 extern UniValue insync(const UniValue& params, bool fHelp);
 
 extern void EnsureWalletIsUnlocked();

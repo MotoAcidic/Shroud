@@ -50,13 +50,13 @@ struct PrecomputedTransactionData;
 struct CNodeStateStats;
 struct LockPoints;
 
-/** btzc: update Shroud config */
+/** btzc: update Fiveg config */
 /** Default for DEFAULT_WHITELISTRELAY. */
 static const bool DEFAULT_WHITELISTRELAY = true;
 /** Default for DEFAULT_WHITELISTFORCERELAY. */
 static const bool DEFAULT_WHITELISTFORCERELAY = true;
 /** Default for -minrelaytxfee, minimum relay fee for transactions */
-//btzc: update Shroud fee
+//btzc: update Fiveg fee
 static const unsigned int DEFAULT_MIN_RELAY_TX_FEE = CENT / 1000; //0.00001,
 static const unsigned int MAX_STANDARD_TX_SIZE = 300000;
 //! -maxtxfee default
@@ -81,11 +81,11 @@ static const unsigned int DEFAULT_DESCENDANT_LIMIT = 25;
 static const unsigned int DEFAULT_DESCENDANT_SIZE_LIMIT = 101;
 /** Default for -mempoolexpiry, expiration time for mempool transactions in hours */
 static const unsigned int DEFAULT_MEMPOOL_EXPIRY = 72;
-/** The maximum size of a blk?????.dat, btzc:shroud: 128 MiB */
+/** The maximum size of a blk?????.dat, btzc:fiveg: 128 MiB */
 static const unsigned int MAX_BLOCKFILE_SIZE = 0x8000000; // 128 MiB;
-/** The pre-allocation chunk size for blk?????.dat files (since 0.8), btzc:shroud: 16MiB */
+/** The pre-allocation chunk size for blk?????.dat files (since 0.8), btzc:fiveg: 16MiB */
 static const unsigned int BLOCKFILE_CHUNK_SIZE = 0x1000000; // 16 MiB
-/** The pre-allocation chunk size for rev?????.dat files (since 0.8), btzc:shroud: 1MiB */
+/** The pre-allocation chunk size for rev?????.dat files (since 0.8), btzc:fiveg: 1MiB */
 static const unsigned int UNDOFILE_CHUNK_SIZE = 0x100000; // 1 MiB
 /** Default for -blockprioritysize, maximum space for zero/low-fee transactions **/
 static const unsigned int DEFAULT_BLOCK_PRIORITY_SIZE = 50000; // 50KB
@@ -414,7 +414,7 @@ bool CheckInputs(const CTransaction& tx, CValidationState &state, const CCoinsVi
 void UpdateCoins(const CTransaction& tx, CCoinsViewCache& inputs, int nHeight);
 
 /** Context-independent validity checks */
-//BTZC: ADD params for Shroud works
+//BTZC: ADD params for Fiveg works
 bool CheckTransaction(const CTransaction& tx, CValidationState& state, uint256 hashTx, bool isVerifyDB, int nHeight = INT_MAX, bool isCheckWallet = false, bool fStatefulZerocoinCheck = true, CZerocoinTxInfo *zerocoinTxInfo = NULL, sigma::CSigmaTxInfo *sigmaTxInfo = NULL);
 /**
  * Check if transaction is final and can be included in a block with the
@@ -556,7 +556,7 @@ int GetUTXOHeight(const COutPoint& outpoint);
 int GetInputAge(const CTxIn &txin);
 int GetInputAgeIX(const uint256 &nTXHash, const CTxIn &txin);
 int GetIXConfirmations(const uint256 &nTXHash);
-CAmount GetShroudnodePayment(const Consensus::Params &params, bool fMTP,int nHeight);
+CAmount GetFivegnodePayment(const Consensus::Params &params, bool fMTP,int nHeight);
 
 /** Check a block is completely valid from start to finish (only works on top of our current best block, with cs_main held) */
 bool TestBlockValidity(CValidationState& state, const CChainParams& chainparams, const CBlock& block, CBlockIndex* pindexPrev, bool fCheckPOW = true, bool fCheckMerkleRoot = true);

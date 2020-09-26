@@ -17,13 +17,13 @@ function clean_up {
    done
 }
 
-WORKINGDIR="/tmp/shroud"
+WORKINGDIR="/tmp/fiveg"
 TMPFILE="hashes.tmp"
 
 SIGNATUREFILENAME="SHA256SUMS.asc"
 RCSUBDIR="test/"
 BASEDIR="https://bitcoin.org/bin/"
-VERSIONPREFIX="shroud-core-"
+VERSIONPREFIX="fiveg-core-"
 RCVERSIONSTRING="rc"
 
 if [ ! -d "$WORKINGDIR" ]; then

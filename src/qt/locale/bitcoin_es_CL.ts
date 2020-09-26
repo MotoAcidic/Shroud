@@ -142,8 +142,8 @@
         <translation>Cargando el index de bloques...</translation>
     </message>
     <message>
-        <source>Send coins to a Shroud address</source>
-        <translation>Enviar monedas a una dirección Shroud</translation>
+        <source>Send coins to a Fiveg address</source>
+        <translation>Enviar monedas a una dirección Fiveg</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -166,8 +166,8 @@
         <translation>Verificar mensaje....</translation>
     </message>
     <message>
-        <source>Shroud</source>
-        <translation>Shroud</translation>
+        <source>Fiveg</source>
+        <translation>Fiveg</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -186,7 +186,7 @@
         <translation>&amp;Mostrar/Ocultar</translation>
     </message>
     <message>
-        <source>Sign messages with your Shroud addresses to prove you own them</source>
+        <source>Sign messages with your Fiveg addresses to prove you own them</source>
         <translation>Firmar un mensaje para provar que usted es dueño de esta dirección</translation>
     </message>
     <message>
@@ -206,8 +206,8 @@
         <translation>Barra de pestañas</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and shroud: URIs)</source>
-        <translation>Pide pagos (genera codigos QR and shroud: URIs)</translation>
+        <source>Request payments (generates QR codes and fiveg: URIs)</source>
+        <translation>Pide pagos (genera codigos QR and fiveg: URIs)</translation>
     </message>
     <message>
         <source>%1 and %2</source>
@@ -368,8 +368,8 @@
         <translation>experto</translation>
     </message>
     <message>
-        <source>Automatically open the Shroud client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Abre automáticamente el puerto del cliente Shroud en el router. Esto funciona solo cuando tu router es compatible con UPnP y está habilitado.</translation>
+        <source>Automatically open the Fiveg client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Abre automáticamente el puerto del cliente Fiveg en el router. Esto funciona solo cuando tu router es compatible con UPnP y está habilitado.</translation>
     </message>
     <message>
         <source>Map port using &amp;UPnP</source>
@@ -689,7 +689,7 @@
         <translation>Firma</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Shroud address</source>
+        <source>Sign the message to prove you own this Fiveg address</source>
         <translation>Firmar un mensjage para probar que usted es dueño de esta dirección</translation>
     </message>
     <message>
@@ -752,7 +752,7 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>shroud-core</name>
+    <name>fiveg-core</name>
     <message>
         <source>Options:</source>
         <translation>Opciones:
@@ -774,8 +774,8 @@
 </translation>
     </message>
     <message>
-        <source>Shroud Core</source>
-        <translation>Shroud Core</translation>
+        <source>Fiveg Core</source>
+        <translation>Fiveg Core</translation>
     </message>
     <message>
         <source>Connect only to the specified node(s)</source>

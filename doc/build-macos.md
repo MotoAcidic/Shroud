@@ -32,11 +32,11 @@ from the root of the repository.
 Note: You only need Berkeley DB if the wallet is enabled (see Disable-wallet mode).
       
       
-Build Shroud Core
+Build Fiveg Core
 ------------------------
-1.  Build Shroud-core:
+1.  Build Fiveg-core:
 
-    Configure and build the headless Shroud binaries as well as the GUI (if Qt is found).
+    Configure and build the headless Fiveg binaries as well as the GUI (if Qt is found).
     
     In case you want to build the disk image with `make deploy` (.dmg / optional), by passing `--with-gui` to configure.
     
@@ -58,26 +58,26 @@ Build Shroud Core
 Running
 -------
 
-Shroud Core is now available at `./src/shroudd`
+Fiveg Core is now available at `./src/fivegd`
 
 Before running, it's recommended you create an RPC configuration file.
 
-    echo -e "rpcuser=bitcoinrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/shroud/shroud.conf"
+    echo -e "rpcuser=bitcoinrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/fiveg/fiveg.conf"
 
-    chmod 600 "/Users/${USER}/Library/Application Support/shroud/shroud.conf"
+    chmod 600 "/Users/${USER}/Library/Application Support/fiveg/fiveg.conf"
 
-The first time you run shroudd, it will start downloading the blockchain. This process could take several hours.
+The first time you run fivegd, it will start downloading the blockchain. This process could take several hours.
 
 You can monitor the download process by looking at the debug.log file:
 
-    tail -f $HOME/Library/Application\ Support/shroud/debug.log
+    tail -f $HOME/Library/Application\ Support/fiveg/debug.log
 
 Other commands:
 -------
 
-    ./src/shroudd -daemon # Starts the Shroud daemon.
-    ./src/shroud-cli --help # Outputs a list of command-line options.
-    ./src/shroud-cli help # Outputs a list of RPC commands when the daemon is running.
+    ./src/fivegd -daemon # Starts the Fiveg daemon.
+    ./src/fiveg-cli --help # Outputs a list of command-line options.
+    ./src/fiveg-cli help # Outputs a list of RPC commands when the daemon is running.
 
 Using Qt Creator as IDE
 ------------------------

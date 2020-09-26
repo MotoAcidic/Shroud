@@ -138,7 +138,7 @@
         <translation>Повторно индексирање на блокови од дискот...</translation>
     </message>
     <message>
-        <source>Send coins to a Shroud address</source>
+        <source>Send coins to a Fiveg address</source>
         <translation>Испрати биткоини на Биткоин адреса</translation>
     </message>
     <message>
@@ -146,7 +146,7 @@
         <translation>&amp;Потврди порака...</translation>
     </message>
     <message>
-        <source>Shroud</source>
+        <source>Fiveg</source>
         <translation>Биткоин</translation>
     </message>
     <message>
@@ -594,13 +594,13 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>shroud-core</name>
+    <name>fiveg-core</name>
     <message>
         <source>Options:</source>
         <translation>Опции:</translation>
     </message>
     <message>
-        <source>Shroud Core</source>
+        <source>Fiveg Core</source>
         <translation>Биткоин Core</translation>
     </message>
     <message>

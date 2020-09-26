@@ -39,9 +39,9 @@ protected:
     void UpdatedBlockTip(const CBlockIndex *pindex);
     void NumConnectionsChanged();
     void UpdateSyncStatus();
-    void NotifyShroudnodeList();
+    void NotifyFivegnodeList();
     void NotifyAPIStatus();
-    void UpdatedShroudnode(CShroudnode &shroudnode);
+    void UpdatedFivegnode(CFivegnode &fivegnode);
     void UpdatedMintStatus(std::string update);
     void UpdatedSettings(std::string update);
     void UpdatedBalance();

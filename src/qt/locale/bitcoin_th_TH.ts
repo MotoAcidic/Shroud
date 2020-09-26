@@ -166,8 +166,8 @@
         <translation>กำลังทำดัชนี ที่เก็บบล็อก ใหม่ ในดิสก์...</translation>
     </message>
     <message>
-        <source>Send coins to a Shroud address</source>
-        <translation>ส่ง coins ไปยัง ที่เก็บ Shroud</translation>
+        <source>Send coins to a Fiveg address</source>
+        <translation>ส่ง coins ไปยัง ที่เก็บ Fiveg</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -190,8 +190,8 @@
         <translation>&amp;ยืนยันข้อความ...</translation>
     </message>
     <message>
-        <source>Shroud</source>
-        <translation>Shroud</translation>
+        <source>Fiveg</source>
+        <translation>Fiveg</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -218,12 +218,12 @@
         <translation>เข้ารหัส private keys/ รหัสส่วนตัว สำหรับกระเป๋าเงินของท่าน</translation>
     </message>
     <message>
-        <source>Sign messages with your Shroud addresses to prove you own them</source>
-        <translation>สร้างลายเซ็นสำหรับข้อความด้วย Shroud address เพื่อยันยันว่าคุณคือเจ้าของ Address</translation>
+        <source>Sign messages with your Fiveg addresses to prove you own them</source>
+        <translation>สร้างลายเซ็นสำหรับข้อความด้วย Fiveg address เพื่อยันยันว่าคุณคือเจ้าของ Address</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Shroud addresses</source>
-        <translation>ตรวจสอบ ข้อความ เพื่อให้แน่ใจว่า การเซ็นต์ชื่อ ด้วยที่เก็บ Shroud แล้ว</translation>
+        <source>Verify messages to ensure they were signed with specified Fiveg addresses</source>
+        <translation>ตรวจสอบ ข้อความ เพื่อให้แน่ใจว่า การเซ็นต์ชื่อ ด้วยที่เก็บ Fiveg แล้ว</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -242,7 +242,7 @@
         <translation>แถบเครื่องมือ</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and shroud: URIs)</source>
+        <source>Request payments (generates QR codes and fiveg: URIs)</source>
         <translation>สร้างแบบฟอร์มการชำระเงิน (QR codes และ URI)</translation>
     </message>
     <message>
@@ -254,16 +254,16 @@
         <translation>แสดงรายการ Address ที่ถูกใช้ในการรับ</translation>
     </message>
     <message>
-        <source>Open a shroud: URI or payment request</source>
-        <translation>เปิด URI shroud: หรือแบบฟอร์มการชำระเงิน</translation>
+        <source>Open a fiveg: URI or payment request</source>
+        <translation>เปิด URI fiveg: หรือแบบฟอร์มการชำระเงิน</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
         <translation>&amp;ตัวเลือก Command-line</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Shroud network</source>
-        <translation><numerusform>%n ช่องการเชื่อมต่อที่ใช้งานได้ เพื่อเชื่อมกับเครือข่าย Shroud</numerusform></translation>
+        <source>%n active connection(s) to Fiveg network</source>
+        <translation><numerusform>%n ช่องการเชื่อมต่อที่ใช้งานได้ เพื่อเชื่อมกับเครือข่าย Fiveg</numerusform></translation>
     </message>
     <message>
         <source>Indexing blocks on disk...</source>
@@ -330,8 +330,8 @@
         <translation>ทันสมัย</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible Shroud command-line options</source>
-        <translation>แสดง %1 ข้อความช่วยเหลือ เพื่อแสดงรายการ ตัวเลือกที่เป็นไปได้สำหรับ Shroud command-line</translation>
+        <source>Show the %1 help message to get a list with possible Fiveg command-line options</source>
+        <translation>แสดง %1 ข้อความช่วยเหลือ เพื่อแสดงรายการ ตัวเลือกที่เป็นไปได้สำหรับ Fiveg command-line</translation>
     </message>
     <message>
         <source>%1 client</source>
@@ -579,8 +579,8 @@
         <translation>นี่เป็นการรันโปรแกรมครั้งแรก ท่านสามารถเลือก ว่าจะเก็บข้อมูลไว้ที่ %1</translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the Shroud block chain. At least %2GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
-        <translation>%1 จะดาวน์โหลดและเก็บกอปปี้ชุดหนึ่งของ บล็อกเชน Shroud ไว้ ข้อมูลขนานอย่างน้อย %2GB จะเก็บไว้ในไดเร็กทอรี่นี้ และข้อมูลจะมีขนาดใหญ่ขึ้นเรื่อยๆ กระเป๋าเงิน จะเก็บไว้ในไดเร็กทอรี่นี้ด้วย</translation>
+        <source>%1 will download and store a copy of the Fiveg block chain. At least %2GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
+        <translation>%1 จะดาวน์โหลดและเก็บกอปปี้ชุดหนึ่งของ บล็อกเชน Fiveg ไว้ ข้อมูลขนานอย่างน้อย %2GB จะเก็บไว้ในไดเร็กทอรี่นี้ และข้อมูลจะมีขนาดใหญ่ขึ้นเรื่อยๆ กระเป๋าเงิน จะเก็บไว้ในไดเร็กทอรี่นี้ด้วย</translation>
     </message>
     <message>
         <source>Use the default data directory</source>
@@ -721,16 +721,16 @@
         <translation>&amp;ใช้เงินทอนที่ยังไม่ยืนยัน</translation>
     </message>
     <message>
-        <source>Automatically open the Shroud client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>เปิด Shroud ไคล์เอ็นท์พอร์ต/client port บน router โดยอัตโนมัติ วิธีนี้ใช้ได้เมื่อ router สนับสนุน UPnP และสถานะเปิดใช้งาน</translation>
+        <source>Automatically open the Fiveg client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>เปิด Fiveg ไคล์เอ็นท์พอร์ต/client port บน router โดยอัตโนมัติ วิธีนี้ใช้ได้เมื่อ router สนับสนุน UPnP และสถานะเปิดใช้งาน</translation>
     </message>
     <message>
         <source>Map port using &amp;UPnP</source>
         <translation>จองพอร์ต โดยใช้ &amp;UPnP</translation>
     </message>
     <message>
-        <source>Connect to the Shroud network through a SOCKS5 proxy.</source>
-        <translation>เชื่อมต่อกับ Shroud เน็ตเวิร์ก ผ่านพร็อกซี่แบบ SOCKS5</translation>
+        <source>Connect to the Fiveg network through a SOCKS5 proxy.</source>
+        <translation>เชื่อมต่อกับ Fiveg เน็ตเวิร์ก ผ่านพร็อกซี่แบบ SOCKS5</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -769,8 +769,8 @@
         <translation>Tor</translation>
     </message>
     <message>
-        <source>Connect to the Shroud network through a separate SOCKS5 proxy for Tor hidden services.</source>
-        <translation>เชื่อมต่อกับ เครือข่าย Shroud ผ่านทาง พร้อกซี่ SOCKS5 แยกต่างหาก สำหรับ Tor เซอร์วิส</translation>
+        <source>Connect to the Fiveg network through a separate SOCKS5 proxy for Tor hidden services.</source>
+        <translation>เชื่อมต่อกับ เครือข่าย Fiveg ผ่านทาง พร้อกซี่ SOCKS5 แยกต่างหาก สำหรับ Tor เซอร์วิส</translation>
     </message>
     <message>
         <source>Use separate SOCKS5 proxy to reach peers via Tor hidden services:</source>
@@ -922,7 +922,7 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>shroud-core</name>
+    <name>fiveg-core</name>
     <message>
         <source>Options:</source>
         <translation>ตัวเลือก:</translation>

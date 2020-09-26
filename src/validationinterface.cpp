@@ -26,11 +26,11 @@ void RegisterValidationInterface(CValidationInterface* pwalletIn) {
     g_signals.BlockFound.connect(boost::bind(&CValidationInterface::ResetRequestCount, pwalletIn, _1));
     g_signals.NumConnectionsChanged.connect(boost::bind(&CValidationInterface::NumConnectionsChanged, pwalletIn));
     g_signals.UpdateSyncStatus.connect(boost::bind(&CValidationInterface::UpdateSyncStatus, pwalletIn));
-    g_signals.UpdatedShroudnode.connect(boost::bind(&CValidationInterface::UpdatedShroudnode, pwalletIn, _1));
+    g_signals.UpdatedFivegnode.connect(boost::bind(&CValidationInterface::UpdatedFivegnode, pwalletIn, _1));
     g_signals.UpdatedMintStatus.connect(boost::bind(&CValidationInterface::UpdatedMintStatus, pwalletIn, _1));
     g_signals.UpdatedSettings.connect(boost::bind(&CValidationInterface::UpdatedSettings, pwalletIn, _1));
     g_signals.NotifyAPIStatus.connect(boost::bind(&CValidationInterface::NotifyAPIStatus, pwalletIn));
-    g_signals.NotifyShroudnodeList.connect(boost::bind(&CValidationInterface::NotifyShroudnodeList, pwalletIn));
+    g_signals.NotifyFivegnodeList.connect(boost::bind(&CValidationInterface::NotifyFivegnodeList, pwalletIn));
     g_signals.UpdatedBalance.connect(boost::bind(&CValidationInterface::UpdatedBalance, pwalletIn));
 }
 
@@ -47,11 +47,11 @@ void UnregisterValidationInterface(CValidationInterface* pwalletIn) {
     g_signals.UpdatedBlockTip.disconnect(boost::bind(&CValidationInterface::UpdatedBlockTip, pwalletIn, _1));
     g_signals.NumConnectionsChanged.disconnect(boost::bind(&CValidationInterface::UpdatedBlockTip, pwalletIn));
     g_signals.UpdateSyncStatus.disconnect(boost::bind(&CValidationInterface::UpdateSyncStatus, pwalletIn));
-    g_signals.UpdatedShroudnode.disconnect(boost::bind(&CValidationInterface::UpdatedShroudnode, pwalletIn, _1));
+    g_signals.UpdatedFivegnode.disconnect(boost::bind(&CValidationInterface::UpdatedFivegnode, pwalletIn, _1));
     g_signals.UpdatedMintStatus.disconnect(boost::bind(&CValidationInterface::UpdatedMintStatus, pwalletIn, _1));
     g_signals.UpdatedSettings.disconnect(boost::bind(&CValidationInterface::UpdatedSettings, pwalletIn, _1));
     g_signals.NotifyAPIStatus.disconnect(boost::bind(&CValidationInterface::NotifyAPIStatus, pwalletIn));
-    g_signals.NotifyShroudnodeList.disconnect(boost::bind(&CValidationInterface::NotifyShroudnodeList, pwalletIn));
+    g_signals.NotifyFivegnodeList.disconnect(boost::bind(&CValidationInterface::NotifyFivegnodeList, pwalletIn));
     g_signals.UpdatedBalance.disconnect(boost::bind(&CValidationInterface::UpdatedBalance, pwalletIn));
 }
 
@@ -68,11 +68,11 @@ void UnregisterAllValidationInterfaces() {
     g_signals.UpdatedBlockTip.disconnect_all_slots();
     g_signals.NumConnectionsChanged.disconnect_all_slots();
     g_signals.UpdateSyncStatus.disconnect_all_slots();
-    g_signals.UpdatedShroudnode.disconnect_all_slots();
+    g_signals.UpdatedFivegnode.disconnect_all_slots();
     g_signals.UpdatedMintStatus.disconnect_all_slots();
     g_signals.UpdatedSettings.disconnect_all_slots();
     g_signals.NotifyAPIStatus.disconnect_all_slots();
-    g_signals.NotifyShroudnodeList.disconnect_all_slots();
+    g_signals.NotifyFivegnodeList.disconnect_all_slots();
     g_signals.UpdatedBalance.disconnect_all_slots();
 }
 

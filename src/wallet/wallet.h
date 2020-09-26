@@ -121,7 +121,7 @@ enum AvailableCoinsType
     ONLY_DENOMINATED = 2,
     ONLY_NOT1000IFMN = 3,
     ONLY_NONDENOMINATED_NOT1000IFMN = 4,
-    ONLY_1000 = 5, // find shroudnode outputs including locked ones (use with caution)
+    ONLY_1000 = 5, // find fivegnode outputs including locked ones (use with caution)
     ONLY_PRIVATESEND_COLLATERAL = 6,
     ONLY_MINTS = 7,
     WITH_MINTS = 8
@@ -706,7 +706,7 @@ public:
 
     std::set<int64_t> setKeyPool;
     std::map<CKeyID, CKeyMetadata> mapKeyMetadata;
-    //shroudnode
+    //fivegnode
     int64_t nKeysLeftSinceAutoBackup;
 
     typedef std::map<unsigned int, CMasterKey> MasterKeyMap;
@@ -800,9 +800,9 @@ public:
     void UnlockAllCoins();
     void ListLockedCoins(std::vector<COutPoint>& vOutpts);
 
-    // shroudnode
-    /// Get 10000 SHROUD output and keys which can be used for the Shroudnode
-    bool GetShroudnodeVinAndKeys(CTxIn& txinRet, CPubKey& pubKeyRet, CKey& keyRet, std::string strTxHash = "", std::string strOutputIndex = "");
+    // fivegnode
+    /// Get 10000 FIVEG output and keys which can be used for the Fivegnode
+    bool GetFivegnodeVinAndKeys(CTxIn& txinRet, CPubKey& pubKeyRet, CKey& keyRet, std::string strTxHash = "", std::string strOutputIndex = "");
     /// Extract txin information and keys from output
     bool GetVinAndKeysFromOutput(COutput out, CTxIn& txinRet, CPubKey& pubKeyRet, CKey& keyRet);
     bool HasCollateralInputs(bool fOnlyConfirmed = true) const;
@@ -867,7 +867,7 @@ public:
     void ReacceptWalletTransactions();
     void ResendWalletTransactions(int64_t nBestBlockTime);
     std::vector<uint256> ResendWalletTransactionsBefore(int64_t nTime);
-    //shroudnode
+    //fivegnode
     CAmount GetBalance(bool fExcludeLocked = false) const;
     CAmount GetUnconfirmedBalance() const;
     CAmount GetImmatureBalance() const;

@@ -28,9 +28,9 @@
 #include "wallet/wallet.h"
 #include "definition.h"
 #include "crypto/scrypt.h"
-#include "shroudnode-payments.h"
-#include "shroudnode-sync.h"
-#include "shroudnodeman.h"
+#include "fivegnode-payments.h"
+#include "fivegnode-sync.h"
+#include "fivegnodeman.h"
 #include "zerocoin.h"
 #include "sigma.h"
 #include "sigma/remint.h"
@@ -458,18 +458,18 @@ CBlockTemplate* BlockAssembler::CreateNewBlock(
             }
         }
         CAmount blockReward = nFees + GetBlockSubsidy(nHeight, chainparams.GetConsensus(), nBlockTime);
-        // Update coinbase transaction with additional info about shroudnode and governance payments,
+        // Update coinbase transaction with additional info about fivegnode and governance payments,
         // get some info back to pass to getblocktemplate
-        bool fPaySHROUDNode = nHeight >= chainparams.GetConsensus().nShroudnodePaymentsStartBlock && !fProofOfStake;
-        CAmount shroudnodePayment = 0;
-        if (fPaySHROUDNode) {
+        bool fPayFIVEGNode = nHeight >= chainparams.GetConsensus().nFivegnodePaymentsStartBlock && !fProofOfStake;
+        CAmount fivegnodePayment = 0;
+        if (fPayFIVEGNode) {
             const Consensus::Params &params = chainparams.GetConsensus();
-            shroudnodePayment = GetShroudnodePayment(chainparams.GetConsensus(),false,nHeight);
-            FillBlockPayments(coinbaseTx, nHeight, shroudnodePayment, pblock->txoutShroudnode, pblock->voutSuperblock);
+            fivegnodePayment = GetFivegnodePayment(chainparams.GetConsensus(),false,nHeight);
+            FillBlockPayments(coinbaseTx, nHeight, fivegnodePayment, pblock->txoutFivegnode, pblock->voutSuperblock);
         }
-        //Only take out idx payment if a shroudnode is actually filled in txoutshroudnode and shroudnodepayment is not 0
-        if(pblock->txoutShroudnode != CTxOut() && shroudnodePayment != 0)
-            coinbaseTx.vout[0].nValue -= shroudnodePayment;
+        //Only take out idx payment if a fivegnode is actually filled in txoutfivegnode and fivegnodepayment is not 0
+        if(pblock->txoutFivegnode != CTxOut() && fivegnodePayment != 0)
+            coinbaseTx.vout[0].nValue -= fivegnodePayment;
 
         nLastBlockTx = nBlockTx;
         nLastBlockSize = nBlockSize;
@@ -1032,7 +1032,7 @@ static bool ProcessBlockFound(const CBlock* pblock, const CChainParams& chainpar
 
 void static ZcoinMiner(const CChainParams &chainparams) {
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
-    RenameThread("shroud-miner");
+    RenameThread("fiveg-miner");
 
     unsigned int nExtraNonce = 0;
 
@@ -1053,10 +1053,10 @@ void static ZcoinMiner(const CChainParams &chainparams) {
                 // Busy-wait for the network to come online so we don't waste time mining
                 // on an obsolete chain. In regtest mode we expect to fly solo.
 
-                // Also try to wait for shroudnode winners unless we're on regtest chain
+                // Also try to wait for fivegnode winners unless we're on regtest chain
                 do {
                     bool fvNodesEmpty;
-                    bool fHasShroudnodesWinnerForNextBlock;
+                    bool fHasFivegnodesWinnerForNextBlock;
                     const Consensus::Params &params = chainparams.GetConsensus();
                     {
                         LOCK(cs_vNodes);
@@ -1065,12 +1065,12 @@ void static ZcoinMiner(const CChainParams &chainparams) {
                     {
                         LOCK2(cs_main, mempool.cs);
                         int nCount = 0;
-                        fHasShroudnodesWinnerForNextBlock =
+                        fHasFivegnodesWinnerForNextBlock =
                                 params.IsRegtest() ||
-                                chainActive.Height() < params.nShroudnodePaymentsStartBlock ||
-                                mnodeman.GetNextShroudnodeInQueueForPayment(chainActive.Height(), true, nCount);
+                                chainActive.Height() < params.nFivegnodePaymentsStartBlock ||
+                                mnodeman.GetNextFivegnodeInQueueForPayment(chainActive.Height(), true, nCount);
                     }
-                    if (!fvNodesEmpty && fHasShroudnodesWinnerForNextBlock && !IsInitialBlockDownload()) {
+                    if (!fvNodesEmpty && fHasFivegnodesWinnerForNextBlock && !IsInitialBlockDownload()) {
                         break;
                     }
                     MilliSleep(1000);
@@ -1203,7 +1203,7 @@ void ThreadStakeMiner(CWallet *pwallet, const CChainParams& chainparams)
     LogPrintf("Staking started\n");
 
     // Make this thread recognisable as the mining thread
-    RenameThread("shroud-staker");
+    RenameThread("fiveg-staker");
 
     CReserveKey reservekey(pwallet);
 
@@ -1220,7 +1220,7 @@ void ThreadStakeMiner(CWallet *pwallet, const CChainParams& chainparams)
                 nLastCoinStakeSearchInterval = 0;
                 MilliSleep(10000);
             }
-            while (vNodes.empty() || IsInitialBlockDownload() || !shroudnodeSync.IsSynced())
+            while (vNodes.empty() || IsInitialBlockDownload() || !fivegnodeSync.IsSynced())
             {
                 nLastCoinStakeSearchInterval = 0;
                 fTryToSync = true;

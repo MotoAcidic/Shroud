@@ -20,7 +20,7 @@ osx=true
 SIGNER=
 VERSION=
 commit=false
-url=${url:-https://github.com/ShroudXProject/Shroud}
+url=${url:-https://github.com/FivegXProject/Fiveg}
 gsigsUrl=https://github.com/bitcoin-core/gitian.sigs
 detachUrl=https://github.com/bitcoin-core/bitcoin-detached-sigs.git
 proc=2
@@ -44,7 +44,7 @@ version		Version number, commit, or branch to build. If building a commit or bra
 
 Options:
 -c|--commit	Indicate that the version argument is for a commit or branch
--u|--url	Specify the URL of the ShroudXProject-Shroud official repository. Default is https://github.com/ShroudXProject/Shroud.git
+-u|--url	Specify the URL of the FivegXProject-Fiveg official repository. Default is https://github.com/FivegXProject/Fiveg.git
 -g|--gsigsUrl	Specify the URL of the gitian.sigs repository. Default is https://github.com/bitcoin-core/gitian.sigs
 -d|--detachUrl	Specify the URL of the bitcoin-detached-sigs repository. Default is https://github.com/bitcoin-core/bitcoin-detached-sigs
 -v|--verify 	Verify the Gitian build
@@ -289,7 +289,7 @@ then
 fi
 
 # Set up build
-pushd ./shroud
+pushd ./fiveg
 git fetch
 git checkout ${COMMIT}
 popd
@@ -298,7 +298,7 @@ popd
 if [[ $build = true ]]
 then
 	# Make output folder
-	mkdir -p ./shroud-binaries/${VERSION}
+	mkdir -p ./fiveg-binaries/${VERSION}
 
 	# Build Dependencies
 	echo ""
@@ -308,7 +308,7 @@ then
 	mkdir -p inputs
 	wget -N -P inputs $osslPatchUrl
 	wget -N -P inputs $osslTarUrl
-	make -C ../shroud/depends download SOURCES_PATH=`pwd`/cache/common
+	make -C ../fiveg/depends download SOURCES_PATH=`pwd`/cache/common
 
 	# Linux
 	if [[ $linux = true ]]
@@ -316,9 +316,9 @@ then
 	    echo ""
 	    echo "Compiling ${VERSION} Linux"
 	    echo ""
-	    ./bin/gbuild -j ${proc} -m ${mem} --commit shroud=${COMMIT} --url shroud=${url} ../shroud/contrib/gitian-descriptors/gitian-linux.yml
-	    ./bin/gsign -p "${signProg}" --signer $SIGNER --release ${VERSION}-linux --destination ../gitian.sigs/ ../shroud/contrib/gitian-descriptors/gitian-linux.yml
-	    mv build/out/shroud-*.tar.gz build/out/src/shroud-*.tar.gz ../shroud-binaries/${VERSION}
+	    ./bin/gbuild -j ${proc} -m ${mem} --commit fiveg=${COMMIT} --url fiveg=${url} ../fiveg/contrib/gitian-descriptors/gitian-linux.yml
+	    ./bin/gsign -p "${signProg}" --signer $SIGNER --release ${VERSION}-linux --destination ../gitian.sigs/ ../fiveg/contrib/gitian-descriptors/gitian-linux.yml
+	    mv build/out/fiveg-*.tar.gz build/out/src/fiveg-*.tar.gz ../fiveg-binaries/${VERSION}
 	fi
 	# Windows
 	if [[ $windows = true ]]
@@ -328,7 +328,7 @@ then
            #	echo ""
         #	echo "Starting Utilities build for Windows"
         #	echo ""
-        #	./bin/gbuild -j ${proc} -m ${mem} --allow-sudo ../shroud/contrib/gitian-descriptors/gitian-win-utils.yml
+        #	./bin/gbuild -j ${proc} -m ${mem} --allow-sudo ../fiveg/contrib/gitian-descriptors/gitian-win-utils.yml
         #	if [ $? -ne 0 ];
         #	then
         #	    echo ""
@@ -345,10 +345,10 @@ then
 	    echo ""
 	    echo "Compiling ${VERSION} Windows"
 	    echo ""
-	    ./bin/gbuild -j ${proc} -m ${mem} --commit shroud=${COMMIT} --url shroud=${url} ../shroud/contrib/gitian-descriptors/gitian-win.yml
-	    ./bin/gsign -p "${signProg}" --signer $SIGNER --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../shroud/contrib/gitian-descriptors/gitian-win.yml
-	    mv build/out/shroud-*-win-unsigned.tar.gz inputs/shroud-win-unsigned.tar.gz
-	    mv build/out/shroud-*.zip build/out/shroud-*.exe ../shroud-binaries/${VERSION}
+	    ./bin/gbuild -j ${proc} -m ${mem} --commit fiveg=${COMMIT} --url fiveg=${url} ../fiveg/contrib/gitian-descriptors/gitian-win.yml
+	    ./bin/gsign -p "${signProg}" --signer $SIGNER --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../fiveg/contrib/gitian-descriptors/gitian-win.yml
+	    mv build/out/fiveg-*-win-unsigned.tar.gz inputs/fiveg-win-unsigned.tar.gz
+	    mv build/out/fiveg-*.zip build/out/fiveg-*.exe ../fiveg-binaries/${VERSION}
 	fi
 	# Mac OSX
 	if [[ $osx = true ]]
@@ -356,10 +356,10 @@ then
 	    echo ""
 	    echo "Compiling ${VERSION} Mac OSX"
 	    echo ""
-	    ./bin/gbuild -j ${proc} -m ${mem} --commit shroud=${COMMIT} --url shroud=${url} ../shroud/contrib/gitian-descriptors/gitian-osx.yml
-	    ./bin/gsign -p "${signProg}" --signer $SIGNER --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../shroud/contrib/gitian-descriptors/gitian-osx.yml
-	    mv build/out/shroud-*-osx-unsigned.tar.gz inputs/shroud-osx-unsigned.tar.gz
-	    mv build/out/shroud-*.tar.gz build/out/shroud-*.dmg ../shroud-binaries/${VERSION}
+	    ./bin/gbuild -j ${proc} -m ${mem} --commit fiveg=${COMMIT} --url fiveg=${url} ../fiveg/contrib/gitian-descriptors/gitian-osx.yml
+	    ./bin/gsign -p "${signProg}" --signer $SIGNER --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../fiveg/contrib/gitian-descriptors/gitian-osx.yml
+	    mv build/out/fiveg-*-osx-unsigned.tar.gz inputs/fiveg-osx-unsigned.tar.gz
+	    mv build/out/fiveg-*.tar.gz build/out/fiveg-*.dmg ../fiveg-binaries/${VERSION}
 	fi
 	popd
 
@@ -386,27 +386,27 @@ then
 	echo ""
 	echo "Verifying v${VERSION} Linux"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../shroud/contrib/gitian-descriptors/gitian-linux.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../fiveg/contrib/gitian-descriptors/gitian-linux.yml
 	# Windows
 	echo ""
 	echo "Verifying v${VERSION} Windows"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../shroud/contrib/gitian-descriptors/gitian-win.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../fiveg/contrib/gitian-descriptors/gitian-win.yml
 	# Mac OSX
 	echo ""
 	echo "Verifying v${VERSION} Mac OSX"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-unsigned ../shroud/contrib/gitian-descriptors/gitian-osx.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-unsigned ../fiveg/contrib/gitian-descriptors/gitian-osx.yml
 	# Signed Windows
 	echo ""
 	echo "Verifying v${VERSION} Signed Windows"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../shroud/contrib/gitian-descriptors/gitian-osx-signer.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../fiveg/contrib/gitian-descriptors/gitian-osx-signer.yml
 	# Signed Mac OSX
 	echo ""
 	echo "Verifying v${VERSION} Signed Mac OSX"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../shroud/contrib/gitian-descriptors/gitian-osx-signer.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../fiveg/contrib/gitian-descriptors/gitian-osx-signer.yml
 	popd
 fi
 
@@ -421,10 +421,10 @@ then
 	    echo ""
 	    echo "Signing ${VERSION} Windows"
 	    echo ""
-	    ./bin/gbuild -i --commit signature=${COMMIT} --url signature=${detachUrl} ../shroud/contrib/gitian-descriptors/gitian-win-signer.yml
-	    ./bin/gsign -p "${signProg}" --signer $SIGNER --release ${VERSION}-win-signed --destination ../gitian.sigs/ ../shroud/contrib/gitian-descriptors/gitian-win-signer.yml
-	    mv build/out/shroud-*win64-setup.exe ../shroud-binaries/${VERSION}
-	    mv build/out/shroud-*win32-setup.exe ../shroud-binaries/${VERSION}
+	    ./bin/gbuild -i --commit signature=${COMMIT} --url signature=${detachUrl} ../fiveg/contrib/gitian-descriptors/gitian-win-signer.yml
+	    ./bin/gsign -p "${signProg}" --signer $SIGNER --release ${VERSION}-win-signed --destination ../gitian.sigs/ ../fiveg/contrib/gitian-descriptors/gitian-win-signer.yml
+	    mv build/out/fiveg-*win64-setup.exe ../fiveg-binaries/${VERSION}
+	    mv build/out/fiveg-*win32-setup.exe ../fiveg-binaries/${VERSION}
 	fi
 	# Sign Mac OSX
 	if [[ $osx = true ]]
@@ -432,9 +432,9 @@ then
 	    echo ""
 	    echo "Signing ${VERSION} Mac OSX"
 	    echo ""
-	    ./bin/gbuild -i --commit signature=${COMMIT} --url signature=${detachUrl} ../shroud/contrib/gitian-descriptors/gitian-osx-signer.yml
-	    ./bin/gsign -p "${signProg}" --signer $SIGNER --release ${VERSION}-osx-signed --destination ../gitian.sigs/ ../shroud/contrib/gitian-descriptors/gitian-osx-signer.yml
-	    mv build/out/shroud-osx-signed.dmg ../shroud-binaries/${VERSION}/shroud-${VERSION}-osx.dmg
+	    ./bin/gbuild -i --commit signature=${COMMIT} --url signature=${detachUrl} ../fiveg/contrib/gitian-descriptors/gitian-osx-signer.yml
+	    ./bin/gsign -p "${signProg}" --signer $SIGNER --release ${VERSION}-osx-signed --destination ../gitian.sigs/ ../fiveg/contrib/gitian-descriptors/gitian-osx-signer.yml
+	    mv build/out/fiveg-osx-signed.dmg ../fiveg-binaries/${VERSION}/fiveg-${VERSION}-osx.dmg
 	fi
 	popd
 

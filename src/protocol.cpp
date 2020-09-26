@@ -42,13 +42,13 @@ namespace NetMsgType {
     const char *GETBLOCKTXN = "getblocktxn";
     const char *BLOCKTXN = "blocktxn";
     const char *DANDELIONTX="dandeliontx";
-//shroudnode
+//fivegnode
     const char *TXLOCKVOTE="txlvote";
     const char *SPORK = "spork";
     const char *GETSPORKS = "getsporks";
-    const char *SHROUDNODEPAYMENTVOTE = "mnw";
-    const char *SHROUDNODEPAYMENTBLOCK = "mnwb";
-    const char *SHROUDNODEPAYMENTSYNC = "mnget";
+    const char *FIVEGNODEPAYMENTVOTE = "mnw";
+    const char *FIVEGNODEPAYMENTBLOCK = "mnwb";
+    const char *FIVEGNODEPAYMENTSYNC = "mnget";
     const char *MNANNOUNCE = "mnb";
     const char *MNPING = "mnp";
     const char *DSACCEPT = "dsa";
@@ -97,11 +97,11 @@ const static std::string allNetMessageTypes[] = {
         NetMsgType::GETBLOCKTXN,
         NetMsgType::BLOCKTXN,
 		NetMsgType::DANDELIONTX,
-        //shroudnode
+        //fivegnode
         NetMsgType::TXLOCKREQUEST,
-        NetMsgType::SHROUDNODEPAYMENTVOTE,
-        NetMsgType::SHROUDNODEPAYMENTBLOCK,
-        NetMsgType::SHROUDNODEPAYMENTSYNC,
+        NetMsgType::FIVEGNODEPAYMENTVOTE,
+        NetMsgType::FIVEGNODEPAYMENTBLOCK,
+        NetMsgType::FIVEGNODEPAYMENTSYNC,
         NetMsgType::SPORK,
         NetMsgType::GETSPORKS,
         NetMsgType::MNANNOUNCE,
@@ -209,12 +209,12 @@ const char* CInv::GetCommand() const
         case MSG_TXLOCK_REQUEST:        return NetMsgType::TXLOCKREQUEST;
         case MSG_TXLOCK_VOTE:           return NetMsgType::TXLOCKVOTE;
         case MSG_SPORK:                 return NetMsgType::SPORK;
-        case MSG_SHROUDNODE_PAYMENT_VOTE:    return NetMsgType::SHROUDNODEPAYMENTVOTE;
-        case MSG_SHROUDNODE_PAYMENT_BLOCK:   return NetMsgType::SHROUDNODEPAYMENTBLOCK;
-        case MSG_SHROUDNODE_ANNOUNCE:        return NetMsgType::MNANNOUNCE;
-        case MSG_SHROUDNODE_PING:            return NetMsgType::MNPING;
+        case MSG_FIVEGNODE_PAYMENT_VOTE:    return NetMsgType::FIVEGNODEPAYMENTVOTE;
+        case MSG_FIVEGNODE_PAYMENT_BLOCK:   return NetMsgType::FIVEGNODEPAYMENTBLOCK;
+        case MSG_FIVEGNODE_ANNOUNCE:        return NetMsgType::MNANNOUNCE;
+        case MSG_FIVEGNODE_PING:            return NetMsgType::MNPING;
         case MSG_DSTX:                  return NetMsgType::DSTX;
-        case MSG_SHROUDNODE_VERIFY:          return NetMsgType::MNVERIFY;
+        case MSG_FIVEGNODE_VERIFY:          return NetMsgType::MNVERIFY;
         default: {
             return "error";
         }

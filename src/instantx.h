@@ -16,7 +16,7 @@ class CInstantSend;
 extern CInstantSend instantsend;
 
 /*
-    At 15 signatures, 1/2 of the shroudnode network can be owned by
+    At 15 signatures, 1/2 of the fivegnode network can be owned by
     one party without comprimising the security of InstantSend
     (1000/2150.0)**10 = 0.00047382219560689856
     (1000/2900.0)**10 = 2.3769498616783657e-05
@@ -52,8 +52,8 @@ private:
     std::map<COutPoint, std::set<uint256> > mapVotedOutpoints; // utxo - tx hash set
     std::map<COutPoint, uint256> mapLockedOutpoints; // utxo - tx hash
 
-    //track shroudnodes who voted with no txreq (for DOS protection)
-    std::map<COutPoint, int64_t> mapShroudnodeOrphanVotes; // mn outpoint - time
+    //track fivegnodes who voted with no txreq (for DOS protection)
+    std::map<COutPoint, int64_t> mapFivegnodeOrphanVotes; // mn outpoint - time
 
     bool CreateTxLockCandidate(const CTxLockRequest& txLockRequest);
     void Vote(CTxLockCandidate& txLockCandidate);
@@ -63,7 +63,7 @@ private:
     void ProcessOrphanTxLockVotes();
     bool IsEnoughOrphanVotesForTx(const CTxLockRequest& txLockRequest);
     bool IsEnoughOrphanVotesForTxAndOutPoint(const uint256& txHash, const COutPoint& outpoint);
-    int64_t GetAverageShroudnodeOrphanVoteTime();
+    int64_t GetAverageFivegnodeOrphanVoteTime();
 
     void TryToFinalizeLockCandidate(const CTxLockCandidate& txLockCandidate);
     void LockTransactionInputs(const CTxLockCandidate& txLockCandidate);
@@ -138,8 +138,8 @@ class CTxLockVote
 private:
     uint256 txHash;
     COutPoint outpoint;
-    COutPoint outpointShroudnode;
-    std::vector<unsigned char> vchShroudnodeSignature;
+    COutPoint outpointFivegnode;
+    std::vector<unsigned char> vchFivegnodeSignature;
     // local memory only
     int nConfirmedHeight; // when corresponding tx is 0-confirmed or conflicted, nConfirmedHeight is -1
     int64_t nTimeCreated;
@@ -148,17 +148,17 @@ public:
     CTxLockVote() :
         txHash(),
         outpoint(),
-        outpointShroudnode(),
-        vchShroudnodeSignature(),
+        outpointFivegnode(),
+        vchFivegnodeSignature(),
         nConfirmedHeight(-1),
         nTimeCreated(GetTime())
         {}
 
-    CTxLockVote(const uint256& txHashIn, const COutPoint& outpointIn, const COutPoint& outpointShroudnodeIn) :
+    CTxLockVote(const uint256& txHashIn, const COutPoint& outpointIn, const COutPoint& outpointFivegnodeIn) :
         txHash(txHashIn),
         outpoint(outpointIn),
-        outpointShroudnode(outpointShroudnodeIn),
-        vchShroudnodeSignature(),
+        outpointFivegnode(outpointFivegnodeIn),
+        vchFivegnodeSignature(),
         nConfirmedHeight(-1),
         nTimeCreated(GetTime())
         {}
@@ -169,15 +169,15 @@ public:
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         READWRITE(txHash);
         READWRITE(outpoint);
-        READWRITE(outpointShroudnode);
-        READWRITE(vchShroudnodeSignature);
+        READWRITE(outpointFivegnode);
+        READWRITE(vchFivegnodeSignature);
     }
 
     uint256 GetHash() const;
 
     uint256 GetTxHash() const { return txHash; }
     COutPoint GetOutpoint() const { return outpoint; }
-    COutPoint GetShroudnodeOutpoint() const { return outpointShroudnode; }
+    COutPoint GetFivegnodeOutpoint() const { return outpointFivegnode; }
     int64_t GetTimeCreated() const { return nTimeCreated; }
 
     bool IsValid(CNode* pnode) const;
@@ -194,7 +194,7 @@ class COutPointLock
 {
 private:
     COutPoint outpoint; // utxo
-    std::map<COutPoint, CTxLockVote> mapShroudnodeVotes; // shroudnode outpoint - vote
+    std::map<COutPoint, CTxLockVote> mapFivegnodeVotes; // fivegnode outpoint - vote
 
 public:
     static const int SIGNATURES_REQUIRED        = 6;
@@ -202,15 +202,15 @@ public:
 
     COutPointLock(const COutPoint& outpointIn) :
         outpoint(outpointIn),
-        mapShroudnodeVotes()
+        mapFivegnodeVotes()
         {}
 
     COutPoint GetOutpoint() const { return outpoint; }
 
     bool AddVote(const CTxLockVote& vote);
     std::vector<CTxLockVote> GetVotes() const;
-    bool HasShroudnodeVoted(const COutPoint& outpointShroudnodeIn) const;
-    int CountVotes() const { return mapShroudnodeVotes.size(); }
+    bool HasFivegnodeVoted(const COutPoint& outpointFivegnodeIn) const;
+    int CountVotes() const { return mapFivegnodeVotes.size(); }
     bool IsReady() const { return CountVotes() >= SIGNATURES_REQUIRED; }
 
     void Relay() const;
@@ -237,7 +237,7 @@ public:
     bool AddVote(const CTxLockVote& vote);
     bool IsAllOutPointsReady() const;
 
-    bool HasShroudnodeVoted(const COutPoint& outpointIn, const COutPoint& outpointShroudnodeIn);
+    bool HasFivegnodeVoted(const COutPoint& outpointIn, const COutPoint& outpointFivegnodeIn);
     int CountVotes() const;
 
     void SetConfirmedHeight(int nConfirmedHeightIn) { nConfirmedHeight = nConfirmedHeightIn; }

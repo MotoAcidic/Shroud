@@ -121,7 +121,7 @@ void setupAddressWidget(QValidatedLineEdit *widget, QWidget *parent)
 #if QT_VERSION >= 0x040700
     // We don't want translators to use own addresses in translations
     // and this is the only place, where this address is supplied.
-    widget->setPlaceholderText(QObject::tr("Enter a Shroud address (e.g. %1)").arg(
+    widget->setPlaceholderText(QObject::tr("Enter a Fiveg address (e.g. %1)").arg(
         QString::fromStdString(DummyAddress(Params()))));
 #endif
     widget->setValidator(new BitcoinAddressEntryValidator(parent));
@@ -139,7 +139,7 @@ void setupAmountWidget(QLineEdit *widget, QWidget *parent)
 
 bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
 {
-    // return if URI is not valid or is no shroud: URI
+    // return if URI is not valid or is no fiveg: URI
     if(!uri.isValid() || uri.scheme() != QString("index"))
         return false;
 
@@ -200,13 +200,13 @@ bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
 
 bool parseBitcoinURI(QString uri, SendCoinsRecipient *out)
 {
-    // Convert shroud:// to shroud:
+    // Convert fiveg:// to fiveg:
     //
-    //    Cannot handle this later, because shroud:// will cause Qt to see the part after // as host,
+    //    Cannot handle this later, because fiveg:// will cause Qt to see the part after // as host,
     //    which will lower-case it (and thus invalidate the address).
-    if(uri.startsWith("shroud://", Qt::CaseInsensitive))
+    if(uri.startsWith("fiveg://", Qt::CaseInsensitive))
     {
-        uri.replace(0, 10, "shroud:");
+        uri.replace(0, 10, "fiveg:");
     }
     QUrl uriInstance(uri);
     return parseBitcoinURI(uriInstance, out);
@@ -214,7 +214,7 @@ bool parseBitcoinURI(QString uri, SendCoinsRecipient *out)
 
 QString formatBitcoinURI(const SendCoinsRecipient &info)
 {
-    QString ret = QString("shroud:%1").arg(info.address);
+    QString ret = QString("fiveg:%1").arg(info.address);
     int paramCount = 0;
 
     if (info.amount)
@@ -686,7 +686,7 @@ fs::path static GetAutostartFilePath()
     std::string chain = ChainNameFromCommandLine();
     if (chain == CBaseChainParams::MAIN)
         return GetAutostartDir() / "index.desktop";
-    return GetAutostartDir() / strprintf("shroud-%s.lnk", chain);
+    return GetAutostartDir() / strprintf("fiveg-%s.lnk", chain);
 }
 
 bool GetStartOnSystemStartup()

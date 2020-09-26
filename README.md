@@ -1,5 +1,5 @@
-# Shroud
-Shroud Protocol (SHROUD) is a new state of the art privacy coin that uses Sigma and Dandelion++ Protocol along with TOR.
+# Fiveg
+Fiveg Protocol (FIVEG) is a new state of the art privacy coin that uses Sigma and Dandelion++ Protocol along with TOR.
 
 
 
@@ -15,24 +15,24 @@ Shroud Protocol (SHROUD) is a new state of the art privacy coin that uses Sigma 
 ### Specifications
 | Specification | Value |
 |:-----------|:-----------|
-| Name | `SHROUD` |
-| Ticker | `SHROUD` |
+| Name | `FIVEG` |
+| Ticker | `FIVEG` |
 | Consensus Algorithm | `PoW & PoS` |
 | Mining Algorithm | `x16rv2` |
 | Block Time | `60s (1 min)` |
 | Type | `Hybrid PoW/PoS/MN` |
-| Max Supply | `50000000 SHROUD` |
-| Premine Supply | `5000000 SHROUD` |
+| Max Supply | `50000000 FIVEG` |
+| Premine Supply | `5000000 FIVEG` |
 | Coinbase Maturity | `100 Blocks` |
 | Stake Maturity | `100 MIN` |
 | Masternode Maturity | `100 MIN` |
 | Masternode Confirmations | `15` |
-| Masternode Collateral | `10000 SHROUD` |
-| Default Port | `42998` |
+| Masternode Collateral | `10000 FIVEG` |
+| Default Port | `23020` |
 | RPC Port | `42999` |
 
 #### Block Rewards
-| Phase | Reward (SHROUD) | PoW | PoS | MN | Blocks |
+| Phase | Reward (FIVEG) | PoW | PoS | MN | Blocks |
 |:-----------|:-----------|:-----------|:-----------|:-----------|:-----------|
 | GENESIS | `0` | | | | `1` |
 | PREMINE | `5,000,000` | | | | `2` |
@@ -52,18 +52,18 @@ Shroud Protocol (SHROUD) is a new state of the art privacy coin that uses Sigma 
 
 Windows Build Instructions and Notes
 ==================================
-The Windows wallet is build with QTs QMAKE. See [build-windows.md](https://github.com/ShroudXProject/Shroud/blob/master/doc/build-windows.md) for instructions.
+The Windows wallet is build with QTs QMAKE. See [build-windows.md](https://github.com/FivegXProject/Fiveg/blob/master/doc/build-windows.md) for instructions.
 
 MACOS Build Instructions and Notes
 ==================================
-The macOS wallet itself is build with QTs QMAKE. See [build-macos.md](https://github.com/ShroudXProject/Shroud/blob/master/doc/build-macos.md) for instructions.
+The macOS wallet itself is build with QTs QMAKE. See [build-macos.md](https://github.com/FivegXProject/Fiveg/blob/master/doc/build-macos.md) for instructions.
 
 Linux Build Instructions and Notes
 ==================================
 
 Dependencies
 ----------------------
-You can use the ``depscript.sh`` to automatically install Dependencies to build Shroud or manually install them using the syntax below
+You can use the ``depscript.sh`` to automatically install Dependencies to build Fiveg or manually install them using the syntax below
 
 1.  Update packages
 
@@ -87,11 +87,11 @@ Build
 ----------------------
 1.  Clone the source:
 
-        git clone https://github.com/ShroudXProject/Shroud
+        git clone https://github.com/FivegXProject/Fiveg
 
-2.  Build Shroud core:
+2.  Build Fiveg core:
 
-    Configure and build the headless Shroud binaries as well as the GUI (if Qt is found).
+    Configure and build the headless Fiveg binaries as well as the GUI (if Qt is found).
 
     You can disable the GUI build by passing `--without-gui` to configure.
 
@@ -106,7 +106,7 @@ Build
         ``make check``
 
 
-Setting up a Shroudnode
+Setting up a Fivegnode
 ==================================
 
 Read [contrib/masternode-setup-scripts/README.md](contrib/masternode-setup-scripts/README.md) for instructions.

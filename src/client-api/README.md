@@ -1,5 +1,5 @@
 # Overview
-API for interaction with the new `shroud-client` application. This project closely resembles the `rpc` layout, however it instead uses ZeroMQ as a transport mechanism, the code for which is contained within `src/zmqserver`. 
+API for interaction with the new `fiveg-client` application. This project closely resembles the `rpc` layout, however it instead uses ZeroMQ as a transport mechanism, the code for which is contained within `src/zmqserver`. 
 
 # Request
 A request to be passed contains three elements: `type`, `collection`, and `data`.
@@ -56,9 +56,9 @@ A function with one or more operations.
 | [txFee](#txfee)                   | Gets the transaction fee required for the size of the tx passed + fee per kb. | 🔐 | – | – |
 | [unlockWallet](#unlockwallet)     | Unlock core wallet, should it be encrypted. | 🔐 | – | – |
 | [updateLabels](#updatelabels)     | Update transaction labels stored in the persistent tx metadata file. | 🔐 | – | – |
-| [shroudnodeControl](#shroudnodecontrol)     | Start/stop Shroudnode(s) by alias. | 🔐 | ✅ | – |
-| [shroudnodeKey](#shroudnodekey)             | Generate a new shroudnode key. | 🔐 | - | – |
-| [shroudnodeList](#shroudnodelist)           | list information related to all Shroudnodes. | 🔐 | – | – |
+| [fivegnodeControl](#fivegnodecontrol)     | Start/stop Fivegnode(s) by alias. | 🔐 | ✅ | – |
+| [fivegnodeKey](#fivegnodekey)             | Generate a new fivegnode key. | 🔐 | - | – |
+| [fivegnodeList](#fivegnodelist)           | list information related to all Fivegnodes. | 🔐 | – | – |
 
 ## data
 to be passed with `type` to be performed on `collection`.
@@ -107,9 +107,9 @@ OPTIONAL: not a necessary parameter to pass.
         pid: INT,
         modules: {
             API: BOOL,
-            Shroudnode: BOOL
+            Fivegnode: BOOL
         },
-        Shroudnode: {
+        Fivegnode: {
             localCount: INT,
             totalCount: INT,
             enabledCount: INT
@@ -214,26 +214,26 @@ OPTIONAL: not a necessary parameter to pass.
                     {
                         STRING: (txid)
                             { 
-                            ["mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"]: (category) 
+                            ["mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"]: (category) 
                                  {
                                     address: STRING,
-                                    category: STRING("mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"),
+                                    category: STRING("mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"),
                                     amount: INT,
                                     fee: INT(sats),
-                                    label: STRING (VAR : address is part of shroudd "account")
+                                    label: STRING (VAR : address is part of fivegd "account")
                                     firstSeenAt: INT(secs), 
                                     blockHash: STRING,
                                     blockTime: INT(secs),                            
                                     blockHeight: INT,
                                     txid: STRING
                                 },
-                            ["mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"]: (category) 
+                            ["mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"]: (category) 
                                  {
                                     address: STRING,
-                                    category: STRING("mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"),
+                                    category: STRING("mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"),
                                     amount: INT,
                                     fee: INT(sats),
-                                    label: STRING (VAR : address is part of shroudd "account")
+                                    label: STRING (VAR : address is part of fivegd "account")
                                     firstSeenAt: INT(secs), 
                                     blockHash: STRING,
                                     blockTime: INT(secs),                            
@@ -244,26 +244,26 @@ OPTIONAL: not a necessary parameter to pass.
                             },
                         STRING: (txid)
                             { 
-                            ["mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"]: (category) 
+                            ["mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"]: (category) 
                                  {
                                     address: STRING,
-                                    category: STRING("mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"),
+                                    category: STRING("mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"),
                                     amount: INT,
                                     fee: INT(sats),
-                                    label: STRING (VAR : address is part of shroudd "account")
+                                    label: STRING (VAR : address is part of fivegd "account")
                                     firstSeenAt: INT(secs), 
                                     blockHash: STRING,
                                     blockTime: INT(secs),                            
                                     blockHeight: INT,
                                     txid: STRING                                    
                                 },
-                            ["mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"]: (category) 
+                            ["mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"]: (category) 
                                  {
                                     address: STRING,
-                                    category: STRING("mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"),
+                                    category: STRING("mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"),
                                     amount: INT,
                                     fee: INT(sats),
-                                    label: STRING (VAR : address is part of shroudd "account")
+                                    label: STRING (VAR : address is part of fivegd "account")
                                     firstSeenAt: INT(secs), 
                                     blockHash: STRING,
                                     blockTime: INT(secs),                            
@@ -277,7 +277,7 @@ OPTIONAL: not a necessary parameter to pass.
                 total: 
                     {
                         sent: INT, (VAR : category=="send"|"mint"|"spend")
-                        balance: INT, (VAR: category=="mined"|"shroudnode"|"receive"|)
+                        balance: INT, (VAR: category=="mined"|"fivegnode"|"receive"|)
                     } 
             },
         [STRING | "MINT"]: (address)
@@ -286,26 +286,26 @@ OPTIONAL: not a necessary parameter to pass.
                     {
                         STRING: (txid)
                             { 
-                            ["mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"]: (category) 
+                            ["mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"]: (category) 
                                  {
                                     address: STRING,
-                                    category: STRING("mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"),
+                                    category: STRING("mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"),
                                     amount: INT,
                                     fee: INT(sats),
-                                    label: STRING (VAR : address is part of shroudd "account")
+                                    label: STRING (VAR : address is part of fivegd "account")
                                     firstSeenAt: INT(secs), 
                                     blockHash: STRING,
                                     blockTime: INT(secs),                            
                                     blockHeight: INT,
                                     txid: STRING 
                                 },
-                            ["mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"]: (category) 
+                            ["mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"]: (category) 
                                  {
                                     address: STRING,
-                                    category: STRING("mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"),
+                                    category: STRING("mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"),
                                     amount: INT,
                                     fee: INT(sats),
-                                    label: STRING (VAR : address is part of shroudd "account")
+                                    label: STRING (VAR : address is part of fivegd "account")
                                     firstSeenAt: INT(secs), 
                                     blockHash: STRING,
                                     blockTime: INT(secs),                            
@@ -316,26 +316,26 @@ OPTIONAL: not a necessary parameter to pass.
                             },
                         STRING: (txid)
                             { 
-                            ["mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"]: (category) 
+                            ["mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"]: (category) 
                                  {
                                     address: STRING,
-                                    category: STRING("mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"),
+                                    category: STRING("mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"),
                                     amount: INT,
                                     fee: INT(sats),
-                                    label: STRING (VAR : address is part of shroudd "account")
+                                    label: STRING (VAR : address is part of fivegd "account")
                                     firstSeenAt: INT(secs), 
                                     blockHash: STRING,
                                     blockTime: INT(secs),                            
                                     blockHeight: INT,
                                     txid: STRING 
                                 },
-                            ["mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"]: (category) 
+                            ["mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"]: (category) 
                                  {
                                     address: STRING,
-                                    category: STRING("mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"),
+                                    category: STRING("mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"),
                                     amount: INT,
                                     fee: INT(sats),
-                                    label: STRING (VAR : address is part of shroudd "account")
+                                    label: STRING (VAR : address is part of fivegd "account")
                                     firstSeenAt: INT(secs), 
                                     blockHash: STRING,
                                     blockTime: INT(secs),                            
@@ -349,7 +349,7 @@ OPTIONAL: not a necessary parameter to pass.
                 total: 
                     {
                         sent: INT, (VAR : category=="send"|"mint"|"spend")
-                        balance: INT, (VAR: category=="mined"|"shroudnode"|"receive"|)
+                        balance: INT, (VAR: category=="mined"|"fivegnode"|"receive"|)
                     }  
             },
         ...
@@ -374,7 +374,7 @@ OPTIONAL: not a necessary parameter to pass.
         type: STRING,
         status: {
             isBlockchainSynced: BOOL,
-            isShroudnodeListSynced: BOOL,
+            isFivegnodeListSynced: BOOL,
             isWinnersListSynced: BOOL,
             isSynced: BOOL,
             isFailed: BOOL
@@ -913,26 +913,26 @@ OPTIONAL: not a necessary parameter to pass.
                     {
                         STRING: (txid)
                             { 
-                            ["mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"]: (category) 
+                            ["mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"]: (category) 
                                  {
                                     address: STRING,
-                                    category: STRING("mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"),
+                                    category: STRING("mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"),
                                     amount: INT,
                                     fee: INT(sats),
-                                    label: STRING (VAR : address is part of shroudd "account")
+                                    label: STRING (VAR : address is part of fivegd "account")
                                     firstSeenAt: INT(secs), 
                                     blockHash: STRING,
                                     blockTime: INT(secs),                            
                                     blockHeight: INT,
                                     txid: STRING
                                 },
-                            ["mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"]: (category) 
+                            ["mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"]: (category) 
                                  {
                                     address: STRING,
-                                    category: STRING("mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"),
+                                    category: STRING("mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"),
                                     amount: INT,
                                     fee: INT(sats),
-                                    label: STRING (VAR : address is part of shroudd "account")
+                                    label: STRING (VAR : address is part of fivegd "account")
                                     firstSeenAt: INT(secs), 
                                     blockHash: STRING,
                                     blockTime: INT(secs),                            
@@ -943,26 +943,26 @@ OPTIONAL: not a necessary parameter to pass.
                             },
                         STRING: (txid)
                             { 
-                            ["mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"]: (category) 
+                            ["mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"]: (category) 
                                  {
                                     address: STRING,
-                                    category: STRING("mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"),
+                                    category: STRING("mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"),
                                     amount: INT,
                                     fee: INT(sats),
-                                    label: STRING (VAR : address is part of shroudd "account")
+                                    label: STRING (VAR : address is part of fivegd "account")
                                     firstSeenAt: INT(secs), 
                                     blockHash: STRING,
                                     blockTime: INT(secs),                            
                                     blockHeight: INT,
                                     txid: STRING                                    
                                 },
-                            ["mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"]: (category) 
+                            ["mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"]: (category) 
                                  {
                                     address: STRING,
-                                    category: STRING("mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"),
+                                    category: STRING("mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"),
                                     amount: INT,
                                     fee: INT(sats),
-                                    label: STRING (VAR : address is part of shroudd "account")
+                                    label: STRING (VAR : address is part of fivegd "account")
                                     firstSeenAt: INT(secs), 
                                     blockHash: STRING,
                                     blockTime: INT(secs),                            
@@ -976,7 +976,7 @@ OPTIONAL: not a necessary parameter to pass.
                 total: 
                     {
                         sent: INT, (VAR : category=="send"|"mint"|"spend")
-                        balance: INT, (VAR: category=="mined"|"shroudnode"|"receive"|)
+                        balance: INT, (VAR: category=="mined"|"fivegnode"|"receive"|)
                     } 
             },
         [STRING | "MINT"]: (address)
@@ -985,26 +985,26 @@ OPTIONAL: not a necessary parameter to pass.
                     {
                         STRING: (txid)
                             { 
-                            ["mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"]: (category) 
+                            ["mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"]: (category) 
                                  {
                                     address: STRING,
-                                    category: STRING("mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"),
+                                    category: STRING("mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"),
                                     amount: INT,
                                     fee: INT(sats),
-                                    label: STRING (VAR : address is part of shroudd "account")
+                                    label: STRING (VAR : address is part of fivegd "account")
                                     firstSeenAt: INT(secs), 
                                     blockHash: STRING,
                                     blockTime: INT(secs),                            
                                     blockHeight: INT,
                                     txid: STRING 
                                 },
-                            ["mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"]: (category) 
+                            ["mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"]: (category) 
                                  {
                                     address: STRING,
-                                    category: STRING("mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"),
+                                    category: STRING("mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"),
                                     amount: INT,
                                     fee: INT(sats),
-                                    label: STRING (VAR : address is part of shroudd "account")
+                                    label: STRING (VAR : address is part of fivegd "account")
                                     firstSeenAt: INT(secs), 
                                     blockHash: STRING,
                                     blockTime: INT(secs),                            
@@ -1015,26 +1015,26 @@ OPTIONAL: not a necessary parameter to pass.
                             },
                         STRING: (txid)
                             { 
-                            ["mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"]: (category) 
+                            ["mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"]: (category) 
                                  {
                                     address: STRING,
-                                    category: STRING("mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"),
+                                    category: STRING("mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"),
                                     amount: INT,
                                     fee: INT(sats),
-                                    label: STRING (VAR : address is part of shroudd "account")
+                                    label: STRING (VAR : address is part of fivegd "account")
                                     firstSeenAt: INT(secs), 
                                     blockHash: STRING,
                                     blockTime: INT(secs),                            
                                     blockHeight: INT,
                                     txid: STRING 
                                 },
-                            ["mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"]: (category) 
+                            ["mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"]: (category) 
                                  {
                                     address: STRING,
-                                    category: STRING("mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"),
+                                    category: STRING("mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"),
                                     amount: INT,
                                     fee: INT(sats),
-                                    label: STRING (VAR : address is part of shroudd "account")
+                                    label: STRING (VAR : address is part of fivegd "account")
                                     firstSeenAt: INT(secs), 
                                     blockHash: STRING,
                                     blockTime: INT(secs),                            
@@ -1048,7 +1048,7 @@ OPTIONAL: not a necessary parameter to pass.
                 total: 
                     {
                         sent: INT, (VAR : category=="send"|"mint"|"spend")
-                        balance: INT, (VAR: category=="mined"|"shroudnode"|"receive"|)
+                        balance: INT, (VAR: category=="mined"|"fivegnode"|"receive"|)
                     }  
             },
         ...
@@ -1140,7 +1140,7 @@ OPTIONAL: not a necessary parameter to pass.
 }
 ```
 
-### `shroudnodeControl`
+### `fivegnodeControl`
 `update`:
 ```
     data: {
@@ -1177,7 +1177,7 @@ OPTIONAL: not a necessary parameter to pass.
 }
 ```
 
-### `shroudnodeKey`
+### `fivegnodeKey`
 `create`:
 ```
     data: {
@@ -1195,7 +1195,7 @@ OPTIONAL: not a necessary parameter to pass.
 }
 ```
 
-### `shroudnodeList`
+### `fivegnodeList`
 `initial`:
 ```
     data: {
@@ -1205,14 +1205,14 @@ OPTIONAL: not a necessary parameter to pass.
 ```
 {
 
-    data: (VAR: Shroudnodes not synced) {
+    data: (VAR: Fivegnodes not synced) {
         nodes: {
             STRING: (txid) {
                 label: STRING,
                 isMine: BOOL,
                 outpoint: {
                     txid: STRING,
-                    shroud: INT
+                    fiveg: INT
                 },
                 authority: {
                     ip: STRING,
@@ -1225,7 +1225,7 @@ OPTIONAL: not a necessary parameter to pass.
                 isMine: BOOL,
                 outpoint: {
                     txid: STRING,
-                    shroud: INT
+                    fiveg: INT
                 },
                 authority: {
                     ip: STRING,
@@ -1239,12 +1239,12 @@ OPTIONAL: not a necessary parameter to pass.
         total: INT
     },
 
-    data: (VAR: Shroudnodes synced) {
+    data: (VAR: Fivegnodes synced) {
         STRING: { (payeeAddress)
             rank: INT,
             outpoint: {
                 txid: STRING,
-                shroud: STRING
+                fiveg: STRING
             },
             status: STRING,
             protocolVersion: INT,
@@ -1279,7 +1279,7 @@ OPTIONAL: not a necessary parameter to pass.
             rank: INT,
             outpoint: {
                 txid: STRING,
-                shroud: STRING
+                fiveg: STRING
             },
             status: STRING,
             protocolVersion: INT,
@@ -1322,9 +1322,9 @@ OPTIONAL: not a necessary parameter to pass.
 The publisher module is comprised of various _topics_ that are triggered under specific conditions, called _events_. Both topics and events have a 1 to N relationship with each other; ie. 1 event may trigger 1 to N topics, and 1 topic may be triggered by 1 to N events.
 
 
-|               | _Event_       | NotifyAPIStatus  | SyncTransaction | NumConnectionsChanged | UpdatedBlockTip | UpdatedMintStatus  | UpdatedSettings | UpdatedShroudnode | UpdateSyncStatus |
+|               | _Event_       | NotifyAPIStatus  | SyncTransaction | NumConnectionsChanged | UpdatedBlockTip | UpdatedMintStatus  | UpdatedSettings | UpdatedFivegnode | UpdateSyncStatus |
 | ------------- | ------------- | ---------------  | --------------- | --------------------- | --------------- | -----------------  | --------------- | ------------ | ---------------- |
-| **_Topic_**   | Description   | API status notification | new transactions | shroudd peer list updated | blockchain head updated | mint transaction added/up dated | settings changed/updated | Shroudnode update | Blockchain sync update
+| **_Topic_**   | Description   | API status notification | new transactions | fivegd peer list updated | blockchain head updated | mint transaction added/up dated | settings changed/updated | Fivegnode update | Blockchain sync update
 **address** (triggers [block](#block))                 | block tx data.                            | -  | -  | -  | ✅ | -  | -  | -  | -  |
 **apiStatus** (triggers [apiStatus](#apistatus))       | Status of API                             | ✅ | -  | -  | -  | -  | -  | -  | -  |
 **balance** (triggers [balance](#balance))             | Balance info                              | -  | -  | -  | ✅ | -  | -  | -  | -  |
@@ -1332,7 +1332,7 @@ The publisher module is comprised of various _topics_ that are triggered under s
 **mintStatus** (triggers [mintStatus](#mintstatus))    | status of new mint                        | -  | -  | -  | -  | ✅ | -  | -  | -  |
 **settings** (triggers [readSettings](#readsettings))  | settings changed                          | -  | -  | -  | -  | -  | ✅ | -  | -  |
 **transaction** (triggers [transaction](#transaction)) | new transaction data                      | -  | ✅ | -  | -  | -  | -  | -  | -  |
-**shroudnode** (triggers [shroudnodeUpdate](#shroudnodeupdate))       | update to shroudnode                           | -  | -  | -  | -  | -  | -  | ✅ | -  |
+**fivegnode** (triggers [fivegnodeUpdate](#fivegnodeupdate))       | update to fivegnode                           | -  | -  | -  | -  | -  | -  | ✅ | -  |
 
 ## Methods
 
@@ -1345,12 +1345,12 @@ Methods specific to the publisher.
     "data": {
         STRING: (txid + index) {
             txid: STRING,
-            shroud: STRING,
+            fiveg: STRING,
             available: BOOL
         },
         STRING: (txid + index) {
             txid: STRING,
-            shroud: STRING,
+            fiveg: STRING,
             available: BOOL
         },
         ...
@@ -1401,26 +1401,26 @@ Methods specific to the publisher.
                     {
                         STRING: (txid)
                             { 
-                            ["mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"]: (category) 
+                            ["mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"]: (category) 
                                  {
                                     address: STRING,
-                                    category: STRING("mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"),
+                                    category: STRING("mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"),
                                     amount: INT,
                                     fee: INT(sats),
-                                    label: STRING (VAR : address is part of shroudd "account")
+                                    label: STRING (VAR : address is part of fivegd "account")
                                     firstSeenAt: INT(secs), 
                                     blockHash: STRING,
                                     blockTime: INT(secs),                            
                                     blockHeight: INT,
                                     txid: STRING
                                 },
-                            ["mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"]: (category) 
+                            ["mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"]: (category) 
                                  {
                                     address: STRING,
-                                    category: STRING("mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"),
+                                    category: STRING("mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"),
                                     amount: INT,
                                     fee: INT(sats),
-                                    label: STRING (VAR : address is part of shroudd "account")
+                                    label: STRING (VAR : address is part of fivegd "account")
                                     firstSeenAt: INT(secs), 
                                     blockHash: STRING,
                                     blockTime: INT(secs),                            
@@ -1431,26 +1431,26 @@ Methods specific to the publisher.
                             },
                         STRING: (txid)
                             { 
-                            ["mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"]: (category) 
+                            ["mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"]: (category) 
                                  {
                                     address: STRING,
-                                    category: STRING("mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"),
+                                    category: STRING("mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"),
                                     amount: INT,
                                     fee: INT(sats),
-                                    label: STRING (VAR : address is part of shroudd "account")
+                                    label: STRING (VAR : address is part of fivegd "account")
                                     firstSeenAt: INT(secs), 
                                     blockHash: STRING,
                                     blockTime: INT(secs),                            
                                     blockHeight: INT,
                                     txid: STRING                                    
                                 },
-                            ["mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"]: (category) 
+                            ["mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"]: (category) 
                                  {
                                     address: STRING,
-                                    category: STRING("mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"),
+                                    category: STRING("mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"),
                                     amount: INT,
                                     fee: INT(sats),
-                                    label: STRING (VAR : address is part of shroudd "account")
+                                    label: STRING (VAR : address is part of fivegd "account")
                                     firstSeenAt: INT(secs), 
                                     blockHash: STRING,
                                     blockTime: INT(secs),                            
@@ -1464,7 +1464,7 @@ Methods specific to the publisher.
                 total: 
                     {
                         sent: INT, (VAR : category=="send"|"mint"|"spend")
-                        balance: INT, (VAR: category=="mined"|"shroudnode"|"receive"|)
+                        balance: INT, (VAR: category=="mined"|"fivegnode"|"receive"|)
                     } 
             },
         [STRING | "MINT"]: (address)
@@ -1473,26 +1473,26 @@ Methods specific to the publisher.
                     {
                         STRING: (txid)
                             { 
-                            ["mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"]: (category) 
+                            ["mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"]: (category) 
                                  {
                                     address: STRING,
-                                    category: STRING("mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"),
+                                    category: STRING("mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"),
                                     amount: INT,
                                     fee: INT(sats),
-                                    label: STRING (VAR : address is part of shroudd "account")
+                                    label: STRING (VAR : address is part of fivegd "account")
                                     firstSeenAt: INT(secs), 
                                     blockHash: STRING,
                                     blockTime: INT(secs),                            
                                     blockHeight: INT,
                                     txid: STRING 
                                 },
-                            ["mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"]: (category) 
+                            ["mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"]: (category) 
                                  {
                                     address: STRING,
-                                    category: STRING("mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"),
+                                    category: STRING("mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"),
                                     amount: INT,
                                     fee: INT(sats),
-                                    label: STRING (VAR : address is part of shroudd "account")
+                                    label: STRING (VAR : address is part of fivegd "account")
                                     firstSeenAt: INT(secs), 
                                     blockHash: STRING,
                                     blockTime: INT(secs),                            
@@ -1503,26 +1503,26 @@ Methods specific to the publisher.
                             },
                         STRING: (txid)
                             { 
-                            ["mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"]: (category) 
+                            ["mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"]: (category) 
                                  {
                                     address: STRING,
-                                    category: STRING("mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"),
+                                    category: STRING("mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"),
                                     amount: INT,
                                     fee: INT(sats),
-                                    label: STRING (VAR : address is part of shroudd "account")
+                                    label: STRING (VAR : address is part of fivegd "account")
                                     firstSeenAt: INT(secs), 
                                     blockHash: STRING,
                                     blockTime: INT(secs),                            
                                     blockHeight: INT,
                                     txid: STRING 
                                 },
-                            ["mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"]: (category) 
+                            ["mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"]: (category) 
                                  {
                                     address: STRING,
-                                    category: STRING("mined"|"send"|"receive"|"shroudnode"|"spend"|"mint"),
+                                    category: STRING("mined"|"send"|"receive"|"fivegnode"|"spend"|"mint"),
                                     amount: INT,
                                     fee: INT(sats),
-                                    label: STRING (VAR : address is part of shroudd "account")
+                                    label: STRING (VAR : address is part of fivegd "account")
                                     firstSeenAt: INT(secs), 
                                     blockHash: STRING,
                                     blockTime: INT(secs),                            
@@ -1536,7 +1536,7 @@ Methods specific to the publisher.
                 total: 
                     {
                         sent: INT, (VAR : category=="send"|"mint"|"spend")
-                        balance: INT, (VAR: category=="mined"|"shroudnode"|"receive"|)
+                        balance: INT, (VAR: category=="mined"|"fivegnode"|"receive"|)
                     }  
             },
         ...
@@ -1547,7 +1547,7 @@ Methods specific to the publisher.
 }
 ```
 
-### `shroudnodeUpdate` 
+### `fivegnodeUpdate` 
 *Returns:*
 ```
 {
@@ -1556,7 +1556,7 @@ Methods specific to the publisher.
             rank: INT,
             outpoint: {
                 txid: STRING,
-                shroud: STRING
+                fiveg: STRING
             },
             status: STRING,
             protocolVersion: INT,

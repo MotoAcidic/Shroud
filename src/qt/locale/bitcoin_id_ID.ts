@@ -154,8 +154,8 @@
         <translation>Mengindex ulang blok di dalam disk...</translation>
     </message>
     <message>
-        <source>Send coins to a Shroud address</source>
-        <translation>Kirim koin ke alamat Shroud</translation>
+        <source>Send coins to a Fiveg address</source>
+        <translation>Kirim koin ke alamat Fiveg</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -178,8 +178,8 @@
         <translation>&amp;Verifikasi pesan...</translation>
     </message>
     <message>
-        <source>Shroud</source>
-        <translation>Shroud</translation>
+        <source>Fiveg</source>
+        <translation>Fiveg</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -206,12 +206,12 @@
         <translation>Enkripsi private key yang dimiliki dompet Anda</translation>
     </message>
     <message>
-        <source>Sign messages with your Shroud addresses to prove you own them</source>
-        <translation>Tanda tangani sebuah pesan menggunakan alamat Shroud Anda untuk membuktikan bahwa Anda adalah pemilik alamat tersebut</translation>
+        <source>Sign messages with your Fiveg addresses to prove you own them</source>
+        <translation>Tanda tangani sebuah pesan menggunakan alamat Fiveg Anda untuk membuktikan bahwa Anda adalah pemilik alamat tersebut</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Shroud addresses</source>
-        <translation>Verifikasi pesan untuk memastikan bahwa pesan tersebut ditanda tangani oleh suatu alamat Shroud tertentu</translation>
+        <source>Verify messages to ensure they were signed with specified Fiveg addresses</source>
+        <translation>Verifikasi pesan untuk memastikan bahwa pesan tersebut ditanda tangani oleh suatu alamat Fiveg tertentu</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -230,8 +230,8 @@
         <translation>Baris tab</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and shroud: URIs)</source>
-        <translation>Permintaan pembayaran (membuat kode QR dan shroud: URIs)</translation>
+        <source>Request payments (generates QR codes and fiveg: URIs)</source>
+        <translation>Permintaan pembayaran (membuat kode QR dan fiveg: URIs)</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -242,16 +242,16 @@
         <translation>Tampilkan daftar alamat dan label yang diterima</translation>
     </message>
     <message>
-        <source>Open a shroud: URI or payment request</source>
-        <translation>Buka URI shroud: atau permintaan pembayaran</translation>
+        <source>Open a fiveg: URI or payment request</source>
+        <translation>Buka URI fiveg: atau permintaan pembayaran</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
         <translation>&amp;pilihan Command-line</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Shroud network</source>
-        <translation><numerusform>%n koneksi aktif ke jaringan Shroud</numerusform></translation>
+        <source>%n active connection(s) to Fiveg network</source>
+        <translation><numerusform>%n koneksi aktif ke jaringan Fiveg</numerusform></translation>
     </message>
     <message>
         <source>No block source available...</source>
@@ -669,16 +669,16 @@
         <translation>&amp;Perubahan saldo untuk transaksi yang belum dikonfirmasi</translation>
     </message>
     <message>
-        <source>Automatically open the Shroud client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Otomatis membuka port client Shroud di router. Hanya berjalan apabila router anda mendukung UPnP dan di-enable.</translation>
+        <source>Automatically open the Fiveg client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Otomatis membuka port client Fiveg di router. Hanya berjalan apabila router anda mendukung UPnP dan di-enable.</translation>
     </message>
     <message>
         <source>Map port using &amp;UPnP</source>
         <translation>Petakan port dengan &amp;UPnP</translation>
     </message>
     <message>
-        <source>Connect to the Shroud network through a SOCKS5 proxy.</source>
-        <translation>Hubungkan ke jaringan Shroud melalui SOCKS5 proxy.</translation>
+        <source>Connect to the Fiveg network through a SOCKS5 proxy.</source>
+        <translation>Hubungkan ke jaringan Fiveg melalui SOCKS5 proxy.</translation>
     </message>
     <message>
         <source>Proxy &amp;IP:</source>
@@ -784,8 +784,8 @@
         <translation>Formulir</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Shroud network after a connection is established, but this process has not completed yet.</source>
-        <translation>Informasi terlampir mungkin sudah kedaluwarsa. Dompet Anda secara otomatis mensinkronisasi dengan jaringan Shroud ketika sebuah hubungan terbentuk, namun proses ini belum selesai.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Fiveg network after a connection is established, but this process has not completed yet.</source>
+        <translation>Informasi terlampir mungkin sudah kedaluwarsa. Dompet Anda secara otomatis mensinkronisasi dengan jaringan Fiveg ketika sebuah hubungan terbentuk, namun proses ini belum selesai.</translation>
     </message>
     <message>
         <source>Available:</source>
@@ -841,8 +841,8 @@
         <translation>Nilai</translation>
     </message>
     <message>
-        <source>Enter a Shroud address (e.g. %1)</source>
-        <translation>Masukkan alamat Shroud (contoh %1)</translation>
+        <source>Enter a Fiveg address (e.g. %1)</source>
+        <translation>Masukkan alamat Fiveg (contoh %1)</translation>
     </message>
     <message>
         <source>%1 h</source>
@@ -1317,8 +1317,8 @@
         <translation>Salin tanda tangan terpilih ke sistem klipboard</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Shroud address</source>
-        <translation>Tandai pesan untuk menyetujui kamu pemiliki alamat Shroud ini</translation>
+        <source>Sign the message to prove you own this Fiveg address</source>
+        <translation>Tandai pesan untuk menyetujui kamu pemiliki alamat Fiveg ini</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -1388,7 +1388,7 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>shroud-core</name>
+    <name>fiveg-core</name>
     <message>
         <source>Options:</source>
         <translation>Pilihan:</translation>
@@ -1418,8 +1418,8 @@
         <translation>Terima hubungan dari luar (standar: 1 kalau -proxy atau -connect tidak dipilih)</translation>
     </message>
     <message>
-        <source>Shroud Core</source>
-        <translation>Shroud Core</translation>
+        <source>Fiveg Core</source>
+        <translation>Fiveg Core</translation>
     </message>
     <message>
         <source>Execute command when a wallet transaction changes (%s in cmd is replaced by TxID)</source>

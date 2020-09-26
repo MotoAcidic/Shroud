@@ -8,8 +8,8 @@
 #include "definition.h"
 #include "wallet/wallet.h"
 #include "wallet/walletdb.h"
-#include "shroudnode-payments.h"
-#include "shroudnode-sync.h"
+#include "fivegnode-payments.h"
+#include "fivegnode-sync.h"
 #include "sigma/remint.h"
 
 #include <atomic>
@@ -548,29 +548,29 @@ bool CheckZerocoinFoundersInputs(const CTransaction &tx, CValidationState &state
         }
 
         int total_payment_tx = 0; // no more than 1 output for payment
-        if (nHeight >= params.nShroudnodePaymentsStartBlock) {
-            CAmount shroudnodePayment = GetShroudnodePayment(params, fMTP,nHeight);
+        if (nHeight >= params.nFivegnodePaymentsStartBlock) {
+            CAmount fivegnodePayment = GetFivegnodePayment(params, fMTP,nHeight);
             BOOST_FOREACH(const CTxOut &output, tx.vout) {
-                if (shroudnodePayment == output.nValue) {
+                if (fivegnodePayment == output.nValue) {
                     total_payment_tx = total_payment_tx + 1;
                 }
             }
 
-            bool validShroudnodePayment;
+            bool validFivegnodePayment;
 
-            if (nHeight > params.nShroudnodePaymentsBugFixedAtBlock) {
-                if (!shroudnodeSync.IsSynced()) {
-                    validShroudnodePayment = true;
+            if (nHeight > params.nFivegnodePaymentsBugFixedAtBlock) {
+                if (!fivegnodeSync.IsSynced()) {
+                    validFivegnodePayment = true;
                 } else {
-                    validShroudnodePayment = mnpayments.IsTransactionValid(tx, nHeight, fMTP);
+                    validFivegnodePayment = mnpayments.IsTransactionValid(tx, nHeight, fMTP);
                 }
             } else {
-                validShroudnodePayment = total_payment_tx <= 1;
+                validFivegnodePayment = total_payment_tx <= 1;
             }
 
-            if (!validShroudnodePayment) {
-                return state.DoS(100, false, REJECT_INVALID_SHROUDNODE_PAYMENT,
-                                 "CTransaction::CheckTransaction() : invalid shroudnode payment");
+            if (!validFivegnodePayment) {
+                return state.DoS(100, false, REJECT_INVALID_FIVEGNODE_PAYMENT,
+                                 "CTransaction::CheckTransaction() : invalid fivegnode payment");
             }
         
     }

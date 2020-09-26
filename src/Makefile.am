@@ -89,7 +89,7 @@ LIBBITCOIN_CONSENSUS=libbitcoin_consensus.a
 LIBBITCOIN_CLI=libbitcoin_cli.a
 LIBBITCOIN_UTIL=libbitcoin_util.a
 LIBBITCOIN_CRYPTO=crypto/libbitcoin_crypto.a
-LIBBITCOINQT=qt/libshroudqt.a
+LIBBITCOINQT=qt/libfivegqt.a
 LIBSECP256K1=secp256k1/libsecp256k1.la
 
 LIBZCOIN_SIGMA=libsigma.a
@@ -130,17 +130,17 @@ TESTS =
 BENCHMARKS =
 
 if BUILD_BITCOIND
-  bin_PROGRAMS += shroudd
+  bin_PROGRAMS += fivegd
 endif
 
 if BUILD_BITCOIN_UTILS
-  bin_PROGRAMS += shroud-cli shroud-tx
+  bin_PROGRAMS += fiveg-cli fiveg-tx
 endif
 
 .PHONY: FORCE check-symbols check-security
 # bitcoin core #
 BITCOIN_CORE_H = \
-  activeshroudnode.h \
+  activefivegnode.h \
   addressindex.h \
   spentindex.h \
   addrman.h \
@@ -178,11 +178,11 @@ BITCOIN_CORE_H = \
   limitedmap.h \
   threadinterrupt.h \
   main.h \
-  shroudnode.h \
-  shroudnode-payments.h \
-  shroudnode-sync.h \
-  shroudnodeman.h \
-  shroudnodeconfig.h \
+  fivegnode.h \
+  fivegnode-payments.h \
+  fivegnode-sync.h \
+  fivegnodeman.h \
+  fivegnodeconfig.h \
   mbstring.h \
   memusage.h \
   merkleblock.h \
@@ -259,7 +259,7 @@ obj/build.h: FORCE
 	  $(abs_top_srcdir)
 libbitcoin_util_a-clientversion.$(OBJEXT): obj/build.h
 
-# server: shared between shroudd and shroud-qt
+# server: shared between fivegd and fiveg-qt
 libbitcoin_server_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT_CFLAGS) $(EVENT_PTHREADS_CFLAGS)
 libbitcoin_server_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_server_a_SOURCES = \
@@ -292,7 +292,7 @@ libbitcoin_server_a_SOURCES = \
   rpc/misc.cpp \
   rpc/net.cpp \
   rpc/rawtransaction.cpp \
-  rpc/rpcshroudnode.cpp \
+  rpc/rpcfivegnode.cpp \
   rpc/server.cpp \
   script/sigcache.cpp \
   script/ismine.cpp \
@@ -316,20 +316,20 @@ libbitcoin_zmq_a_SOURCES = \
   rpc/client.cpp
 endif
 
-# wallet: shared between shroudd and shroud-qt, but only linked
+# wallet: shared between fivegd and fiveg-qt, but only linked
 # when wallet enabled
 libbitcoin_wallet_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_wallet_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_wallet_a_SOURCES = \
-  activeshroudnode.cpp \
+  activefivegnode.cpp \
   darksend.cpp \
   hdmint/hdmint.cpp \
-  shroudnode.cpp \
+  fivegnode.cpp \
   instantx.cpp \
-  shroudnode-payments.cpp \
-  shroudnode-sync.cpp \
-  shroudnodeconfig.cpp \
-  shroudnodeman.cpp \
+  fivegnode-payments.cpp \
+  fivegnode-sync.cpp \
+  fivegnodeconfig.cpp \
+  fivegnodeman.cpp \
   hdmint/mintpool.cpp \
   hdmint/wallet.cpp \
   sigma.cpp \
@@ -458,7 +458,7 @@ libbitcoin_consensus_a_SOURCES = \
   version.h \
   auxpow.h
 
-# common: shared between shroudd, and shroud-qt and non-server tools
+# common: shared between fivegd, and fiveg-qt and non-server tools
 libbitcoin_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_common_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_common_a_SOURCES = \
@@ -566,7 +566,7 @@ libbitcoin_util_a_SOURCES += compat/glibc_compat.cpp
 AM_LDFLAGS += $(COMPAT_LDFLAGS)
 endif
 
-# cli: shared between shroud-cli and shroud-qt
+# cli: shared between fiveg-cli and fiveg-qt
 libbitcoin_cli_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_cli_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_cli_a_SOURCES = \
@@ -577,16 +577,16 @@ nodist_libbitcoin_util_a_SOURCES = $(srcdir)/obj/build.h
 #
 
 # bitcoind binary #
-shroudd_SOURCES = bitcoind.cpp
-shroudd_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-shroudd_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-shroudd_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+fivegd_SOURCES = bitcoind.cpp
+fivegd_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+fivegd_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+fivegd_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-shroudd_SOURCES += bitcoind-res.rc
+fivegd_SOURCES += bitcoind-res.rc
 endif
 
-shroudd_LDADD = \
+fivegd_LDADD = \
   $(LIBBITCOIN_SERVER) \
   $(LIBBITCOIN_COMMON) \
   $(LIBUNIVALUE) \
@@ -601,47 +601,47 @@ shroudd_LDADD = \
   $(LIBSECP256K1)
 
 
-shroudd_LDADD += $(TOR_LIBS) $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
+fivegd_LDADD += $(TOR_LIBS) $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
 
 if ENABLE_CLIENTAPI
-shroudd_LDADD += $(MINIZIP_LIBS)
+fivegd_LDADD += $(MINIZIP_LIBS)
 endif
 
-shroudd_LDADD += -lz
+fivegd_LDADD += -lz
 
 
 # bitcoin-cli binary #
-shroud_cli_SOURCES = bitcoin-cli.cpp
-shroud_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
-shroud_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-shroud_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+fiveg_cli_SOURCES = bitcoin-cli.cpp
+fiveg_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
+fiveg_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+fiveg_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-shroud_cli_SOURCES += bitcoin-cli-res.rc
+fiveg_cli_SOURCES += bitcoin-cli-res.rc
 endif
 
-shroud_cli_LDADD = \
+fiveg_cli_LDADD = \
   $(LIBBITCOIN_CLI) \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_CRYPTO)
 
-shroud_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
+fiveg_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
 if ENABLE_CLIENTAPI
-shroud_cli_LDADD += $(MINIZIP_LIBS)
+fiveg_cli_LDADD += $(MINIZIP_LIBS)
 endif
 
 # bitcoin-tx binary #
-shroud_tx_SOURCES = bitcoin-tx.cpp
-shroud_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-shroud_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-shroud_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+fiveg_tx_SOURCES = bitcoin-tx.cpp
+fiveg_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+fiveg_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+fiveg_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-shroud_tx_SOURCES += bitcoin-tx-res.rc
+fiveg_tx_SOURCES += bitcoin-tx-res.rc
 endif
 
-shroud_tx_LDADD = \
+fiveg_tx_LDADD = \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_COMMON) \
   $(LIBBITCOIN_UTIL) \
@@ -649,9 +649,9 @@ shroud_tx_LDADD = \
   $(LIBBITCOIN_CRYPTO) \
   $(LIBSECP256K1)
 
-shroud_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
+fiveg_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 if ENABLE_CLIENTAPI
-shroud_tx_LDADD += $(MINIZIP_LIBS)
+fiveg_tx_LDADD += $(MINIZIP_LIBS)
 endif
 
 # bitcoinconsensus library #

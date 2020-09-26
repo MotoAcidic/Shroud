@@ -2,7 +2,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "shroudnodeman.h"
+#include "fivegnodeman.h"
 #include "main.h"
 #include "init.h"
 #include "util.h"
@@ -10,12 +10,12 @@
 #include "client-api/protocol.h"
 #include "rpc/server.h"
 #include "rpc/client.h"
-#include "shroudnode-sync.h"
+#include "fivegnode-sync.h"
 #include "wallet/wallet.h"
-#include "shroudnode.h"
-#include "shroudnodeconfig.h"
-#include "shroudnodeman.h"
-#include "activeshroudnode.h"
+#include "fivegnode.h"
+#include "fivegnodeconfig.h"
+#include "fivegnodeman.h"
+#include "activefivegnode.h"
 #include <zmqserver/zmqabstract.h>
 #include "univalue.h"
 
@@ -42,7 +42,7 @@ void parseHelpString(UniValue& result, std::string helpString)
         std::string categoryKey = categoryVec[0];
         categoryKey.erase(boost::remove_if(categoryKey, boost::is_any_of("= ")), categoryKey.end());
 
-        for(unsigned shroud=1; index<categoryVec.size(); index++){
+        for(unsigned fiveg=1; index<categoryVec.size(); index++){
            categoryArr.push_back(categoryVec[index]);
         }
         result.push_back(Pair(categoryKey,categoryArr));
@@ -146,7 +146,7 @@ UniValue apistatus(Type type, const UniValue& data, const UniValue& auth, bool f
     UniValue modules(UniValue::VOBJ);
     
     modules.push_back(Pair("API", !APIIsInWarmup()));
-    modules.push_back(Pair("Shroudnode", shroudnodeSync.IsSynced()));
+    modules.push_back(Pair("Fivegnode", fivegnodeSync.IsSynced()));
 
     obj.push_back(Pair("version", CLIENT_VERSION));
     obj.push_back(Pair("protocolVersion", PROTOCOL_VERSION));
@@ -158,19 +158,19 @@ UniValue apistatus(Type type, const UniValue& data, const UniValue& auth, bool f
         }
     }
 
-    UniValue shroudnode(UniValue::VOBJ);
-    shroudnode.push_back(Pair("localCount", shroudnodeConfig.getCount()));
-    shroudnode.push_back(Pair("totalCount", mnodeman.CountShroudnodes()));
-    shroudnode.push_back(Pair("enabledCount", mnodeman.CountEnabled()));
-    obj.push_back(Pair("Shroudnode", shroudnode));
+    UniValue fivegnode(UniValue::VOBJ);
+    fivegnode.push_back(Pair("localCount", fivegnodeConfig.getCount()));
+    fivegnode.push_back(Pair("totalCount", mnodeman.CountFivegnodes()));
+    fivegnode.push_back(Pair("enabledCount", mnodeman.CountEnabled()));
+    obj.push_back(Pair("Fivegnode", fivegnode));
 
     obj.push_back(Pair("dataDir",       GetDataDir(true).string()));
     obj.push_back(Pair("network",       ChainNameFromCommandLine()));
     obj.push_back(Pair("blocks",        (int)chainActive.Height()));
     obj.push_back(Pair("connections",   (int)vNodes.size()));
     obj.push_back(Pair("devAuth",       CZMQAbstract::DEV_AUTH));
-    obj.push_back(Pair("synced",        shroudnodeSync.GetBlockchainSynced()));
-    obj.push_back(Pair("reindexing",    fReindex || !shroudnodeSync.GetBlockchainSynced()));
+    obj.push_back(Pair("synced",        fivegnodeSync.GetBlockchainSynced()));
+    obj.push_back(Pair("reindexing",    fReindex || !fivegnodeSync.GetBlockchainSynced()));
     obj.push_back(Pair("safeMode",      GetWarnings("api") != ""));
 
 #ifdef WIN32
@@ -215,7 +215,7 @@ UniValue stop(Type type, const UniValue& data, const UniValue& auth, bool fHelp)
     if (fHelp)
         throw runtime_error(
             "stop\n"
-            "\nStop ShroudXProject server.");
+            "\nStop FivegXProject server.");
     // Event loop will exit after current HTTP requests have been handled, so
     // this reply will get back to the client.
     StartShutdown();

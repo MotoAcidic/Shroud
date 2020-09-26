@@ -397,20 +397,20 @@ CNode *FindNode(const NodeId nodeid) {
     return NULL;
 }
 
-CNode *ConnectNode(CAddress addrConnect, const char *pszDest, bool fCountFailure, bool fConnectToShroudnode) {
+CNode *ConnectNode(CAddress addrConnect, const char *pszDest, bool fCountFailure, bool fConnectToFivegnode) {
     if (pszDest == NULL) {
-        // we clean shroudnode connections in CShroudnodeMan::ProcessShroudnodeConnections()
-        // so should be safe to skip this and connect to local Hot MN on CActiveShroudnode::ManageState()
-        if (IsLocal(addrConnect) && !fConnectToShroudnode)
+        // we clean fivegnode connections in CFivegnodeMan::ProcessFivegnodeConnections()
+        // so should be safe to skip this and connect to local Hot MN on CActiveFivegnode::ManageState()
+        if (IsLocal(addrConnect) && !fConnectToFivegnode)
             return NULL;
         LOCK(cs_vNodes);
         // Look for an existing connection
         CNode *pnode = FindNode((CService) addrConnect);
         if (pnode) {
-            // we have existing connection to this node but it was not a connection to shroudnode,
+            // we have existing connection to this node but it was not a connection to fivegnode,
             // change flag and add reference so that we can correctly clear it later
-            if (fConnectToShroudnode && !pnode->fShroudnode) {
-                pnode->fShroudnode = true;
+            if (fConnectToFivegnode && !pnode->fFivegnode) {
+                pnode->fFivegnode = true;
             }
             pnode->AddRef();
             return pnode;
@@ -441,8 +441,8 @@ CNode *ConnectNode(CAddress addrConnect, const char *pszDest, bool fCountFailure
             // name catch this early.
             CNode *pnode = FindNode((CService) addrConnect);
             if (pnode) {
-                if (fConnectToShroudnode && !pnode->fShroudnode) {
-                    pnode->fShroudnode = true;
+                if (fConnectToFivegnode && !pnode->fFivegnode) {
+                    pnode->fFivegnode = true;
                 }
                 pnode->AddRef();
                 {
@@ -460,8 +460,8 @@ CNode *ConnectNode(CAddress addrConnect, const char *pszDest, bool fCountFailure
 
         // Add node
         CNode *pnode = new CNode(hSocket, addrConnect, pszDest ? pszDest : "", false);
-        if (fConnectToShroudnode) {
-            pnode->fShroudnode = true;
+        if (fConnectToFivegnode) {
+            pnode->fFivegnode = true;
         }
         pnode->AddRef();
 
@@ -2840,8 +2840,8 @@ CNode::CNode(SOCKET hSocketIn, const CAddress &addrIn, const std::string &addrNa
     minFeeFilter = 0;
     lastSentFeeFilter = 0;
     nextSendTimeFeeFilter = 0;
-    // shroudnode
-    fShroudnode = false;
+    // fivegnode
+    fFivegnode = false;
 
     BOOST_FOREACH(
     const std::string &msg, getAllNetMessageTypes())

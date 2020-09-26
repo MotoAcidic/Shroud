@@ -5,7 +5,7 @@
 #ifndef DARKSEND_H
 #define DARKSEND_H
 
-#include "shroudnode.h"
+#include "fivegnode.h"
 #include "wallet/wallet.h"
 
 class CDarksendPool;
@@ -38,7 +38,7 @@ static const int PRIVATESEND_KEYS_THRESHOLD_STOP    = 50;
 
 // The main object for accessing mixing
 extern CDarksendPool darkSendPool;
-// A helper object for signing messages from Shroudnodes
+// A helper object for signing messages from Fivegnodes
 extern CDarkSendSigner darkSendSigner;
 
 extern int nPrivateSendRounds;
@@ -170,14 +170,14 @@ public:
 
     /** Sign this mixing transaction
      *  \return true if all conditions are met:
-     *     1) we have an active Shroudnode,
-     *     2) we have a valid Shroudnode private key,
+     *     1) we have an active Fivegnode,
+     *     2) we have a valid Fivegnode private key,
      *     3) we signed the message successfully, and
      *     4) we verified the message successfully
      */
     bool Sign();
-    /// Check if we have a valid Shroudnode address
-    bool CheckSignature(const CPubKey& pubKeyShroudnode);
+    /// Check if we have a valid Fivegnode address
+    bool CheckSignature(const CPubKey& pubKeyFivegnode);
 
     bool Relay();
 
@@ -186,7 +186,7 @@ public:
 
     std::string ToString()
     {
-        return strprintf("nDenom=%d, nTime=%lld, fReady=%s, fTried=%s, shroudnode=%s",
+        return strprintf("nDenom=%d, nTime=%lld, fReady=%s, fTried=%s, fivegnode=%s",
                         nDenom, nTime, fReady ? "true" : "false", fTried ? "true" : "false", vin.prevout.ToStringShort());
     }
 
@@ -231,7 +231,7 @@ public:
     }
 
     bool Sign();
-    bool CheckSignature(const CPubKey& pubKeyShroudnode);
+    bool CheckSignature(const CPubKey& pubKeyFivegnode);
 };
 
 /** Helper object for signing and checking signatures
@@ -239,7 +239,7 @@ public:
 class CDarkSendSigner
 {
 public:
-    /// Is the input associated with this public key? (and there is 10000 SHROUD - checking if valid shroudnode)
+    /// Is the input associated with this public key? (and there is 10000 FIVEG - checking if valid fivegnode)
     bool IsVinAssociatedWithPubkey(const CTxIn& vin, const CPubKey& pubkey);
     /// Set the private/public key values, returns true if successful
     bool GetKeysFromSecret(std::string strSecret, CKey& keyRet, CPubKey& pubkeyRet);
@@ -305,15 +305,15 @@ private:
 
     // The current mixing sessions in progress on the network
     std::vector<CDarksendQueue> vecDarksendQueue;
-    // Keep track of the used Shroudnodes
-    std::vector<CTxIn> vecShroudnodesUsed;
+    // Keep track of the used Fivegnodes
+    std::vector<CTxIn> vecFivegnodesUsed;
 
     std::vector<CAmount> vecDenominationsSkipped;
     std::vector<COutPoint> vecOutPointLocked;
     // Mixing uses collateral transactions to trust parties entering the pool
     // to behave honestly. If they don't it takes their money.
     std::vector<CTransaction> vecSessionCollaterals;
-    std::vector<CDarkSendEntry> vecEntries; // Shroudnode/clients entries
+    std::vector<CDarkSendEntry> vecEntries; // Fivegnode/clients entries
 
     PoolState nState; // should be one of the POOL_STATE_XXX values
     int64_t nTimeLastSuccessfulStep; // the time when last successful mixing step was performed, in UTC milliseconds
@@ -389,14 +389,14 @@ private:
     bool MakeCollateralAmounts();
     bool MakeCollateralAmounts(const CompactTallyItem& tallyItem);
 
-    /// As a client, submit part of a future mixing transaction to a Shroudnode to start the process
+    /// As a client, submit part of a future mixing transaction to a Fivegnode to start the process
     bool SubmitDenominate();
     /// step 1: prepare denominated inputs and outputs
     bool PrepareDenominate(int nMinRounds, int nMaxRounds, std::string& strErrorRet, std::vector<CTxIn>& vecTxInRet, std::vector<CTxOut>& vecTxOutRet);
     /// step 2: send denominated inputs and outputs prepared in step 1
     bool SendDenominate(const std::vector<CTxIn>& vecTxIn, const std::vector<CTxOut>& vecTxOut);
 
-    /// Get Shroudnode updates about the progress of mixing
+    /// Get Fivegnode updates about the progress of mixing
     bool CheckPoolStateUpdate(PoolState nStateNew, int nEntriesCountNew, PoolStatusUpdate nStatusUpdate, PoolMessage nMessageID, int nSessionIDNew=0);
     // Set the 'state' value, with some logging and capturing when the state changed
     void SetState(PoolState nStateNew);
@@ -416,7 +416,7 @@ private:
     void SetNull();
 
 public:
-    CShroudnode* pSubmittedToShroudnode;
+    CFivegnode* pSubmittedToFivegnode;
     int nSessionDenom; //Users must submit an denom matching this
     int nCachedNumBlocks; //used for the overview screen
     bool fCreateAutoBackups; //builtin support for automatic backups

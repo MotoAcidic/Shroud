@@ -1,4 +1,4 @@
-# This is a Dockerfile for shroudd.
+# This is a Dockerfile for fivegd.
 FROM debian:bionic
 
 # Install required system packages
@@ -39,18 +39,18 @@ RUN curl -L https://github.com/zeromq/libzmq/releases/download/v4.3.1/zeromq-4.3
     cd / && rm -rf /tmp/zeromq-4.3.1/
 
 # Create user to run daemon
-RUN useradd -m -U shroudd
+RUN useradd -m -U fivegd
 
-# Build Shroud
-COPY . /tmp/shroud/
+# Build Fiveg
+COPY . /tmp/fiveg/
 
-RUN cd /tmp/shroud && \
+RUN cd /tmp/fiveg && \
     ./autogen.sh && \
     ./configure --without-gui --prefix=/usr && \
     make -j$(nproc) && \
     make check && \
     make install && \
-    cd / && rm -rf /tmp/shroud
+    cd / && rm -rf /tmp/fiveg
 
 # Remove unused packages
 RUN apt-get remove -y \
@@ -65,14 +65,14 @@ RUN apt-get remove -y \
     libzmq3-dev \
     make
 
-# Start Shroud Daemon
-USER shroudd
+# Start Fiveg Daemon
+USER fivegd
 
-RUN mkdir /home/shroudd/.shroud
-VOLUME [ "/home/shroudd/.shroud" ]
+RUN mkdir /home/fivegd/.fiveg
+VOLUME [ "/home/fivegd/.fiveg" ]
 
 # Main network ports
-EXPOSE 42998
+EXPOSE 23020
 EXPOSE 42999
 
 # Test network ports
@@ -83,4 +83,4 @@ EXPOSE 41999
 EXPOSE 40998
 EXPOSE 40999
 
-ENTRYPOINT [ "/usr/bin/shroudd" ]
+ENTRYPOINT [ "/usr/bin/fivegd" ]

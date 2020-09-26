@@ -15,7 +15,7 @@
 #define MASTERNODELIST_FILTER_COOLDOWN_SECONDS            3
 
 namespace Ui {
-    class ShroudnodeList;
+    class FivegnodeList;
 }
 
 class ClientModel;
@@ -25,14 +25,14 @@ QT_BEGIN_NAMESPACE
 class QModelIndex;
 QT_END_NAMESPACE
 
-/** Shroudnode Manager page widget */
-class ShroudnodeList : public QWidget
+/** Fivegnode Manager page widget */
+class FivegnodeList : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit ShroudnodeList(const PlatformStyle *platformStyle, QWidget *parent = 0);
-    ~ShroudnodeList();
+    explicit FivegnodeList(const PlatformStyle *platformStyle, QWidget *parent = 0);
+    ~FivegnodeList();
 
     void setClientModel(ClientModel *clientModel);
     void setWalletModel(WalletModel *walletModel);
@@ -45,7 +45,7 @@ private:
     bool fFilterUpdated;
 
 public Q_SLOTS:
-    void updateMyShroudnodeInfo(QString strAlias, QString strAddr, const COutPoint& outpoint);
+    void updateMyFivegnodeInfo(QString strAlias, QString strAddr, const COutPoint& outpoint);
     void updateMyNodeList(bool fForce = false);
     void updateNodeList();
 
@@ -53,14 +53,14 @@ Q_SIGNALS:
 
 private:
     QTimer *timer;
-    Ui::ShroudnodeList *ui;
+    Ui::FivegnodeList *ui;
     ClientModel *clientModel;
     WalletModel *walletModel;
 
-    // Protects tableWidgetShroudnodes
+    // Protects tableWidgetFivegnodes
     CCriticalSection cs_mnlist;
 
-    // Protects tableWidgetMyShroudnodes
+    // Protects tableWidgetMyFivegnodes
     CCriticalSection cs_mymnlist;
 
     QString strCurrentFilter;
@@ -71,7 +71,7 @@ private Q_SLOTS:
     void on_startButton_clicked();
     void on_startAllButton_clicked();
     void on_startMissingButton_clicked();
-    void on_tableWidgetMyShroudnodes_itemSelectionChanged();
+    void on_tableWidgetMyFivegnodes_itemSelectionChanged();
     void on_UpdateButton_clicked();
 };
 #endif // MASTERNODELIST_H

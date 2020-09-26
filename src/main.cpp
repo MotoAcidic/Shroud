@@ -54,9 +54,9 @@
 
 #include "darksend.h"
 #include "instantx.h"
-#include "shroudnode-payments.h"
-#include "shroudnode-sync.h"
-#include "shroudnodeman.h"
+#include "fivegnode-payments.h"
+#include "fivegnode-sync.h"
+#include "fivegnodeman.h"
 #include "coins.h"
 
 #include "sigma/coinspend.h"
@@ -80,7 +80,7 @@
 using namespace std;
 
 #if defined(NDEBUG)
-# error "Shroud cannot be compiled without assertions."
+# error "Fiveg cannot be compiled without assertions."
 #endif
 
 /**
@@ -120,7 +120,7 @@ CTxMemPool mempool(::minRelayTxFee);
 FeeFilterRounder filterRounder(::minRelayTxFee);
 CTxMemPool stempool(::minRelayTxFee);
 
-// Shroud shroudnode
+// Fiveg fivegnode
 map <uint256, int64_t> mapRejectedBlocks GUARDED_BY(cs_main);
 
 struct IteratorComparator {
@@ -153,7 +153,7 @@ static void CheckBlockIndex(const Consensus::Params &consensusParams);
 /** Constant stuff for coinbase transactions we create: */
 CScript COINBASE_FLAGS;
 
-const string strMessageMagic = "Shroud Signed Message:\n";
+const string strMessageMagic = "Fiveg Signed Message:\n";
 
 // Internal stuff
 namespace {
@@ -3009,7 +3009,7 @@ bool ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pin
         const CTransaction &tx = block.vtx[i];
 
         uint256 txHash = tx.GetHash();
-        if (txIds.count(txHash) > 0 && (fTestNet || pindex->nHeight >= HF_SHROUDNODE_HEIGHT))
+        if (txIds.count(txHash) > 0 && (fTestNet || pindex->nHeight >= HF_FIVEGNODE_HEIGHT))
             return state.DoS(100, error("ConnectBlock(): duplicate transactions in the same block"),
                              REJECT_INVALID, "bad-txns-duplicatetxid");
         txIds.insert(txHash);
@@ -3119,7 +3119,7 @@ bool ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pin
                              REJECT_INVALID, "bad-cs-amount");
     }
 
-    // SHROUDNODE : MODIFIED TO CHECK SHROUDNODE PAYMENTS AND SUPERBLOCKS
+    // FIVEGNODE : MODIFIED TO CHECK FIVEGNODE PAYMENTS AND SUPERBLOCKS
     // It's possible that we simply don't have enough data and this could fail
     // (i.e. block itself could be a correct one and we need to store it),
     // that's why this is in ConnectBlock. Could be the other way around however -
@@ -3132,12 +3132,12 @@ bool ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pin
     }
     //get proper vtx to check mn payments for
     const CTransaction& txNew = (block.nNonce == 0) ? block.vtx[1] : block.vtx[0];
-    if (block.nTime > sporkManager.GetSporkValue(SPORK_8_SHROUDNODE_PAYMENT_ENFORCEMENT) && !IsBlockPayeeValid(txNew, pindex->nHeight, blockReward)) {
+    if (block.nTime > sporkManager.GetSporkValue(SPORK_8_FIVEGNODE_PAYMENT_ENFORCEMENT) && !IsBlockPayeeValid(txNew, pindex->nHeight, blockReward)) {
         mapRejectedBlocks.insert(make_pair(block.GetHash(), GetTime()));
-        return state.DoS(0, error("ConnectBlock(): couldn't find shroudnode or superblock payments"),
+        return state.DoS(0, error("ConnectBlock(): couldn't find fivegnode or superblock payments"),
                          REJECT_INVALID, "bad-cb-payee");
     }
-    // END SHROUDNODE
+    // END FIVEGNODE
 
     if (!control.Wait())
         return state.DoS(100, false);
@@ -3413,7 +3413,7 @@ void static UpdateTip(CBlockIndex *pindexNew, const CChainParams &chainParams) {
     mnodeman.UpdatedBlockTip(chainActive.Tip());
     darkSendPool.UpdatedBlockTip(chainActive.Tip());
     mnpayments.UpdatedBlockTip(chainActive.Tip());
-    shroudnodeSync.UpdatedBlockTip(chainActive.Tip());
+    fivegnodeSync.UpdatedBlockTip(chainActive.Tip());
     GetMainSignals().UpdatedBlockTip(chainActive.Tip());
 
     // New best block
@@ -3765,13 +3765,13 @@ int GetInputAge(const CTxIn &txin) {
     }
 }
 
-CAmount GetShroudnodePayment(const Consensus::Params &params, bool fMTP,int nHeight) {
-if(nHeight > Params().GetConsensus().nShroudnodePaymentsStartBlock)
+CAmount GetFivegnodePayment(const Consensus::Params &params, bool fMTP,int nHeight) {
+if(nHeight > Params().GetConsensus().nFivegnodePaymentsStartBlock)
 {
-    //Give 70 % to masternode
-    return GetBlockSubsidy(nHeight,params) * 0.7;
+    //Give 45 % to masternode
+    return GetBlockSubsidy(nHeight,params) * 0.45;
 }
-    //No reward before shroudnodepaymentsstartblock
+    //No reward before fivegnodepaymentsstartblock
     return 0;
 }
 
@@ -4597,14 +4597,14 @@ bool CheckBlock(const CBlock &block, CValidationState &state,
                         instantsend.Relay(hashLocked);
                         LOCK(cs_main);
                         mapRejectedBlocks.insert(make_pair(block.GetHash(), GetTime()));
-                        return state.DoS(0, error("CheckBlock(SHROUD): transaction %s conflicts with transaction lock %s",
+                        return state.DoS(0, error("CheckBlock(FIVEG): transaction %s conflicts with transaction lock %s",
                                                   tx.GetHash().ToString(), hashLocked.ToString()),
                                          REJECT_INVALID, "conflict-tx-lock");
                     }
                 }
             }
         } else {
-            LogPrintf("CheckBlock(SHROUD): spork is off, skipping transaction locking checks\n");
+            LogPrintf("CheckBlock(FIVEG): spork is off, skipping transaction locking checks\n");
         }
 
         // Check transactions
@@ -5165,7 +5165,7 @@ bool ProcessNewBlock(CValidationState &state, const CChainParams &chainparams, C
         return error("%s: ActivateBestChain failed", __func__);
     }
 
-    shroudnodeSync.GetBlockchainSynced(true);
+    fivegnodeSync.GetBlockchainSynced(true);
 
     return true;
 }
@@ -6224,7 +6224,7 @@ bool static AlreadyHave(const CInv &inv) EXCLUSIVE_LOCKS_REQUIRED(cs_main) {
             return false;
 
         /*
-            Shroud Related Inventory Messages
+            Fiveg Related Inventory Messages
 
             --
 
@@ -6241,26 +6241,26 @@ bool static AlreadyHave(const CInv &inv) EXCLUSIVE_LOCKS_REQUIRED(cs_main) {
         case MSG_SPORK:
             return mapSporks.count(inv.hash);
 
-        case MSG_SHROUDNODE_PAYMENT_VOTE:
-            return mnpayments.mapShroudnodePaymentVotes.count(inv.hash);
+        case MSG_FIVEGNODE_PAYMENT_VOTE:
+            return mnpayments.mapFivegnodePaymentVotes.count(inv.hash);
 
-        case MSG_SHROUDNODE_PAYMENT_BLOCK:
+        case MSG_FIVEGNODE_PAYMENT_BLOCK:
         {
             BlockMap::iterator mi = mapBlockIndex.find(inv.hash);
-            return mi != mapBlockIndex.end() && mnpayments.mapShroudnodeBlocks.find(mi->second->nHeight) != mnpayments.mapShroudnodeBlocks.end();
+            return mi != mapBlockIndex.end() && mnpayments.mapFivegnodeBlocks.find(mi->second->nHeight) != mnpayments.mapFivegnodeBlocks.end();
         }
 
-        case MSG_SHROUDNODE_ANNOUNCE:
-            return mnodeman.mapSeenShroudnodeBroadcast.count(inv.hash) && !mnodeman.IsMnbRecoveryRequested(inv.hash);
+        case MSG_FIVEGNODE_ANNOUNCE:
+            return mnodeman.mapSeenFivegnodeBroadcast.count(inv.hash) && !mnodeman.IsMnbRecoveryRequested(inv.hash);
 
-        case MSG_SHROUDNODE_PING:
-            return mnodeman.mapSeenShroudnodePing.count(inv.hash);
+        case MSG_FIVEGNODE_PING:
+            return mnodeman.mapSeenFivegnodePing.count(inv.hash);
 
         case MSG_DSTX:
             return mapDarksendBroadcastTxes.count(inv.hash);
 
-        case MSG_SHROUDNODE_VERIFY:
-            return mnodeman.mapSeenShroudnodeVerification.count(inv.hash);
+        case MSG_FIVEGNODE_VERIFY:
+            return mnodeman.mapSeenFivegnodeVerification.count(inv.hash);
     }
     // Don't know what it is, just say we already got one
     return true;
@@ -6501,28 +6501,28 @@ void static ProcessGetData(CNode *pfrom, const Consensus::Params &consensusParam
                     }
                 }
 
-                if (!pushed && inv.type == MSG_SHROUDNODE_PAYMENT_VOTE) {
+                if (!pushed && inv.type == MSG_FIVEGNODE_PAYMENT_VOTE) {
                     if(mnpayments.HasVerifiedPaymentVote(inv.hash)) {
                         CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
                         ss.reserve(1000);
-                        ss << mnpayments.mapShroudnodePaymentVotes[inv.hash];
-                        pfrom->PushMessage(NetMsgType::SHROUDNODEPAYMENTVOTE, ss);
+                        ss << mnpayments.mapFivegnodePaymentVotes[inv.hash];
+                        pfrom->PushMessage(NetMsgType::FIVEGNODEPAYMENTVOTE, ss);
                         pushed = true;
                     }
                 }
 
-                if (!pushed && inv.type == MSG_SHROUDNODE_PAYMENT_BLOCK) {
+                if (!pushed && inv.type == MSG_FIVEGNODE_PAYMENT_BLOCK) {
                     BlockMap::iterator mi = mapBlockIndex.find(inv.hash);
-                    LOCK(cs_mapShroudnodeBlocks);
-                    if (mi != mapBlockIndex.end() && mnpayments.mapShroudnodeBlocks.count(mi->second->nHeight)) {
-                        BOOST_FOREACH(CShroudnodePayee& payee, mnpayments.mapShroudnodeBlocks[mi->second->nHeight].vecPayees) {
+                    LOCK(cs_mapFivegnodeBlocks);
+                    if (mi != mapBlockIndex.end() && mnpayments.mapFivegnodeBlocks.count(mi->second->nHeight)) {
+                        BOOST_FOREACH(CFivegnodePayee& payee, mnpayments.mapFivegnodeBlocks[mi->second->nHeight].vecPayees) {
                             std::vector<uint256> vecVoteHashes = payee.GetVoteHashes();
                             BOOST_FOREACH(uint256& hash, vecVoteHashes) {
                                 if(mnpayments.HasVerifiedPaymentVote(hash)) {
                                     CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
                                     ss.reserve(1000);
-                                    ss << mnpayments.mapShroudnodePaymentVotes[hash];
-                                    pfrom->PushMessage(NetMsgType::SHROUDNODEPAYMENTVOTE, ss);
+                                    ss << mnpayments.mapFivegnodePaymentVotes[hash];
+                                    pfrom->PushMessage(NetMsgType::FIVEGNODEPAYMENTVOTE, ss);
                                 }
                             }
                         }
@@ -6530,21 +6530,21 @@ void static ProcessGetData(CNode *pfrom, const Consensus::Params &consensusParam
                     }
                 }
 
-                if (!pushed && inv.type == MSG_SHROUDNODE_ANNOUNCE) {
-                    if(mnodeman.mapSeenShroudnodeBroadcast.count(inv.hash)){
+                if (!pushed && inv.type == MSG_FIVEGNODE_ANNOUNCE) {
+                    if(mnodeman.mapSeenFivegnodeBroadcast.count(inv.hash)){
                         CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
                         ss.reserve(1000);
-                        ss << mnodeman.mapSeenShroudnodeBroadcast[inv.hash].second;
+                        ss << mnodeman.mapSeenFivegnodeBroadcast[inv.hash].second;
                         pfrom->PushMessage(NetMsgType::MNANNOUNCE, ss);
                         pushed = true;
                     }
                 }
 
-                if (!pushed && inv.type == MSG_SHROUDNODE_PING) {
-                    if(mnodeman.mapSeenShroudnodePing.count(inv.hash)) {
+                if (!pushed && inv.type == MSG_FIVEGNODE_PING) {
+                    if(mnodeman.mapSeenFivegnodePing.count(inv.hash)) {
                         CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
                         ss.reserve(1000);
-                        ss << mnodeman.mapSeenShroudnodePing[inv.hash];
+                        ss << mnodeman.mapSeenFivegnodePing[inv.hash];
                         pfrom->PushMessage(NetMsgType::MNPING, ss);
                         pushed = true;
                     }
@@ -6560,11 +6560,11 @@ void static ProcessGetData(CNode *pfrom, const Consensus::Params &consensusParam
                     }
                 }
 
-                if (!pushed && inv.type == MSG_SHROUDNODE_VERIFY) {
-                    if(mnodeman.mapSeenShroudnodeVerification.count(inv.hash)) {
+                if (!pushed && inv.type == MSG_FIVEGNODE_VERIFY) {
+                    if(mnodeman.mapSeenFivegnodeVerification.count(inv.hash)) {
                         CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
                         ss.reserve(1000);
-                        ss << mnodeman.mapSeenShroudnodeVerification[inv.hash];
+                        ss << mnodeman.mapSeenFivegnodeVerification[inv.hash];
                         pfrom->PushMessage(NetMsgType::MNVERIFY, ss);
                         pushed = true;
                     }
@@ -7204,22 +7204,22 @@ bool static ProcessMessage(CNode *pfrom, string strCommand,
                 return true; // not an error
             }
 
-            CShroudnode *pmn = mnodeman.Find(dstx.vin);
+            CFivegnode *pmn = mnodeman.Find(dstx.vin);
             if (pmn == NULL) {
-                LogPrint("privatesend", "DSTX -- Can't find shroudnode %s to verify %s\n",
+                LogPrint("privatesend", "DSTX -- Can't find fivegnode %s to verify %s\n",
                          dstx.vin.prevout.ToStringShort(), hashTx.ToString());
                 return false;
             }
 
             if (!pmn->fAllowMixingTx) {
-                LogPrint("privatesend", "DSTX -- Shroudnode %s is sending too many transactions %s\n",
+                LogPrint("privatesend", "DSTX -- Fivegnode %s is sending too many transactions %s\n",
                          dstx.vin.prevout.ToStringShort(), hashTx.ToString());
                 return true;
                 // TODO: Not an error? Could it be that someone is relaying old DSTXes
                 // we have no idea about (e.g we were offline)? How to handle them?
             }
 
-            if (!dstx.CheckSignature(pmn->pubKeyShroudnode)) {
+            if (!dstx.CheckSignature(pmn->pubKeyFivegnode)) {
                 LogPrint("privatesend", "DSTX -- CheckSignature() failed for %s\n", hashTx.ToString());
                 return false;
             }
@@ -8141,7 +8141,7 @@ bool static ProcessMessage(CNode *pfrom, string strCommand,
             mnpayments.ProcessMessage(pfrom, strCommand, vRecv);
             instantsend.ProcessMessage(pfrom, strCommand, vRecv);
             sporkManager.ProcessSpork(pfrom, strCommand, vRecv);
-            shroudnodeSync.ProcessMessage(pfrom, strCommand, vRecv);
+            fivegnodeSync.ProcessMessage(pfrom, strCommand, vRecv);
         } else {
             // Ignore unknown commands for extensibility
             LogPrint("net", "Unknown command \"%s\" from peer=%d\n", SanitizeString(strCommand), pfrom->id);
@@ -8693,7 +8693,7 @@ bool SendMessages(CNode *pto) {
             {
                 pto->filterInventoryKnown.insert(inv.hash);
 
-                LogPrint("net", "SendMessages -- queued inv: %s  shroud=%d peer=%d\n", inv.ToString(), vInv.size(), pto->id);
+                LogPrint("net", "SendMessages -- queued inv: %s  fiveg=%d peer=%d\n", inv.ToString(), vInv.size(), pto->id);
                 vInv.push_back(inv);
                 if (vInv.size() >= 1000)
                 {

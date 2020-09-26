@@ -245,7 +245,7 @@ public:
     bool IsDust(const CFeeRate &minRelayTxFee) const
     {
 //        return (nValue < GetDustThreshold(minRelayTxFee));
-        //shroud: disable dust
+        //fiveg: disable dust
         return false;
     }
 

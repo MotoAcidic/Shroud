@@ -24,8 +24,8 @@
 #include "main.h"
 #include "consensus/validation.h"
 #include "core_io.h"
-#include "shroudnode-sync.h"
-#include "shroudnodeconfig.h"
+#include "fivegnode-sync.h"
+#include "fivegnodeconfig.h"
 
 using namespace std;
 CScript script;
@@ -454,7 +454,7 @@ BOOST_AUTO_TEST_CASE(statewallet_test)
 
 }
 
-BOOST_AUTO_TEST_CASE(shroudnodelist_test)
+BOOST_AUTO_TEST_CASE(fivegnodelist_test)
 {
     // Verify "Create" initially.
     UniValue valRequest(UniValue::VOBJ);
@@ -463,18 +463,18 @@ BOOST_AUTO_TEST_CASE(shroudnodelist_test)
     UniValue result(UniValue::VOBJ);
 
     valRequest.push_back(Pair("type", "initial"));
-    valRequest.push_back(Pair("collection", "shroudnodeList"));
+    valRequest.push_back(Pair("collection", "fivegnodeList"));
     //valRequest.push_back(Pair("auth", auth));
 
     BOOST_CHECK_THROW(CallAPI(valRequest, true), runtime_error);
 
-    // artificially finish shroudnode sync to test list call
-    while(!shroudnodeSync.IsSynced()){
-        shroudnodeSync.SwitchToNextAsset();
+    // artificially finish fivegnode sync to test list call
+    while(!fivegnodeSync.IsSynced()){
+        fivegnodeSync.SwitchToNextAsset();
     }
 
     result = CallAPI(valRequest, true);
-    BOOST_CHECK(!result.isNull()); // empty shroudnode list
+    BOOST_CHECK(!result.isNull()); // empty fivegnode list
 }
 
 BOOST_AUTO_TEST_CASE(balance_test)

@@ -3,7 +3,7 @@ Release Process
 
 Before every release candidate:
 
-* Update translations (ping wumpus on IRC) see [translation_process.md](https://github.com/ShroudXProject/Shroud/blob/master/doc/translation_process.md#synchronising-translations).
+* Update translations (ping wumpus on IRC) see [translation_process.md](https://github.com/FivegXProject/Fiveg/blob/master/doc/translation_process.md#synchronising-translations).
 
 Before every minor and major release:
 
@@ -24,7 +24,7 @@ Check out the source code in the following directory hierarchy.
     git clone https://github.com/bitcoin-core/gitian.sigs.git
     git clone https://github.com/bitcoin-core/bitcoin-detached-sigs.git
     git clone https://github.com/devrandom/gitian-builder.git
-    git clone https://github.com/ShroudXProject/Shroud
+    git clone https://github.com/FivegXProject/Fiveg
 
 ### Bitcoin maintainers/release engineers, update version in sources
 
@@ -63,7 +63,7 @@ Tag version (or release candidate) in git
 
 Setup Gitian descriptors:
 
-    pushd ./Shroud
+    pushd ./Fiveg
     export SIGNER=(your Gitian key, ie bluematt, sipa, etc)
     export VERSION=(new version, e.g. 0.13.2.x)
     git fetch
@@ -97,7 +97,7 @@ Create the OS X SDK tarball, see the [OS X readme](README_osx.md) for details, a
 By default, Gitian will fetch source files as needed. To cache them ahead of time:
 
     pushd ./gitian-builder
-    make -C ../Shroud/depends download SOURCES_PATH=`pwd`/cache/common
+    make -C ../Fiveg/depends download SOURCES_PATH=`pwd`/cache/common
     popd
 
 Only missing files will be fetched, so this is safe to re-run for each build.
@@ -105,35 +105,35 @@ Only missing files will be fetched, so this is safe to re-run for each build.
 NOTE: Offline builds must use the --url flag to ensure Gitian fetches only from local URLs. For example:
 
     pushd ./gitian-builder
-    ./bin/gbuild --url shroud=/path/to/Shroud,signature=/path/to/sigs {rest of arguments}
+    ./bin/gbuild --url fiveg=/path/to/Fiveg,signature=/path/to/sigs {rest of arguments}
     popd
 
 The gbuild invocations below <b>DO NOT DO THIS</b> by default.
 
-### Build and sign Shroud Core for Linux, Windows, and OS X:
+### Build and sign Fiveg Core for Linux, Windows, and OS X:
 
     pushd ./gitian-builder
-    ./bin/gbuild --memory 3000 --commit shroud=v${VERSION} ../shroud/contrib/gitian-descriptors/gitian-linux.yml
+    ./bin/gbuild --memory 3000 --commit fiveg=v${VERSION} ../fiveg/contrib/gitian-descriptors/gitian-linux.yml
     ./bin/gsign --signer $SIGNER --release ${VERSION}-linux --destination ../gitian.sigs/ ../bitcoin/contrib/gitian-descriptors/gitian-linux.yml
-    mv build/out/shroud-*.tar.gz build/out/src/shroud-*.tar.gz ../
+    mv build/out/fiveg-*.tar.gz build/out/src/fiveg-*.tar.gz ../
 
-    ./bin/gbuild --memory 3000 --commit shroud=v${VERSION} ../shroud/contrib/gitian-descriptors/gitian-win.yml
+    ./bin/gbuild --memory 3000 --commit fiveg=v${VERSION} ../fiveg/contrib/gitian-descriptors/gitian-win.yml
     ./bin/gsign --signer $SIGNER --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../bitcoin/contrib/gitian-descriptors/gitian-win.yml
-    mv build/out/shroud-*-win-unsigned.tar.gz inputs/shroud-win-unsigned.tar.gz
-    mv build/out/shroud-*.zip build/out/bitcoin-*.exe ../
+    mv build/out/fiveg-*-win-unsigned.tar.gz inputs/fiveg-win-unsigned.tar.gz
+    mv build/out/fiveg-*.zip build/out/bitcoin-*.exe ../
 
-    ./bin/gbuild --memory 3000 --commit shroud=v${VERSION} ../shroud/contrib/gitian-descriptors/gitian-osx.yml
+    ./bin/gbuild --memory 3000 --commit fiveg=v${VERSION} ../fiveg/contrib/gitian-descriptors/gitian-osx.yml
     ./bin/gsign --signer $SIGNER --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../bitcoin/contrib/gitian-descriptors/gitian-osx.yml
-    mv build/out/shroud-*-osx-unsigned.tar.gz inputs/shroud-osx-unsigned.tar.gz
-    mv build/out/shroud-*.tar.gz build/out/shroud-*.dmg ../
+    mv build/out/fiveg-*-osx-unsigned.tar.gz inputs/fiveg-osx-unsigned.tar.gz
+    mv build/out/fiveg-*.tar.gz build/out/fiveg-*.dmg ../
     popd
 
 Build output expected:
 
-  1. source tarball (`shroud-${VERSION}.tar.gz`)
-  2. linux 32-bit and 64-bit dist tarballs (shroud-${VERSION}-linux[32|64].tar.gz`)
-  3. windows 32-bit and 64-bit unsigned installers and dist zips (`shroud-${VERSION}-win[32|64]-setup-unsigned.exe`, `shroud-${VERSION}-win[32|64].zip`)
-  4. OS X unsigned installer and dist tarball (`shroud-${VERSION}-osx-unsigned.dmg`, `shroud-${VERSION}-osx64.tar.gz`)
+  1. source tarball (`fiveg-${VERSION}.tar.gz`)
+  2. linux 32-bit and 64-bit dist tarballs (fiveg-${VERSION}-linux[32|64].tar.gz`)
+  3. windows 32-bit and 64-bit unsigned installers and dist zips (`fiveg-${VERSION}-win[32|64]-setup-unsigned.exe`, `fiveg-${VERSION}-win[32|64].zip`)
+  4. OS X unsigned installer and dist tarball (`fiveg-${VERSION}-osx-unsigned.dmg`, `fiveg-${VERSION}-osx64.tar.gz`)
   5. Gitian signatures (in `gitian.sigs/${VERSION}-<linux|{win,osx}-unsigned>/(your Gitian key)/`)
 
 ### Verify other gitian builders signatures to your own. (Optional)
@@ -145,9 +145,9 @@ Add other gitian builders keys to your gpg keyring
 Verify the signatures
 
     pushd ./gitian-builder
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../shroud/contrib/gitian-descriptors/gitian-linux.yml
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../shroud/contrib/gitian-descriptors/gitian-win.yml
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-unsigned ../shroud/contrib/gitian-descriptors/gitian-osx.yml
+    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../fiveg/contrib/gitian-descriptors/gitian-linux.yml
+    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../fiveg/contrib/gitian-descriptors/gitian-win.yml
+    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-unsigned ../fiveg/contrib/gitian-descriptors/gitian-osx.yml
     popd
 
 ### Next steps:
@@ -170,20 +170,20 @@ Wait for Windows/OS X detached signatures:
 Create (and optionally verify) the signed OS X binary:
 
     pushd ./gitian-builder
-    ./bin/gbuild -i --commit signature=v${VERSION} ../shroud/contrib/gitian-descriptors/gitian-osx-signer.yml
-    ./bin/gsign --signer $SIGNER --release ${VERSION}-osx-signed --destination ../gitian.sigs/ ../shroud/contrib/gitian-descriptors/gitian-osx-signer.yml
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../shroud/contrib/gitian-descriptors/gitian-osx-signer.yml
-    mv build/out/shroud-osx-signed.dmg ../shroud-${VERSION}-osx.dmg
+    ./bin/gbuild -i --commit signature=v${VERSION} ../fiveg/contrib/gitian-descriptors/gitian-osx-signer.yml
+    ./bin/gsign --signer $SIGNER --release ${VERSION}-osx-signed --destination ../gitian.sigs/ ../fiveg/contrib/gitian-descriptors/gitian-osx-signer.yml
+    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../fiveg/contrib/gitian-descriptors/gitian-osx-signer.yml
+    mv build/out/fiveg-osx-signed.dmg ../fiveg-${VERSION}-osx.dmg
     popd
 
 Create (and optionally verify) the signed Windows binaries:
 
     pushd ./gitian-builder
-    ./bin/gbuild -i --commit signature=v${VERSION} ../shroud/contrib/gitian-descriptors/gitian-win-signer.yml
-    ./bin/gsign --signer $SIGNER --release ${VERSION}-win-signed --destination ../gitian.sigs/ ../shroud/contrib/gitian-descriptors/gitian-win-signer.yml
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-signed ../shroud/contrib/gitian-descriptors/gitian-win-signer.yml
-    mv build/out/shroud-*win64-setup.exe ../shroud-${VERSION}-win64-setup.exe
-    mv build/out/shroud-*win32-setup.exe ../shroud-${VERSION}-win32-setup.exe
+    ./bin/gbuild -i --commit signature=v${VERSION} ../fiveg/contrib/gitian-descriptors/gitian-win-signer.yml
+    ./bin/gsign --signer $SIGNER --release ${VERSION}-win-signed --destination ../gitian.sigs/ ../fiveg/contrib/gitian-descriptors/gitian-win-signer.yml
+    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-signed ../fiveg/contrib/gitian-descriptors/gitian-win-signer.yml
+    mv build/out/fiveg-*win64-setup.exe ../fiveg-${VERSION}-win64-setup.exe
+    mv build/out/fiveg-*win32-setup.exe ../fiveg-${VERSION}-win32-setup.exe
     popd
 
 Commit your signature for the signed OS X/Windows binaries:
@@ -205,17 +205,17 @@ sha256sum * > SHA256SUMS
 
 The list of files should be:
 ```
-shroud-${VERSION}-aarch64-linux-gnu.tar.gz
-shroud-${VERSION}-arm-linux-gnueabihf.tar.gz
-shroud-${VERSION}-i686-pc-linux-gnu.tar.gz
-shroud-${VERSION}-x86_64-linux-gnu.tar.gz
-shroud-${VERSION}-osx64.tar.gz
-shroud-${VERSION}-osx.dmg
-shroud-${VERSION}.tar.gz
-shroud-${VERSION}-win32-setup.exe
-shroud-${VERSION}-win32.zip
-shroud-${VERSION}-win64-setup.exe
-shroud-${VERSION}-win64.zip
+fiveg-${VERSION}-aarch64-linux-gnu.tar.gz
+fiveg-${VERSION}-arm-linux-gnueabihf.tar.gz
+fiveg-${VERSION}-i686-pc-linux-gnu.tar.gz
+fiveg-${VERSION}-x86_64-linux-gnu.tar.gz
+fiveg-${VERSION}-osx64.tar.gz
+fiveg-${VERSION}-osx.dmg
+fiveg-${VERSION}.tar.gz
+fiveg-${VERSION}-win32-setup.exe
+fiveg-${VERSION}-win32.zip
+fiveg-${VERSION}-win64-setup.exe
+fiveg-${VERSION}-win64.zip
 ```
 The `*-debug*` files generated by the gitian build contain debug symbols
 for troubleshooting by developers. It is assumed that anyone that is interested
@@ -231,8 +231,8 @@ rm SHA256SUMS
 (the digest algorithm is forced to sha256 to avoid confusion of the `Hash:` header that GPG adds with the SHA256 used for the files)
 Note: check that SHA256SUMS itself doesn't end up in SHA256SUMS, which is a spurious/nonsensical entry.
 
-- Upload zips and installers, as well as `SHA256SUMS.asc` from last step, to the shroudnode.io server
-  into `/var/www/bin/shroud-core-${VERSION}`
+- Upload zips and installers, as well as `SHA256SUMS.asc` from last step, to the fivegnode.io server
+  into `/var/www/bin/fiveg-core-${VERSION}`
 
 - A `.torrent` will appear in the directory after a few minutes. Optionally help seed this torrent. To get the `magnet:` URI use:
 ```bash
@@ -262,7 +262,7 @@ bitcoin.org (see below for bitcoin.org update instructions).
 
   - bitcoin-dev and bitcoin-core-dev mailing list
 
-  - Shroud Core announcements list https://bitcoincore.org/en/list/announcements/join/
+  - Fiveg Core announcements list https://bitcoincore.org/en/list/announcements/join/
 
   - bitcoincore.org blog post
 

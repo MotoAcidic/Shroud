@@ -1,26 +1,26 @@
 #!/bin/sh
 #!/bin/sh
-# Copyright (c) 2020 The Shroud Core Developers
+# Copyright (c) 2020 The Fiveg Core Developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 
 clear
-echo "Starting Shroudnode update script"
+echo "Starting Fivegnode update script"
 cd && cd /usr/local/bin
-echo "Stopping shroudd..."
-shroud-cli stop
-cd && cd Shroud/contrib/masternode-setup-scripts/shell-scripts
-echo "Downloading Shroud latest release update..."
-wget -N https://github.com/ShroudXProject/Shroud/releases/download/v1.2.1/shroud-1.2.1-x86_64-linux-gnu.tar.gz
-sudo tar -c /usr/local/bin -zxvf shroud-1.2.1-x86_64-linux-gnu.tar.gz
+echo "Stopping fivegd..."
+fiveg-cli stop
+cd && cd Fiveg/contrib/masternode-setup-scripts/shell-scripts
+echo "Downloading Fiveg latest release update..."
+wget -N https://github.com/FivegXProject/Fiveg/releases/download/v1.2.1/fiveg-1.2.1-x86_64-linux-gnu.tar.gz
+sudo tar -c /usr/local/bin -zxvf fiveg-1.2.1-x86_64-linux-gnu.tar.gz
 echo "Setting permissions..."
-cd && sudo chmod +x /usr/local/bin/shroud*
+cd && sudo chmod +x /usr/local/bin/fiveg*
 sudo chmod +x /usr/local/bin/tor*
-echo "Launching shroudd..."
+echo "Launching fivegd..."
 cd && cd /usr/local/bin
-shroudd -daemon
+fivegd -daemon
 echo "Cleaning up..."
-cd && cd Shroud/contrib/masternode-setup-scripts/shell-scripts
-rm -rf shroud-1.2.1-x86_64-linux-gnu.tar.gz
-echo "Shroudnode Updated Successfully!"
+cd && cd Fiveg/contrib/masternode-setup-scripts/shell-scripts
+rm -rf fiveg-1.2.1-x86_64-linux-gnu.tar.gz
+echo "Fivegnode Updated Successfully!"

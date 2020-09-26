@@ -5,7 +5,7 @@
 #include "util.h"
 #include "core_io.h"
 #include "chain.h"
-#include "shroudnode-sync.h"
+#include "fivegnode-sync.h"
 
 #include "zmqabstract.h"
 #include "zmqpublisher.h"
@@ -196,7 +196,7 @@ bool CZMQAPIStatusEvent::NotifyAPIStatus()
     return true;
 }
 
-bool CZMQShroudnodeListEvent::NotifyShroudnodeList()
+bool CZMQFivegnodeListEvent::NotifyFivegnodeList()
 {
     request.push_back(Pair("type", "initial"));
     Execute();
@@ -256,7 +256,7 @@ bool CZMQBlockEvent::NotifyBlock(const CBlockIndex *pindex){
     }
 
     // If synced, always publish, if not, every 100 blocks (for better sync speed).
-    if(shroudnodeSync.GetBlockchainSynced() || pindex->nHeight%100==0){
+    if(fivegnodeSync.GetBlockchainSynced() || pindex->nHeight%100==0){
         request.replace("data", pindex->ToJSON());
         Execute();
     }
@@ -264,8 +264,8 @@ bool CZMQBlockEvent::NotifyBlock(const CBlockIndex *pindex){
     return true;
 }
 
-bool CZMQShroudnodeEvent::NotifyShroudnodeUpdate(CShroudnode &shroudnode){
-    request.replace("data", shroudnode.ToJSON());
+bool CZMQFivegnodeEvent::NotifyFivegnodeUpdate(CFivegnode &fivegnode){
+    request.replace("data", fivegnode.ToJSON());
     Execute();
 
     return true;

@@ -62,12 +62,12 @@
         <translation>Adresses de réception</translation>
     </message>
     <message>
-        <source>These are your Shroud addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Voici vos adresses Shroud pour envoyer des paiements. Vérifiez toujours le montant et l'adresse du destinataire avant d'envoyer des pièces.</translation>
+        <source>These are your Fiveg addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Voici vos adresses Fiveg pour envoyer des paiements. Vérifiez toujours le montant et l'adresse du destinataire avant d'envoyer des pièces.</translation>
     </message>
     <message>
-        <source>These are your Shroud addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>Voici vos adresses Shroud pour recevoir des paiements. Il est recommandé d'utiliser une nouvelle adresse de réception pour chaque transaction.</translation>
+        <source>These are your Fiveg addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation>Voici vos adresses Fiveg pour recevoir des paiements. Il est recommandé d'utiliser une nouvelle adresse de réception pour chaque transaction.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -322,8 +322,8 @@
         <translation>Réindexation des blocs sur le disque...</translation>
     </message>
     <message>
-        <source>Send coins to a Shroud address</source>
-        <translation>Envoyer des pièces à une adresse Shroud</translation>
+        <source>Send coins to a Fiveg address</source>
+        <translation>Envoyer des pièces à une adresse Fiveg</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -346,8 +346,8 @@
         <translation>&amp;Vérifier un message...</translation>
     </message>
     <message>
-        <source>Shroud</source>
-        <translation>Shroud</translation>
+        <source>Fiveg</source>
+        <translation>Fiveg</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -374,12 +374,12 @@
         <translation>Chiffrer les clés privées qui appartiennent à votre porte-monnaie</translation>
     </message>
     <message>
-        <source>Sign messages with your Shroud addresses to prove you own them</source>
-        <translation>Signer les messages avec vos adresses Shroud pour prouver que vous les détenez</translation>
+        <source>Sign messages with your Fiveg addresses to prove you own them</source>
+        <translation>Signer les messages avec vos adresses Fiveg pour prouver que vous les détenez</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Shroud addresses</source>
-        <translation>Vérifier les messages pour s'assurer qu'ils ont été signés avec les adresses Shroud spécifiées</translation>
+        <source>Verify messages to ensure they were signed with specified Fiveg addresses</source>
+        <translation>Vérifier les messages pour s'assurer qu'ils ont été signés avec les adresses Fiveg spécifiées</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -398,8 +398,8 @@
         <translation>Barre d'outils des onglets</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and shroud: URIs)</source>
-        <translation>Demander des paiements (génère des codes QR et des URI shroud:)</translation>
+        <source>Request payments (generates QR codes and fiveg: URIs)</source>
+        <translation>Demander des paiements (génère des codes QR et des URI fiveg:)</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -410,16 +410,16 @@
         <translation>Afficher la liste d'adresses de réception et d'étiquettes utilisées</translation>
     </message>
     <message>
-        <source>Open a shroud: URI or payment request</source>
-        <translation>Ouvrir une URI shroud: ou une demande de paiement</translation>
+        <source>Open a fiveg: URI or payment request</source>
+        <translation>Ouvrir une URI fiveg: ou une demande de paiement</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
         <translation>Options de ligne de &amp;commande</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Shroud network</source>
-        <translation><numerusform>%n connexion active avec le réseau Shroud</numerusform><numerusform>%n connexions actives avec le réseau Shroud</numerusform></translation>
+        <source>%n active connection(s) to Fiveg network</source>
+        <translation><numerusform>%n connexion active avec le réseau Fiveg</numerusform><numerusform>%n connexions actives avec le réseau Fiveg</numerusform></translation>
     </message>
     <message>
         <source>Indexing blocks on disk...</source>
@@ -486,8 +486,8 @@
         <translation>À jour</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible Shroud command-line options</source>
-        <translation>Afficher le message d'aide de %1 pour obtenir la liste des options de ligne de commande Shroud possibles.</translation>
+        <source>Show the %1 help message to get a list with possible Fiveg command-line options</source>
+        <translation>Afficher le message d'aide de %1 pour obtenir la liste des options de ligne de commande Fiveg possibles.</translation>
     </message>
     <message>
         <source>%1 client</source>
@@ -806,8 +806,8 @@
         <translation>Modifier l’adresse d'envoi</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Shroud address.</source>
-        <translation>L'adresse saisie « %1 » n'est pas une adresse Shroud valide.</translation>
+        <source>The entered address "%1" is not a valid Fiveg address.</source>
+        <translation>L'adresse saisie « %1 » n'est pas une adresse Fiveg valide.</translation>
     </message>
     <message>
         <source>The entered address "%1" is already in the address book.</source>
@@ -915,8 +915,8 @@
         <translation>Puisque c'est la première fois que le logiciel est lancé, vous pouvez choisir où %1 stockera ses données.</translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the Shroud block chain. At least %2GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
-        <translation>%1 téléchargera et stockera une copie de la chaîne de blocs de Shroud. Au moins %2 Go de données seront stockés dans ce répertoire et sa taille augmentera avec le temps. Le porte-monnaie sera également stocké dans ce répertoire.</translation>
+        <source>%1 will download and store a copy of the Fiveg block chain. At least %2GB of data will be stored in this directory, and it will grow over time. The wallet will also be stored in this directory.</source>
+        <translation>%1 téléchargera et stockera une copie de la chaîne de blocs de Fiveg. Au moins %2 Go de données seront stockés dans ce répertoire et sa taille augmentera avec le temps. Le porte-monnaie sera également stocké dans ce répertoire.</translation>
     </message>
     <message>
         <source>Use the default data directory</source>
@@ -1061,16 +1061,16 @@
         <translation>&amp;Dépenser la monnaie non confirmée</translation>
     </message>
     <message>
-        <source>Automatically open the Shroud client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Ouvrir automatiquement le port du client Shroud sur le routeur. Cela ne fonctionne que si votre routeur prend en charge l'UPnP et si la fonction est activée.</translation>
+        <source>Automatically open the Fiveg client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Ouvrir automatiquement le port du client Fiveg sur le routeur. Cela ne fonctionne que si votre routeur prend en charge l'UPnP et si la fonction est activée.</translation>
     </message>
     <message>
         <source>Map port using &amp;UPnP</source>
         <translation>Mapper le port avec l'&amp;UPnP</translation>
     </message>
     <message>
-        <source>Connect to the Shroud network through a SOCKS5 proxy.</source>
-        <translation>Se connecter au réseau Shroud par un mandataire SOCKS5.</translation>
+        <source>Connect to the Fiveg network through a SOCKS5 proxy.</source>
+        <translation>Se connecter au réseau Fiveg par un mandataire SOCKS5.</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -1109,8 +1109,8 @@
         <translation>Tor</translation>
     </message>
     <message>
-        <source>Connect to the Shroud network through a separate SOCKS5 proxy for Tor hidden services.</source>
-        <translation>Se connecter au réseau Shroud au travers d'un mandataire SOCKS5 séparé pour les services cachés de Tor.</translation>
+        <source>Connect to the Fiveg network through a separate SOCKS5 proxy for Tor hidden services.</source>
+        <translation>Se connecter au réseau Fiveg au travers d'un mandataire SOCKS5 séparé pour les services cachés de Tor.</translation>
     </message>
     <message>
         <source>Use separate SOCKS5 proxy to reach peers via Tor hidden services:</source>
@@ -1208,8 +1208,8 @@
         <translation>Formulaire</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Shroud network after a connection is established, but this process has not completed yet.</source>
-        <translation>Les informations affichées peuvent être obsolètes. Votre porte-monnaie est automatiquement synchronisé avec le réseau Shroud lorsque la connexion s'établit, or ce processus n'est pas encore terminé.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Fiveg network after a connection is established, but this process has not completed yet.</source>
+        <translation>Les informations affichées peuvent être obsolètes. Votre porte-monnaie est automatiquement synchronisé avec le réseau Fiveg lorsque la connexion s'établit, or ce processus n'est pas encore terminé.</translation>
     </message>
     <message>
         <source>Watch-only:</source>
@@ -1283,8 +1283,8 @@
         <translation>Erreur de demande de paiement</translation>
     </message>
     <message>
-        <source>Cannot start shroud: click-to-pay handler</source>
-        <translation>Impossible de démarrer le gestionnaire de cliquer-pour-payer shroud:</translation>
+        <source>Cannot start fiveg: click-to-pay handler</source>
+        <translation>Impossible de démarrer le gestionnaire de cliquer-pour-payer fiveg:</translation>
     </message>
     <message>
         <source>URI handling</source>
@@ -1299,8 +1299,8 @@
         <translation>Adresse de paiement invalide %1</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid Shroud address or malformed URI parameters.</source>
-        <translation>L'URI ne peut pas être analysée ! Cela peut être causé par une adresse Shroud invalide ou par des paramètres d'URI mal formés.</translation>
+        <source>URI cannot be parsed! This can be caused by an invalid Fiveg address or malformed URI parameters.</source>
+        <translation>L'URI ne peut pas être analysée ! Cela peut être causé par une adresse Fiveg invalide ou par des paramètres d'URI mal formés.</translation>
     </message>
     <message>
         <source>Payment request file handling</source>
@@ -1389,8 +1389,8 @@
         <translation>Montant</translation>
     </message>
     <message>
-        <source>Enter a Shroud address (e.g. %1)</source>
-        <translation>Saisir une adresse Shroud (p. ex. %1)</translation>
+        <source>Enter a Fiveg address (e.g. %1)</source>
+        <translation>Saisir une adresse Fiveg (p. ex. %1)</translation>
     </message>
     <message>
         <source>%1 d</source>
@@ -1754,8 +1754,8 @@
         <translation>Ré&amp;utiliser une adresse de réception existante (non recommandé)</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Shroud network.</source>
-        <translation>Un message facultatif à joindre à la demande de paiement et qui sera affiché à l'ouverture de celle-ci. Note : le message ne sera pas envoyé avec le paiement par le réseau Shroud.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Fiveg network.</source>
+        <translation>Un message facultatif à joindre à la demande de paiement et qui sera affiché à l'ouverture de celle-ci. Note : le message ne sera pas envoyé avec le paiement par le réseau Fiveg.</translation>
     </message>
     <message>
         <source>An optional label to associate with the new receiving address.</source>
@@ -1987,7 +1987,7 @@
         <translation>total au moins</translation>
     </message>
     <message>
-        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks. But be aware that this can end up in a never confirming transaction once there is more demand for Shroud transactions than the network can process.</source>
+        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks. But be aware that this can end up in a never confirming transaction once there is more demand for Fiveg transactions than the network can process.</source>
         <translation>Il est correct de payer les frais minimum tant que le volume transactionnel est inférieur à l'espace dans les blocs. Mais soyez conscient que cela pourrait résulter en une transaction n'étant jamais confirmée une fois qu'il y aura plus de transactions que le réseau ne pourra en traiter.</translation>
     </message>
     <message>
@@ -2147,8 +2147,8 @@
         <translation>Payer seulement les frais exigés de %1</translation>
     </message>
     <message>
-        <source>Warning: Invalid Shroud address</source>
-        <translation>Avertissement : adresse Shroud invalide</translation>
+        <source>Warning: Invalid Fiveg address</source>
+        <translation>Avertissement : adresse Fiveg invalide</translation>
     </message>
     <message>
         <source>Warning: Unknown change address</source>
@@ -2182,8 +2182,8 @@
         <translation>Ceci est un paiement normal.</translation>
     </message>
     <message>
-        <source>The Shroud address to send the payment to</source>
-        <translation>L'adresse Shroud à laquelle envoyer le paiement</translation>
+        <source>The Fiveg address to send the payment to</source>
+        <translation>L'adresse Fiveg à laquelle envoyer le paiement</translation>
     </message>
     <message>
         <source>Alt+A</source>
@@ -2226,8 +2226,8 @@
         <translation>Saisir une étiquette pour cette adresse afin de l'ajouter à la liste d'adresses utilisées</translation>
     </message>
     <message>
-        <source>A message that was attached to the shroud: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Shroud network.</source>
-        <translation>Un message qui était joint à l'URI shroud: et qui sera stocké avec la transaction pour référence. Note : ce message ne sera pas envoyé par le réseau Shroud.</translation>
+        <source>A message that was attached to the fiveg: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Fiveg network.</source>
+        <translation>Un message qui était joint à l'URI fiveg: et qui sera stocké avec la transaction pour référence. Note : ce message ne sera pas envoyé par le réseau Fiveg.</translation>
     </message>
     <message>
         <source>Pay To:</source>
@@ -2275,8 +2275,8 @@
         <translation>Vous pouvez signer des messages ou des accords avec vos adresses pour prouver que vous pouvez recevoir des indexs à ces dernières. Faites attention de ne rien signer de vague ou au hasard, car des attaques d'hameçonnage pourraient essayer de vous faire signer avec votre identité afin de l'usurper. Ne signez que des déclarations entièrement détaillées et avec lesquelles vous êtes d'accord.</translation>
     </message>
     <message>
-        <source>The Shroud address to sign the message with</source>
-        <translation>L'adresse Shroud avec laquelle signer le message</translation>
+        <source>The Fiveg address to sign the message with</source>
+        <translation>L'adresse Fiveg avec laquelle signer le message</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -2307,8 +2307,8 @@
         <translation>Copier la signature actuelle dans le presse-papiers</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Shroud address</source>
-        <translation>Signer le message afin de prouver que vous détenez cette adresse Shroud</translation>
+        <source>Sign the message to prove you own this Fiveg address</source>
+        <translation>Signer le message afin de prouver que vous détenez cette adresse Fiveg</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -2331,12 +2331,12 @@
         <translation>Saisir ci-dessous l'adresse du destinataire, le message (s'assurer de copier fidèlement les retours à la ligne, les espaces, les tabulations, etc.) et la signature pour vérifier le message. Faire attention à ne pas déduire davantage de la signature que ce qui est contenu dans le message signé même, pour éviter d'être trompé par une attaque d'homme du milieu. Prendre en compte que cela ne fait que prouver que le signataire reçoit l'adresse et ne peut pas prouver la provenance d'une transaction !</translation>
     </message>
     <message>
-        <source>The Shroud address the message was signed with</source>
-        <translation>L'adresse Shroud avec laquelle le message a été signé</translation>
+        <source>The Fiveg address the message was signed with</source>
+        <translation>L'adresse Fiveg avec laquelle le message a été signé</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified Shroud address</source>
-        <translation>Vérifier le message pour s'assurer qu'il a été signé avec l'adresse Shroud spécifiée</translation>
+        <source>Verify the message to ensure it was signed with the specified Fiveg address</source>
+        <translation>Vérifier le message pour s'assurer qu'il a été signé avec l'adresse Fiveg spécifiée</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
@@ -2549,7 +2549,7 @@
     </message>
     <message>
         <source>Output index</source>
-        <translation>Shroud de sorties</translation>
+        <translation>Fiveg de sorties</translation>
     </message>
     <message>
         <source>Merchant</source>
@@ -2922,7 +2922,7 @@
     </message>
 </context>
 <context>
-    <name>shroud-core</name>
+    <name>fiveg-core</name>
     <message>
         <source>Options:</source>
         <translation>Options :</translation>
@@ -2988,8 +2988,8 @@
         <translation>Accepter les connexions entrantes (par défaut : 1 si aucun -proxy ou -connect )</translation>
     </message>
     <message>
-        <source>Shroud Core</source>
-        <translation>Shroud Core</translation>
+        <source>Fiveg Core</source>
+        <translation>Fiveg Core</translation>
     </message>
     <message>
         <source>-fallbackfee is set very high! This is the transaction fee you may pay when fee estimates are not available.</source>

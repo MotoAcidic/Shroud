@@ -85,12 +85,12 @@ static CZMQReplierInterface* pzmqReplierInterface = NULL;
 #include <event2/util.h>
 #include <event2/event.h>
 #include <event2/thread.h>
-#include "activeshroudnode.h"
+#include "activefivegnode.h"
 #include "darksend.h"
-#include "shroudnode-payments.h"
-#include "shroudnode-sync.h"
-#include "shroudnodeman.h"
-#include "shroudnodeconfig.h"
+#include "fivegnode-payments.h"
+#include "fivegnode-sync.h"
+#include "fivegnodeman.h"
+#include "fivegnodeconfig.h"
 #include "netfulfilledman.h"
 #include "flat-database.h"
 #include "instantx.h"
@@ -253,9 +253,9 @@ void PrepareShutdown(){
     GenerateBitcoins(false, 0, Params());
     StopNode();
 
-    CFlatDB<CShroudnodeMan> flatdb1("incache.dat", "magicShroudnodeCache");
+    CFlatDB<CFivegnodeMan> flatdb1("incache.dat", "magicFivegnodeCache");
     flatdb1.Dump(mnodeman);
-    CFlatDB<CShroudnodePayments> flatdb2("inpayments.dat", "magicShroudnodePaymentsCache");
+    CFlatDB<CFivegnodePayments> flatdb2("inpayments.dat", "magicFivegnodePaymentsCache");
     flatdb2.Dump(mnpayments);
     CFlatDB<CNetFulfilledRequestManager> flatdb4("netfulfilled.dat", "magicFulfilledCache");
     flatdb4.Dump(netfulfilledman);
@@ -726,8 +726,8 @@ std::string HelpMessage(HelpMessageMode mode) {
 }
 
 std::string LicenseInfo() {
-    const std::string URL_SOURCE_CODE = "<https://github.com/ShroudXProject/Shroud>";
-    const std::string URL_WEBSITE = "<https://shroudx.org/>";
+    const std::string URL_SOURCE_CODE = "<https://github.com/FivegXProject/Fiveg>";
+    const std::string URL_WEBSITE = "<https://fivegx.org/>";
     // todo: remove urls from translations on next change
     return CopyrightHolders(strprintf(_("Copyright (C) %i-%i"), 2009, COPYRIGHT_YEAR) + " ") + "\n" +
            "\n" +
@@ -999,7 +999,7 @@ void InitParameterInteraction() {
     // -zapwalletmints implies a reindex and zapwallettxes=1
     if (GetBoolArg("-zapwalletmints", false)) {
         if (SoftSetBoolArg("-reindex", true))
-            LogPrintf("%s: parameter interaction: -zapwalletmints=<mode> -> setting -reshroud=1\n", __func__);
+            LogPrintf("%s: parameter interaction: -zapwalletmints=<mode> -> setting -refiveg=1\n", __func__);
         if (SoftSetArg("-zapwallettxes", std::string("1")))
             LogPrintf("%s: parameter interaction: -zapwalletmints=<mode> -> setting -zapwallettxes=1\n", __func__);
     }
@@ -1073,7 +1073,7 @@ void RunTor(){
 	argv.push_back("--HiddenServiceDir");
 	argv.push_back((tor_dir / "onion").string());
 	argv.push_back("--HiddenServicePort");
-	argv.push_back("42998");
+	argv.push_back("23020");
 
 	if (clientTransportPlugin) {
 		printf("Using OBFS4.\n");
@@ -1146,7 +1146,7 @@ void InitLogging() {
     fLogIPs = GetBoolArg("-logips", DEFAULT_LOGIPS);
 
     LogPrintf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-    LogPrintf("Shroud version %s\n", FormatFullVersion());
+    LogPrintf("Fiveg version %s\n", FormatFullVersion());
 }
 
 /** Initialize bitcoin.
@@ -1686,8 +1686,8 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
             fs::path blocksDir = GetDataDir() / "blocks";
             fs::path chainstateDir = GetDataDir() / "chainstate";
             fs::path sporksDir = GetDataDir() / "sporks";
-            fs::path shroudnodeCache = GetDataDir() / "incache.dat";
-            fs::path shroudnodePayments = GetDataDir() / "inpayments.dat";
+            fs::path fivegnodeCache = GetDataDir() / "incache.dat";
+            fs::path fivegnodePayments = GetDataDir() / "inpayments.dat";
 
             LogPrintf("Deleting blockchain folders blocks, chainstate, sporks and zerocoin\n");
             // We delete in 4 individual steps in case one of the folder is missing already
@@ -1706,13 +1706,13 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
                     fs::remove_all(sporksDir);
                     LogPrintf("-resync: folder deleted: %s\n", sporksDir);
                 }
-                if (fs::exists(shroudnodeCache)){
-                    fs::remove(shroudnodeCache);
-                    LogPrintf("-resync: file deleted: %s\n", shroudnodeCache);
+                if (fs::exists(fivegnodeCache)){
+                    fs::remove(fivegnodeCache);
+                    LogPrintf("-resync: file deleted: %s\n", fivegnodeCache);
                 }
-                if (fs::exists(shroudnodePayments)){
-                    fs::remove(shroudnodePayments);
-                    LogPrintf("-resync: file deleted: %s\n", shroudnodePayments);
+                if (fs::exists(fivegnodePayments)){
+                    fs::remove(fivegnodePayments);
+                    LogPrintf("-resync: file deleted: %s\n", fivegnodePayments);
                 }
             } catch (const fs::filesystem_error& error) {
                 LogPrintf("Failed to delete blockchain folders %s\n", fsbridge::get_filesystem_error_message(error));
@@ -1965,24 +1965,24 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
             std::string msg = _("Disabled transaction index detected.\n\n"
                                 "Elysium requires an enabled transaction index. To enable "
                                 "transaction indexing, please use the \"-txindex\" option as "
-                                "command line argument or add \"txshroud=1\" to your client "
+                                "command line argument or add \"txfiveg=1\" to your client "
                                 "configuration file within your data directory.\n\n"
                                 "Configuration file"); // allow translation of main text body while still allowing differing config file string
             msg += ": " + GetConfigFile().string() + "\n\n";
             msg += _("Would you like Elysium to attempt to update your configuration file accordingly?");
             bool fRet = uiInterface.ThreadSafeMessageBox(msg, "", CClientUIInterface::MSG_INFORMATION | CClientUIInterface::BTN_OK | CClientUIInterface::MODAL | CClientUIInterface::BTN_ABORT);
             if (fRet) {
-                // add txshroud=1 to config file in GetConfigFile()
+                // add txfiveg=1 to config file in GetConfigFile()
                 fs::path configPathInfo = GetConfigFile();
                 FILE *fp = fsbridge::fopen(configPathInfo, "at");
                 if (!fp) {
                     std::string failMsg = _("Unable to update configuration file at");
                     failMsg += ":\n" + GetConfigFile().string() + "\n\n";
                     failMsg += _("The file may be write protected or you may not have the required permissions to edit it.\n");
-                    failMsg += _("Please add txshroud=1 to your configuration file manually.\n\nElysium will now shutdown.");
+                    failMsg += _("Please add txfiveg=1 to your configuration file manually.\n\nElysium will now shutdown.");
                     return InitError(failMsg);
                 }
-                fprintf(fp, "\ntxshroud=1\n");
+                fprintf(fp, "\ntxfiveg=1\n");
                 fflush(fp);
                 fclose(fp);
                 std::string strUpdated = _(
@@ -1991,7 +1991,7 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
                 uiInterface.ThreadSafeMessageBox(strUpdated, "", CClientUIInterface::MSG_INFORMATION | CClientUIInterface::BTN_OK | CClientUIInterface::MODAL);
                 return false;
             } else {
-                return InitError(_("Please add txshroud=1 to your configuration file manually.\n\nOmni Core will now shutdown."));
+                return InitError(_("Please add txfiveg=1 to your configuration file manually.\n\nOmni Core will now shutdown."));
             }
         }
 
@@ -2094,45 +2094,45 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
         threadGroup.create_thread(boost::bind(&ThreadStakeMiner, pwalletMain, chainparams));
 
     // ********************************************************* Step 11a: setup PrivateSend
-    fShroudNode = GetBoolArg("-shroudnode", false);
+    fFivegNode = GetBoolArg("-fivegnode", false);
 
-    LogPrintf("fShroudNode = %s\n", fShroudNode);
-    LogPrintf("shroudnodeConfig.getCount(): %s\n", shroudnodeConfig.getCount());
+    LogPrintf("fFivegNode = %s\n", fFivegNode);
+    LogPrintf("fivegnodeConfig.getCount(): %s\n", fivegnodeConfig.getCount());
 
-    if ((fShroudNode || shroudnodeConfig.getCount() > 0) && !fTxIndex) {
-        return InitError("Enabling Shroudnode support requires turning on transaction indexing."
-                                 "Please add txshroud=1 to your configuration and start with -reindex");
+    if ((fFivegNode || fivegnodeConfig.getCount() > 0) && !fTxIndex) {
+        return InitError("Enabling Fivegnode support requires turning on transaction indexing."
+                                 "Please add txfiveg=1 to your configuration and start with -reindex");
     }
 
-    if (fShroudNode) {
-        LogPrintf("SHROUDNODE:\n");
+    if (fFivegNode) {
+        LogPrintf("FIVEGNODE:\n");
 
-        if (!GetArg("-shroudnodeaddr", "").empty()) {
-            // Hot Shroudnode (either local or remote) should get its address in
-            // CActiveShroudnode::ManageState() automatically and no longer relies on Shroudnodeaddr.
-            return InitError(_("shroudnodeaddr option is deprecated. Please use shroudnode.conf to manage your remote shroudnodes."));
+        if (!GetArg("-fivegnodeaddr", "").empty()) {
+            // Hot Fivegnode (either local or remote) should get its address in
+            // CActiveFivegnode::ManageState() automatically and no longer relies on Fivegnodeaddr.
+            return InitError(_("fivegnodeaddr option is deprecated. Please use fivegnode.conf to manage your remote fivegnodes."));
         }
 
-        std::string strShroudnodePrivKey = GetArg("-shroudnodeprivkey", "");
-        if (!strShroudnodePrivKey.empty()) {
-            if (!darkSendSigner.GetKeysFromSecret(strShroudnodePrivKey, activeShroudnode.keyShroudnode,
-                                                  activeShroudnode.pubKeyShroudnode))
-                return InitError(_("Invalid shroudnodeprivkey. Please see documentation."));
+        std::string strFivegnodePrivKey = GetArg("-fivegnodeprivkey", "");
+        if (!strFivegnodePrivKey.empty()) {
+            if (!darkSendSigner.GetKeysFromSecret(strFivegnodePrivKey, activeFivegnode.keyFivegnode,
+                                                  activeFivegnode.pubKeyFivegnode))
+                return InitError(_("Invalid fivegnodeprivkey. Please see documentation."));
 
-            LogPrintf("  pubKeyShroudnode: %s\n", CBitcoinAddress(activeShroudnode.pubKeyShroudnode.GetID()).ToString());
+            LogPrintf("  pubKeyFivegnode: %s\n", CBitcoinAddress(activeFivegnode.pubKeyFivegnode.GetID()).ToString());
         } else {
             return InitError(
-                    _("You must specify a shroudnodeprivkey in the configuration. Please see documentation for help."));
+                    _("You must specify a fivegnodeprivkey in the configuration. Please see documentation for help."));
         }
     }
 
-    LogPrintf("Using Shroudnode config file %s\n", GetShroudnodeConfigFile().string());
+    LogPrintf("Using Fivegnode config file %s\n", GetFivegnodeConfigFile().string());
 
-    // Lock Existing Shroudnodes
-    if (GetBoolArg("-inconflock", true) && (shroudnodeConfig.getCount() > 0)) {
-        LogPrintf(" Locking Existing Shroudnodes..\n");
+    // Lock Existing Fivegnodes
+    if (GetBoolArg("-inconflock", true) && (fivegnodeConfig.getCount() > 0)) {
+        LogPrintf(" Locking Existing Fivegnodes..\n");
         LOCK2(cs_main, pwalletMain->cs_wallet);
-        BOOST_FOREACH(CShroudnodeConfig::CShroudnodeEntry mne, shroudnodeConfig.getEntries()) {
+        BOOST_FOREACH(CFivegnodeConfig::CFivegnodeEntry mne, fivegnodeConfig.getEntries()) {
             uint256 mnTxHash(uint256S(mne.getTxHash()));
             int outputIndex = boost::lexical_cast<unsigned int>(mne.getOutputIndex());
 
@@ -2140,9 +2140,9 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
 
             if(pwalletMain->IsMine(CTxIn(outpoint)) == ISMINE_SPENDABLE &&
               !pwalletMain->IsSpent(mnTxHash, outputIndex)){
-                pwalletMain->LockCoin(outpoint); //Lock if this transaction is an available shroudnode colleteral payment
+                pwalletMain->LockCoin(outpoint); //Lock if this transaction is an available fivegnode colleteral payment
             }else {
-                pwalletMain->UnlockCoin(outpoint); // Unlock any spent/unavailable Shroudnode collateral
+                pwalletMain->UnlockCoin(outpoint); // Unlock any spent/unavailable Fivegnode collateral
             }
         }
         if(fApi)
@@ -2166,10 +2166,10 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
 //    nInstantSendDepth = GetArg("-instantsenddepth", DEFAULT_INSTANTSEND_DEPTH);
 //    nInstantSendDepth = std::min(std::max(nInstantSendDepth, 0), 60);
 
-    // lite mode disables all Shroudnode and Darksend related functionality
+    // lite mode disables all Fivegnode and Darksend related functionality
     fLiteMode = GetBoolArg("-litemode", false);
-    if (fShroudNode && fLiteMode) {
-        return InitError("You can not start a shroudnode in litemode");
+    if (fFivegNode && fLiteMode) {
+        return InitError("You can not start a fivegnode in litemode");
     }
 
     LogPrintf("fLiteMode %d\n", fLiteMode);
@@ -2182,21 +2182,21 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
     // ********************************************************* Step 11b: Load cache data
 
     // LOAD SERIALIZED DAT FILES INTO DATA CACHES FOR INTERNAL USE
-    if (GetBoolArg("-persistentshroudnodestate", true)) {
-        uiInterface.InitMessage(_("Loading shroudnode cache..."));
-        CFlatDB<CShroudnodeMan> flatdb1("incache.dat", "magicShroudnodeCache");
+    if (GetBoolArg("-persistentfivegnodestate", true)) {
+        uiInterface.InitMessage(_("Loading fivegnode cache..."));
+        CFlatDB<CFivegnodeMan> flatdb1("incache.dat", "magicFivegnodeCache");
         if (!flatdb1.Load(mnodeman)) {
-            return InitError("Failed to load shroudnode cache from incache.dat");
+            return InitError("Failed to load fivegnode cache from incache.dat");
         }
 
         if (mnodeman.size()) {
-            uiInterface.InitMessage(_("Loading Shroudnode payment cache..."));
-            CFlatDB<CShroudnodePayments> flatdb2("inpayments.dat", "magicShroudnodePaymentsCache");
+            uiInterface.InitMessage(_("Loading Fivegnode payment cache..."));
+            CFlatDB<CFivegnodePayments> flatdb2("inpayments.dat", "magicFivegnodePaymentsCache");
             if (!flatdb2.Load(mnpayments)) {
-                return InitError("Failed to load shroudnode payments cache from inpayments.dat");
+                return InitError("Failed to load fivegnode payments cache from inpayments.dat");
             }
         } else {
-            uiInterface.InitMessage(_("Shroudnode cache is empty, skipping payments cache..."));
+            uiInterface.InitMessage(_("Fivegnode cache is empty, skipping payments cache..."));
         }
 
         uiInterface.InitMessage(_("Loading fulfilled requests cache..."));
@@ -2216,7 +2216,7 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
     mnodeman.UpdatedBlockTip(chainActive.Tip());
     darkSendPool.UpdatedBlockTip(chainActive.Tip());
     mnpayments.UpdatedBlockTip(chainActive.Tip());
-    shroudnodeSync.UpdatedBlockTip(chainActive.Tip());
+    fivegnodeSync.UpdatedBlockTip(chainActive.Tip());
     // governance.UpdatedBlockTip(chainActive.Tip());
 
     // ********************************************************* Step 11d: start dash-privatesend thread

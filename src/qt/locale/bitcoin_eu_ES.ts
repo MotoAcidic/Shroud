@@ -103,7 +103,7 @@
     </message>
     <message>
         <source>Show information about Qt</source>
-        <translation>Erakutsi Shroud-i buruzko informazioa</translation>
+        <translation>Erakutsi Fiveg-i buruzko informazioa</translation>
     </message>
     <message>
         <source>&amp;Options...</source>
@@ -376,7 +376,7 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>shroud-core</name>
+    <name>fiveg-core</name>
     <message>
         <source>Options:</source>
         <translation>Aukerak</translation>

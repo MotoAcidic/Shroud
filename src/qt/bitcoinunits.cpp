@@ -40,9 +40,9 @@ QString BitcoinUnits::name(int unit)
 {
     switch(unit)
     {
-    case BTC: return QString("SHROUD");
-    case mBTC: return QString("mSHROUD");
-    case uBTC: return QString::fromUtf8("μSHROUD");
+    case BTC: return QString("FIVEG");
+    case mBTC: return QString("mFIVEG");
+    case uBTC: return QString::fromUtf8("μFIVEG");
     default: return QString("???");
     }
 }
@@ -52,8 +52,8 @@ QString BitcoinUnits::description(int unit)
     switch(unit)
     {
     case BTC: return QString("shouds");
-    case mBTC: return QString("Milli-shrouds (1 / 1" THIN_SP_UTF8 "000)");
-    case uBTC: return QString("Micro-shrouds (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+    case mBTC: return QString("Milli-fivegs (1 / 1" THIN_SP_UTF8 "000)");
+    case uBTC: return QString("Micro-fivegs (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
     default: return QString("???");
     }
 }

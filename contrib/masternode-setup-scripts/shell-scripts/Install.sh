@@ -1,11 +1,11 @@
 #!/bin/sh
-# Copyright (c) 2020 The Shroud Core Developers
+# Copyright (c) 2020 The Fiveg Core Developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 
 clear
-echo "Starting Shroudnode auto download and install script"
+echo "Starting Fivegnode auto download and install script"
 echo "Updating the machine..."
 sudo apt-get update
 echo "Machine successfully updated"
@@ -39,25 +39,25 @@ echo -e "Successfully installed libminiupnpc-dev\n
 echo "Successfully installed required dependencies"
 echo "Updating/Upgrading OS..."
 sudo apt update && sudo apt upgrade -y
-echo "Downloading Shroud latest build..."
-wget -N https://github.com/ShroudXProject/Shroud/releases/download/v1.2.1/shroud-1.2.1-x86_64-linux-gnu.tar.gz
+echo "Downloading Fiveg latest build..."
+wget -N https://github.com/FivegXProject/Fiveg/releases/download/v1.2.1/fiveg-1.2.1-x86_64-linux-gnu.tar.gz
 echo "Extracting build..."
-sudo tar -C /usr/local/bin -zxvf shroud-1.2.1-x86_64-linux-gnu.tar.gz
+sudo tar -C /usr/local/bin -zxvf fiveg-1.2.1-x86_64-linux-gnu.tar.gz
 echo "Setting permissions..."
-cd && sudo chmod +x /usr/local/bin/shroud*
+cd && sudo chmod +x /usr/local/bin/fiveg*
 sudo chmod +x /usr/local/bin/tor*
-echo "Creating .shroud directory..."
-mkdir ~/.shroud
-cd ~/.shroud
+echo "Creating .fiveg directory..."
+mkdir ~/.fiveg
+cd ~/.fiveg
 echo "Setting up and enabling fail2ban..."
 sudo apt-get install fail2ban -y
 sudo ufw allow ssh
-sudo ufw allow 42998
+sudo ufw allow 23020
 sudo ufw enable
-echo "Launching shroudd..."
+echo "Launching fivegd..."
 cd && cd /usr/local/bin
-shroudd -daemon
+fivegd -daemon
 echo "Cleaning up..."
-cd && cd Shroud/contrib/masternode-setup-scripts/shell-scripts
-rm -rf shroud-1.2.1-x86_64-linux-gnu.tar.gz
-echo "Shroudnode Installed Successfully!"
+cd && cd Fiveg/contrib/masternode-setup-scripts/shell-scripts
+rm -rf fiveg-1.2.1-x86_64-linux-gnu.tar.gz
+echo "Fivegnode Installed Successfully!"

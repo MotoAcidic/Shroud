@@ -146,22 +146,22 @@ CZMQPublisherInterface* CZMQPublisherInterface::Create()
         "pubrawtx", 
         "pubblockinfo", 
         "pubbalance", 
-        "pubshroudnodeupdate", 
+        "pubfivegnodeupdate", 
         "pubmintstatus", 
         "pubsettings", 
         "pubstatus",
-        "pubshroudnodelist",
+        "pubfivegnodelist",
     };
 
     factories["pubblock"] = CZMQAbstract::Create<CZMQBlockDataTopic>;
     factories["pubrawtx"] = CZMQAbstract::Create<CZMQTransactionTopic>;
     factories["pubblockinfo"] = CZMQAbstract::Create<CZMQBlockInfoTopic>;
     factories["pubbalance"] = CZMQAbstract::Create<CZMQBalanceTopic>;
-    factories["pubshroudnodeupdate"] = CZMQAbstract::Create<CZMQShroudnodeTopic>;
+    factories["pubfivegnodeupdate"] = CZMQAbstract::Create<CZMQFivegnodeTopic>;
     factories["pubmintstatus"] = CZMQAbstract::Create<CZMQMintStatusTopic>;
     factories["pubsettings"] = CZMQAbstract::Create<CZMQSettingsTopic>;
     factories["pubstatus"] = CZMQAbstract::Create<CZMQAPIStatusTopic>;
-    factories["pubshroudnodelist"] = CZMQAbstract::Create<CZMQShroudnodeListTopic>;
+    factories["pubfivegnodelist"] = CZMQAbstract::Create<CZMQFivegnodeListTopic>;
     
     BOOST_FOREACH(string pubIndex, pubIndexes)
     {
@@ -224,12 +224,12 @@ void CZMQPublisherInterface::NotifyAPIStatus()
     }
 }
 
-void CZMQPublisherInterface::NotifyShroudnodeList()
+void CZMQPublisherInterface::NotifyFivegnodeList()
 {
     for (std::list<CZMQAbstract*>::iterator i = notifiers.begin(); i!=notifiers.end(); )
     {
         CZMQAbstract *notifier = *i;
-        if (notifier->NotifyShroudnodeList())
+        if (notifier->NotifyFivegnodeList())
         {
             i++;
         }
@@ -292,12 +292,12 @@ void CZMQPublisherInterface::WalletTransaction(const CTransaction& tx)
     }
 }
 
-void CZMQPublisherInterface::UpdatedShroudnode(CShroudnode &shroudnode)
+void CZMQPublisherInterface::UpdatedFivegnode(CFivegnode &fivegnode)
 {
     for (std::list<CZMQAbstract*>::iterator i = notifiers.begin(); i!=notifiers.end(); )
     {
         CZMQAbstract *notifier = *i;
-        if (notifier->NotifyShroudnodeUpdate(shroudnode))
+        if (notifier->NotifyFivegnodeUpdate(fivegnode))
         {
             i++;
         }

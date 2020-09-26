@@ -459,7 +459,7 @@ The following list includes relevant pull requests merged into this release:
 - #17 Handle shutdown requests during initial parsing
 - #42 Integrate Travis CI and OmniJ into workflow
 - #50 Allow debug levels to be specified without needing to recompile
-- #34 Set `txshroud=1` flag during startup, if confirmed by user
+- #34 Set `txfiveg=1` flag during startup, if confirmed by user
 - #68 Various code cleanups and improved code documentation
 - #68 Resolve and refine several `LOCKs`
 - #68 Support concurrent RPC queries

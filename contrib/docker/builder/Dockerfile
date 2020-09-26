@@ -14,11 +14,11 @@ RUN apt-get update && apt-get install -y \
 RUN pip install ez_setup
 
 # create user to use
-RUN useradd -m -U shroud-builder
+RUN useradd -m -U fiveg-builder
 
 # create a volume for home directory
-VOLUME [ "/home/shroud-builder" ]
+VOLUME [ "/home/fiveg-builder" ]
 
 # start shell with created user
-USER shroud-builder
-WORKDIR /home/shroud-builder
+USER fiveg-builder
+WORKDIR /home/fiveg-builder

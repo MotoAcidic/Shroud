@@ -1,34 +1,34 @@
 // Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2020 The ShroudX Project developers
+// Copyright (c) 2020 The FivegX Project developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 #include "netbase.h"
-#include "shroudnodeconfig.h"
+#include "fivegnodeconfig.h"
 #include "util.h"
 #include "chainparams.h"
 
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 
-CShroudnodeConfig shroudnodeConfig;
+CFivegnodeConfig fivegnodeConfig;
 
-void CShroudnodeConfig::add(std::string alias, std::string ip, std::string privKey, std::string txHash, std::string outputIndex) {
-    CShroudnodeEntry cme(alias, ip, privKey, txHash, outputIndex);
+void CFivegnodeConfig::add(std::string alias, std::string ip, std::string privKey, std::string txHash, std::string outputIndex) {
+    CFivegnodeEntry cme(alias, ip, privKey, txHash, outputIndex);
     entries.push_back(cme);
 }
 
-bool CShroudnodeConfig::read(std::string& strErr) {
+bool CFivegnodeConfig::read(std::string& strErr) {
     int linenumber = 1;
-    fs::path pathShroudnodeConfigFile = GetShroudnodeConfigFile();
-    fsbridge::ifstream streamConfig(pathShroudnodeConfigFile);
-    LogPrintf("pathShroudnodeConfigFile=%s\n", pathShroudnodeConfigFile);
+    fs::path pathFivegnodeConfigFile = GetFivegnodeConfigFile();
+    fsbridge::ifstream streamConfig(pathFivegnodeConfigFile);
+    LogPrintf("pathFivegnodeConfigFile=%s\n", pathFivegnodeConfigFile);
 
     if (!streamConfig.good()) {
-        FILE* configFile = fopen(pathShroudnodeConfigFile.string().c_str(), "a");
+        FILE* configFile = fopen(pathFivegnodeConfigFile.string().c_str(), "a");
         if (configFile != NULL) {
-            std::string strHeader = "# Shroudnode config file\n"
-                          "# Format: alias IP:port shroudnode_privatekey collateral_output_txid collateral_output_index\n"
-                          "# Example: zn1 127.0.0.1:42998 7Cqyr4U7GU7qVo5TE1nrfA8XPVqh7GXBuEBPYzaWxEhiRRDLZ5c 2bcd3c84c84f87eaa86e4e56834c92927a07f9e18718810b92e0d0324456a67c 1\n";
+            std::string strHeader = "# Fivegnode config file\n"
+                          "# Format: alias IP:port fivegnode_privatekey collateral_output_txid collateral_output_index\n"
+                          "# Example: zn1 127.0.0.1:23020 7Cqyr4U7GU7qVo5TE1nrfA8XPVqh7GXBuEBPYzaWxEhiRRDLZ5c 2bcd3c84c84f87eaa86e4e56834c92927a07f9e18718810b92e0d0324456a67c 1\n";
             fwrite(strHeader.c_str(), std::strlen(strHeader.c_str()), 1, configFile);
             fclose(configFile);
         }
@@ -51,7 +51,7 @@ bool CShroudnodeConfig::read(std::string& strErr) {
             iss.str(line);
             iss.clear();
             if (!(iss >> alias >> ip >> privKey >> txHash >> outputIndex)) {
-                strErr = _("Could not parse shroudnode.conf") + "\n" +
+                strErr = _("Could not parse fivegnode.conf") + "\n" +
                         strprintf(_("Line: %d"), linenumber) + "\n\"" + line + "\"";
                 streamConfig.close();
                 return false;
@@ -73,7 +73,7 @@ bool CShroudnodeConfig::read(std::string& strErr) {
         LogPrintf("CBaseChainParams::MAIN=%s\n", CBaseChainParams::MAIN);
         if(Params().NetworkIDString() == CBaseChainParams::MAIN) {
             if(port != mainnetDefaultPort) {
-                strErr = _("Invalid port detected in shroudnode.conf") + "\n" +
+                strErr = _("Invalid port detected in fivegnode.conf") + "\n" +
                         strprintf(_("Port: %d"), port) + "\n" +
                         strprintf(_("Line: %d"), linenumber) + "\n\"" + line + "\"" + "\n" +
                         strprintf(_("(must be %d for mainnet)"), mainnetDefaultPort);
@@ -81,7 +81,7 @@ bool CShroudnodeConfig::read(std::string& strErr) {
                 return false;
             }
         } else if(port == mainnetDefaultPort) {
-            strErr = _("Invalid port detected in shroudnode.conf") + "\n" +
+            strErr = _("Invalid port detected in fivegnode.conf") + "\n" +
                     strprintf(_("Line: %d"), linenumber) + "\n\"" + line + "\"" + "\n" +
                     strprintf(_("(%d could be used only on mainnet)"), mainnetDefaultPort);
             streamConfig.close();

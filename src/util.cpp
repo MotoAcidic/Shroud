@@ -108,13 +108,13 @@ namespace boost {
 
 } // namespace boost
 
-// shroudnode fShroudnode
-bool fShroudNode = false;
+// fivegnode fFivegnode
+bool fFivegNode = false;
 bool fLiteMode = false;
 int nWalletBackups = 10;
 
-const char * const BITCOIN_CONF_FILENAME = "shroud.conf";
-const char * const BITCOIN_PID_FILENAME = "shroudd.pid";
+const char * const BITCOIN_CONF_FILENAME = "fiveg.conf";
+const char * const BITCOIN_PID_FILENAME = "fivegd.pid";
 
 map<string, string> mapArgs;
 map<string, vector<string> > mapMultiArgs;
@@ -490,13 +490,13 @@ void PrintExceptionContinue(const std::exception* pex, const char* pszThread)
 fs::path GetDefaultDataDir()
 {
     namespace fs = boost::filesystem;
-    // Windows < Vista: C:\Documents and Settings\Username\Application Data\IndexShroudXProjectCore
-    // Windows >= Vista: C:\Users\Username\AppData\Roaming\shroud
-    // Mac: ~/Library/Application Support/shroud
-    // Unix: ~/.shroud
+    // Windows < Vista: C:\Documents and Settings\Username\Application Data\IndexFivegXProjectCore
+    // Windows >= Vista: C:\Users\Username\AppData\Roaming\fiveg
+    // Mac: ~/Library/Application Support/fiveg
+    // Unix: ~/.fiveg
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "shroud";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "fiveg";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -506,10 +506,10 @@ fs::path GetDefaultDataDir()
         pathRet = fs::path(pszHome);
 #ifdef MAC_OSX
     // Mac
-    return pathRet / "Library/Application Support/shroud";
+    return pathRet / "Library/Application Support/fiveg";
 #else
     // Unix
-    return pathRet / ".shroud";
+    return pathRet / ".fiveg";
 #endif
 #endif
 }
@@ -722,9 +722,9 @@ fs::path CreateTxTimestampFile(bool fNetSpecific)
     return pathConfigFile;
 }
 
-fs::path GetShroudnodeConfigFile()
+fs::path GetFivegnodeConfigFile()
 {
-    fs::path pathConfigFile(GetArg("-znconf", "shroudnode.conf"));
+    fs::path pathConfigFile(GetArg("-znconf", "fivegnode.conf"));
     if (!pathConfigFile.is_complete()) pathConfigFile = GetDataDir() / pathConfigFile;
     LogPrintf("pathConfigFile=%s\n", pathConfigFile);
     return pathConfigFile;
@@ -735,14 +735,14 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
 {
     fsbridge::ifstream streamConfig(GetConfigFile());
     if (!streamConfig.good())
-        return; // No shroud.conf file is OK
+        return; // No fiveg.conf file is OK
 
     set<string> setOptions;
     setOptions.insert("*");
 
     for (boost::program_options::detail::config_file_iterator it(streamConfig, setOptions), end; it != end; ++it)
     {
-        // Don't overwrite existing settings so command line settings override shroud.conf
+        // Don't overwrite existing settings so command line settings override fiveg.conf
         string strKey = string("-") + it->string_key;
         string strValue = it->value[0];
         InterpretNegativeSetting(strKey, strValue);

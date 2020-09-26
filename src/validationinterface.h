@@ -18,7 +18,7 @@ class CTransaction;
 class CValidationInterface;
 class CValidationState;
 class uint256;
-class CShroudnode;
+class CFivegnode;
 
 // These functions dispatch to one or all registered wallets
 
@@ -45,11 +45,11 @@ protected:
     virtual void ResetRequestCount(const uint256 &hash) {};
     virtual void NumConnectionsChanged() {}
     virtual void UpdateSyncStatus() {}
-    virtual void UpdatedShroudnode(CShroudnode &shroudnode) {}
+    virtual void UpdatedFivegnode(CFivegnode &fivegnode) {}
     virtual void UpdatedMintStatus(std::string update) {};
     virtual void UpdatedSettings(std::string update) {};
     virtual void NotifyAPIStatus() {}
-    virtual void NotifyShroudnodeList() {}
+    virtual void NotifyFivegnodeList() {}
     virtual void UpdatedBalance() {}
     friend void ::RegisterValidationInterface(CValidationInterface*);
     friend void ::UnregisterValidationInterface(CValidationInterface*);
@@ -81,16 +81,16 @@ struct CMainSignals {
     boost::signals2::signal<void ()> NumConnectionsChanged;
     /** Notifies listeners of change of blockchain syncing state */
     boost::signals2::signal<void ()> UpdateSyncStatus;
-    /** Notifies listeners of change to a Shroudnode entry */
-    boost::signals2::signal<void (CShroudnode &)> UpdatedShroudnode;
+    /** Notifies listeners of change to a Fivegnode entry */
+    boost::signals2::signal<void (CFivegnode &)> UpdatedFivegnode;
     /** Notifies listeners of an updated mint status */
     boost::signals2::signal<void (std::string)> UpdatedMintStatus;
     /** Notifies listeners of settings following an update */
     boost::signals2::signal<void (std::string)> UpdatedSettings;
     /** Notifies listeners of API status */
     boost::signals2::signal<void ()> NotifyAPIStatus;
-    /** Notifies listeners of Shroudnode list */
-    boost::signals2::signal<void ()> NotifyShroudnodeList;
+    /** Notifies listeners of Fivegnode list */
+    boost::signals2::signal<void ()> NotifyFivegnodeList;
     /** Notifies listeners of balance */
     boost::signals2::signal<void ()> UpdatedBalance;
 };

@@ -1,57 +1,57 @@
 // Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2020 The ShroudX Project developers
+// Copyright (c) 2020 The FivegX Project developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SHROUDNODE_PAYMENTS_H
-#define SHROUDNODE_PAYMENTS_H
+#ifndef FIVEGNODE_PAYMENTS_H
+#define FIVEGNODE_PAYMENTS_H
 
 #include "util.h"
 #include "core_io.h"
 #include "key.h"
 #include "main.h"
-#include "shroudnode.h"
+#include "fivegnode.h"
 #include "utilstrencodings.h"
 
-class CShroudnodePayments;
-class CShroudnodePaymentVote;
-class CShroudnodeBlockPayees;
+class CFivegnodePayments;
+class CFivegnodePaymentVote;
+class CFivegnodeBlockPayees;
 
 static const int MNPAYMENTS_SIGNATURES_REQUIRED         = 6;
 static const int MNPAYMENTS_SIGNATURES_TOTAL            = 10;
 
-//! minimum peer version that can receive and send shroudnode payment messages,
-//  vote for shroudnode and be elected as a payment winner
+//! minimum peer version that can receive and send fivegnode payment messages,
+//  vote for fivegnode and be elected as a payment winner
 // V1 - Last protocol version before update
 // V2 - Newest protocol version
-static const int MIN_SHROUDNODE_PAYMENT_PROTO_VERSION_1 = MIN_PEER_PROTO_VERSION;
-static const int MIN_SHROUDNODE_PAYMENT_PROTO_VERSION_2 = PROTOCOL_VERSION;
+static const int MIN_FIVEGNODE_PAYMENT_PROTO_VERSION_1 = MIN_PEER_PROTO_VERSION;
+static const int MIN_FIVEGNODE_PAYMENT_PROTO_VERSION_2 = PROTOCOL_VERSION;
 
 extern CCriticalSection cs_vecPayees;
-extern CCriticalSection cs_mapShroudnodeBlocks;
-extern CCriticalSection cs_mapShroudnodePayeeVotes;
+extern CCriticalSection cs_mapFivegnodeBlocks;
+extern CCriticalSection cs_mapFivegnodePayeeVotes;
 
-extern CShroudnodePayments mnpayments;
+extern CFivegnodePayments mnpayments;
 
 /// TODO: all 4 functions do not belong here really, they should be refactored/moved somewhere (main.cpp ?)
 bool IsBlockValueValid(const CBlock& block, int nBlockHeight, CAmount blockReward, std::string &strErrorRet);
 bool IsBlockPayeeValid(const CTransaction& txNew, int nBlockHeight, CAmount blockReward);
-void FillBlockPayments(CMutableTransaction& txNew, int nBlockHeight, CAmount blockReward, CTxOut& txoutShroudnodeRet, std::vector<CTxOut>& voutSuperblockRet);
+void FillBlockPayments(CMutableTransaction& txNew, int nBlockHeight, CAmount blockReward, CTxOut& txoutFivegnodeRet, std::vector<CTxOut>& voutSuperblockRet);
 std::string GetRequiredPaymentsString(int nBlockHeight);
 
-class CShroudnodePayee
+class CFivegnodePayee
 {
 private:
     CScript scriptPubKey;
     std::vector<uint256> vecVoteHashes;
 
 public:
-    CShroudnodePayee() :
+    CFivegnodePayee() :
         scriptPubKey(),
         vecVoteHashes()
         {}
 
-    CShroudnodePayee(CScript payee, uint256 hashIn) :
+    CFivegnodePayee(CScript payee, uint256 hashIn) :
         scriptPubKey(payee),
         vecVoteHashes()
     {
@@ -74,18 +74,18 @@ public:
     std::string ToString() const;
 };
 
-// Keep track of votes for payees from shroudnodes
-class CShroudnodeBlockPayees
+// Keep track of votes for payees from fivegnodes
+class CFivegnodeBlockPayees
 {
 public:
     int nBlockHeight;
-    std::vector<CShroudnodePayee> vecPayees;
+    std::vector<CFivegnodePayee> vecPayees;
 
-    CShroudnodeBlockPayees() :
+    CFivegnodeBlockPayees() :
         nBlockHeight(0),
         vecPayees()
         {}
-    CShroudnodeBlockPayees(int nBlockHeightIn) :
+    CFivegnodeBlockPayees(int nBlockHeightIn) :
         nBlockHeight(nBlockHeightIn),
         vecPayees()
         {}
@@ -98,7 +98,7 @@ public:
         READWRITE(vecPayees);
     }
 
-    void AddPayee(const CShroudnodePaymentVote& vote);
+    void AddPayee(const CFivegnodePaymentVote& vote);
     bool GetBestPayee(CScript& payeeRet);
     bool HasPayeeWithVotes(CScript payeeIn, int nVotesReq);
 
@@ -108,24 +108,24 @@ public:
 };
 
 // vote for the winning payment
-class CShroudnodePaymentVote
+class CFivegnodePaymentVote
 {
 public:
-    CTxIn vinShroudnode;
+    CTxIn vinFivegnode;
 
     int nBlockHeight;
     CScript payee;
     std::vector<unsigned char> vchSig;
 
-    CShroudnodePaymentVote() :
-        vinShroudnode(),
+    CFivegnodePaymentVote() :
+        vinFivegnode(),
         nBlockHeight(0),
         payee(),
         vchSig()
         {}
 
-    CShroudnodePaymentVote(CTxIn vinShroudnode, int nBlockHeight, CScript payee) :
-        vinShroudnode(vinShroudnode),
+    CFivegnodePaymentVote(CTxIn vinFivegnode, int nBlockHeight, CScript payee) :
+        vinFivegnode(vinFivegnode),
         nBlockHeight(nBlockHeight),
         payee(payee),
         vchSig()
@@ -135,7 +135,7 @@ public:
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
-        READWRITE(vinShroudnode);
+        READWRITE(vinFivegnode);
         READWRITE(nBlockHeight);
         READWRITE(*(CScriptBase*)(&payee));
         READWRITE(vchSig);
@@ -145,12 +145,12 @@ public:
         CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
         ss << *(CScriptBase*)(&payee);
         ss << nBlockHeight;
-        ss << vinShroudnode.prevout;
+        ss << vinFivegnode.prevout;
         return ss.GetHash();
     }
 
     bool Sign();
-    bool CheckSignature(const CPubKey& pubKeyShroudnode, int nValidationHeight, int &nDos);
+    bool CheckSignature(const CPubKey& pubKeyFivegnode, int nValidationHeight, int &nDos);
 
     bool IsValid(CNode* pnode, int nValidationHeight, std::string& strError);
     void Relay();
@@ -162,14 +162,14 @@ public:
 };
 
 //
-// Shroudnode Payments Class
+// Fivegnode Payments Class
 // Keeps track of who should get paid for which blocks
 //
 
-class CShroudnodePayments
+class CFivegnodePayments
 {
 private:
-    // shroudnode count times nStorageCoeff payments blocks should be stored ...
+    // fivegnode count times nStorageCoeff payments blocks should be stored ...
     const float nStorageCoeff;
     // ... but at least nMinBlocksToStore (payments blocks)
     const int nMinBlocksToStore;
@@ -178,23 +178,23 @@ private:
     const CBlockIndex *pCurrentBlockIndex;
 
 public:
-    std::map<uint256, CShroudnodePaymentVote> mapShroudnodePaymentVotes;
-    std::map<int, CShroudnodeBlockPayees> mapShroudnodeBlocks;
-    std::map<COutPoint, int> mapShroudnodesLastVote;
+    std::map<uint256, CFivegnodePaymentVote> mapFivegnodePaymentVotes;
+    std::map<int, CFivegnodeBlockPayees> mapFivegnodeBlocks;
+    std::map<COutPoint, int> mapFivegnodesLastVote;
 
-    CShroudnodePayments() : nStorageCoeff(1.25), nMinBlocksToStore(5000) {}
+    CFivegnodePayments() : nStorageCoeff(1.25), nMinBlocksToStore(5000) {}
 
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
-        READWRITE(mapShroudnodePaymentVotes);
-        READWRITE(mapShroudnodeBlocks);
+        READWRITE(mapFivegnodePaymentVotes);
+        READWRITE(mapFivegnodeBlocks);
     }
 
     void Clear();
 
-    bool AddPaymentVote(const CShroudnodePaymentVote& vote);
+    bool AddPaymentVote(const CFivegnodePaymentVote& vote);
     bool HasVerifiedPaymentVote(uint256 hashIn);
     bool ProcessBlock(int nBlockHeight);
 
@@ -204,18 +204,18 @@ public:
 
     bool GetBlockPayee(int nBlockHeight, CScript& payee);
     bool IsTransactionValid(const CTransaction& txNew, int nBlockHeight, bool fMTP);
-    bool IsScheduled(CShroudnode& mn, int nNotBlockHeight);
+    bool IsScheduled(CFivegnode& mn, int nNotBlockHeight);
 
-    bool CanVote(COutPoint outShroudnode, int nBlockHeight);
+    bool CanVote(COutPoint outFivegnode, int nBlockHeight);
 
-    int GetMinShroudnodePaymentsProto();
+    int GetMinFivegnodePaymentsProto();
     void ProcessMessage(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);
     std::string GetRequiredPaymentsString(int nBlockHeight);
-    void FillBlockPayee(CMutableTransaction& txNew, int nBlockHeight, CAmount blockReward, CTxOut& txoutShroudnodeRet);
+    void FillBlockPayee(CMutableTransaction& txNew, int nBlockHeight, CAmount blockReward, CTxOut& txoutFivegnodeRet);
     std::string ToString() const;
 
-    int GetBlockCount() { return mapShroudnodeBlocks.size(); }
-    int GetVoteCount() { return mapShroudnodePaymentVotes.size(); }
+    int GetBlockCount() { return mapFivegnodeBlocks.size(); }
+    int GetVoteCount() { return mapFivegnodePaymentVotes.size(); }
 
     bool IsEnoughData();
     int GetStorageLimit();

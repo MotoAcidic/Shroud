@@ -1,7 +1,7 @@
 #
 #   Request-reply client in Python
 #   Connects REQ socket to tcp://localhost:5557
-#   Sends json request to shroudd
+#   Sends json request to fivegd
 #
 import zmq
 import json

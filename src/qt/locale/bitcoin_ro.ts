@@ -142,8 +142,8 @@
         <translation>Deschide &amp;URI...</translation>
     </message>
     <message>
-        <source>Send coins to a Shroud address</source>
-        <translation>Trimite monedele către o adresă Shroud</translation>
+        <source>Send coins to a Fiveg address</source>
+        <translation>Trimite monedele către o adresă Fiveg</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -166,8 +166,8 @@
         <translation>&amp;Verifică mesajul...</translation>
     </message>
     <message>
-        <source>Shroud</source>
-        <translation>Shroud</translation>
+        <source>Fiveg</source>
+        <translation>Fiveg</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -194,12 +194,12 @@
         <translation>Criptează cheile private care aparțin portofelului tău.</translation>
     </message>
     <message>
-        <source>Sign messages with your Shroud addresses to prove you own them</source>
-        <translation>Semnează mesajele cu adresa ta de Shroud pentru a face dovada că îți aparțin.</translation>
+        <source>Sign messages with your Fiveg addresses to prove you own them</source>
+        <translation>Semnează mesajele cu adresa ta de Fiveg pentru a face dovada că îți aparțin.</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Shroud addresses</source>
-        <translation>Verifică mesajele cu scopul de a asigura faptul că au fost semnate cu adresa de Shroud specificată.</translation>
+        <source>Verify messages to ensure they were signed with specified Fiveg addresses</source>
+        <translation>Verifică mesajele cu scopul de a asigura faptul că au fost semnate cu adresa de Fiveg specificată.</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -214,12 +214,12 @@
         <translation>&amp;Ajutor</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and shroud: URIs)</source>
-        <translation>Cerere plată (generează coduri QR și shroud: URIs)</translation>
+        <source>Request payments (generates QR codes and fiveg: URIs)</source>
+        <translation>Cerere plată (generează coduri QR și fiveg: URIs)</translation>
     </message>
     <message>
-        <source>Open a shroud: URI or payment request</source>
-        <translation>Deschide un shroud: URI sau cerere de plată</translation>
+        <source>Open a fiveg: URI or payment request</source>
+        <translation>Deschide un fiveg: URI sau cerere de plată</translation>
     </message>
     <message>
         <source>%1 and %2</source>
@@ -744,10 +744,10 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>shroud-core</name>
+    <name>fiveg-core</name>
     <message>
-        <source>Shroud Core</source>
-        <translation>Shroud Core</translation>
+        <source>Fiveg Core</source>
+        <translation>Fiveg Core</translation>
     </message>
     <message>
         <source>Information</source>

@@ -5,7 +5,7 @@
 #include "client-api/server.h"
 #include "client-api/protocol.h"
 #include "rpc/server.h"
-#include "shroudnode-sync.h"
+#include "fivegnode-sync.h"
 #include "core_io.h"
 #include "wallet/wallet.h"
 #include "client-api/wallet.h"
@@ -30,11 +30,11 @@ UniValue blockchain(Type type, const UniValue& data, const UniValue& auth, bool 
     UniValue status(UniValue::VOBJ);
     UniValue currentBlock(UniValue::VOBJ);
 
-    status.push_back(Pair("isBlockchainSynced", shroudnodeSync.GetBlockchainSynced()));
-    status.push_back(Pair("isShroudnodeListSynced", shroudnodeSync.IsShroudnodeListSynced()));
-    status.push_back(Pair("isWinnersListSynced", shroudnodeSync.IsWinnersListSynced()));
-    status.push_back(Pair("isSynced", shroudnodeSync.IsSynced()));
-    status.push_back(Pair("isFailed", shroudnodeSync.IsFailed()));
+    status.push_back(Pair("isBlockchainSynced", fivegnodeSync.GetBlockchainSynced()));
+    status.push_back(Pair("isFivegnodeListSynced", fivegnodeSync.IsFivegnodeListSynced()));
+    status.push_back(Pair("isWinnersListSynced", fivegnodeSync.IsWinnersListSynced()));
+    status.push_back(Pair("isSynced", fivegnodeSync.IsSynced()));
+    status.push_back(Pair("isFailed", fivegnodeSync.IsFailed()));
 
     // if coming from PUB, height and time are included in data. otherwise just return chain tip
     UniValue height = find_value(data, "nHeight");
@@ -55,7 +55,7 @@ UniValue blockchain(Type type, const UniValue& data, const UniValue& auth, bool 
     blockinfoObj.push_back(Pair("currentBlock", currentBlock));
     blockinfoObj.push_back(Pair("avgBlockTime", int64_t(AvgBlockTime())));
 
-    if(!shroudnodeSync.GetBlockchainSynced()){
+    if(!fivegnodeSync.GetBlockchainSynced()){
         unsigned long currentTimestamp = floor(
             system_clock::now().time_since_epoch() / 
             milliseconds(1)/1000);

@@ -22,14 +22,14 @@ def setup():
     else:
         programs += ['lxc', 'debootstrap']
     subprocess.check_call(['sudo', 'apt-get', 'install', '-qq'] + programs)
-    if not os.path.isdir('gitian.sigs-shroud-shroud'):
-        subprocess.check_call(['git', 'clone', 'https://github.com/ShroudXProject/gitian.sigs-shroud'])
-    if not os.path.isdir('shroud-detached-sigs'):
-        subprocess.check_call(['git', 'clone', 'https://github.com/ShroudXProject/Shroud-detached-sigs'])
+    if not os.path.isdir('gitian.sigs-fiveg-fiveg'):
+        subprocess.check_call(['git', 'clone', 'https://github.com/FivegXProject/gitian.sigs-fiveg'])
+    if not os.path.isdir('fiveg-detached-sigs'):
+        subprocess.check_call(['git', 'clone', 'https://github.com/FivegXProject/Fiveg-detached-sigs'])
     if not os.path.isdir('gitian-builder'):
         subprocess.check_call(['git', 'clone', 'https://github.com/devrandom/gitian-builder.git'])
-    if not os.path.isdir('Shroud'):
-        subprocess.check_call(['git', 'clone', 'https://github.com/ShroudXProject/Shroud'])
+    if not os.path.isdir('Fiveg'):
+        subprocess.check_call(['git', 'clone', 'https://github.com/FivegXProject/Fiveg'])
     os.chdir('gitian-builder')
     make_image_prog = ['bin/make-base-vm', '--suite', 'bionic', '--arch', 'amd64']
     if args.docker:
@@ -46,40 +46,40 @@ def setup():
 def build():
     global args, workdir
 
-    os.makedirs('shroud-binaries/' + args.version, exist_ok=True)
+    os.makedirs('fiveg-binaries/' + args.version, exist_ok=True)
     print('\nBuilding Dependencies\n')
     os.chdir('gitian-builder')
     os.makedirs('inputs', exist_ok=True)
 
     subprocess.check_call(['wget', '-N', '-P', 'inputs', 'http://downloads.sourceforge.net/project/osslsigncode/osslsigncode/osslsigncode-1.7.1.tar.gz'])
     subprocess.check_call(['wget', '-N', '-P', 'inputs', 'https://bitcoincore.org/cfields/osslsigncode-Backports-to-1.7.1.patch'])
-    subprocess.check_call(['make', '-C', '../shroud/depends', 'download', 'SOURCES_PATH=' + os.getcwd() + '/cache/common'])
+    subprocess.check_call(['make', '-C', '../fiveg/depends', 'download', 'SOURCES_PATH=' + os.getcwd() + '/cache/common'])
 
     if args.linux:
         print('\nCompiling ' + args.version + ' Linux')
-        subprocess.check_call(['bin/gbuild', '-j', args.jobs, '-m', args.memory, '--commit', 'Index='+args.commit, '--url', 'Index='+args.url, '../Shroud/contrib/gitian-descriptors/gitian-linux.yml'])
-        subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-linux', '--destination', '../gitian.sigs-shroud/', '../Shroud/contrib/gitian-descriptors/gitian-linux.yml'])
-        subprocess.check_call('mv build/out/shroud-*.tar.gz build/out/src/shroud-*.tar.gz ../shroud-binaries/'+args.version, shell=True)
+        subprocess.check_call(['bin/gbuild', '-j', args.jobs, '-m', args.memory, '--commit', 'Index='+args.commit, '--url', 'Index='+args.url, '../Fiveg/contrib/gitian-descriptors/gitian-linux.yml'])
+        subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-linux', '--destination', '../gitian.sigs-fiveg/', '../Fiveg/contrib/gitian-descriptors/gitian-linux.yml'])
+        subprocess.check_call('mv build/out/fiveg-*.tar.gz build/out/src/fiveg-*.tar.gz ../fiveg-binaries/'+args.version, shell=True)
 
     if args.windows:
         print('\nCompiling ' + args.version + ' Windows')
-        subprocess.check_call(['bin/gbuild', '-j', args.jobs, '-m', args.memory, '--commit', 'Index='+args.commit, '--url', 'Index='+args.url, '../Shroud/contrib/gitian-descriptors/gitian-win.yml'])
-        subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-win-unsigned', '--destination', '../gitian.sigs-shroud/', '../Shroud/contrib/gitian-descriptors/gitian-win.yml'])
-        subprocess.check_call('mv build/out/shroud-*-win-unsigned.tar.gz inputs/', shell=True)
-        subprocess.check_call('mv build/out/shroud-*.zip build/out/shroud-*.exe ../shroud-binaries/'+args.version, shell=True)
+        subprocess.check_call(['bin/gbuild', '-j', args.jobs, '-m', args.memory, '--commit', 'Index='+args.commit, '--url', 'Index='+args.url, '../Fiveg/contrib/gitian-descriptors/gitian-win.yml'])
+        subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-win-unsigned', '--destination', '../gitian.sigs-fiveg/', '../Fiveg/contrib/gitian-descriptors/gitian-win.yml'])
+        subprocess.check_call('mv build/out/fiveg-*-win-unsigned.tar.gz inputs/', shell=True)
+        subprocess.check_call('mv build/out/fiveg-*.zip build/out/fiveg-*.exe ../fiveg-binaries/'+args.version, shell=True)
 
     if args.macos:
         print('\nCompiling ' + args.version + ' MacOS')
-        subprocess.check_call(['bin/gbuild', '-j', args.jobs, '-m', args.memory, '--commit', 'Index='+args.commit, '--url', 'Index='+args.url, '../Shroud/contrib/gitian-descriptors/gitian-osx.yml'])
-        subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-osx-unsigned', '--destination', '../gitian.sigs-shroud/', '../Shroud/contrib/gitian-descriptors/gitian-osx.yml'])
-        subprocess.check_call('mv build/out/shroud-*-osx-unsigned.tar.gz inputs/', shell=True)
-        subprocess.check_call('mv build/out/shroud-*.tar.gz build/out/shroud-*.dmg ../shroud-binaries/'+args.version, shell=True)
+        subprocess.check_call(['bin/gbuild', '-j', args.jobs, '-m', args.memory, '--commit', 'Index='+args.commit, '--url', 'Index='+args.url, '../Fiveg/contrib/gitian-descriptors/gitian-osx.yml'])
+        subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-osx-unsigned', '--destination', '../gitian.sigs-fiveg/', '../Fiveg/contrib/gitian-descriptors/gitian-osx.yml'])
+        subprocess.check_call('mv build/out/fiveg-*-osx-unsigned.tar.gz inputs/', shell=True)
+        subprocess.check_call('mv build/out/fiveg-*.tar.gz build/out/fiveg-*.dmg ../fiveg-binaries/'+args.version, shell=True)
 
     os.chdir(workdir)
 
     if args.commit_files:
         print('\nCommitting '+args.version+' Unsigned Sigs\n')
-        os.chdir('gitian.sigs-shroud')
+        os.chdir('gitian.sigs-fiveg')
         subprocess.check_call(['git', 'config', 'user.signingkey', args.signer])
         if args.linux:
             subprocess.check_call(['git', 'add', args.version+'-linux/'+args.signer])
@@ -96,24 +96,24 @@ def sign():
 
     if args.windows:
         print('\nSigning ' + args.version + ' Windows')
-        subprocess.check_call('cp inputs/shroud-' + args.version + '-win-unsigned.tar.gz inputs/shroud-win-unsigned.tar.gz', shell=True)
-        subprocess.check_call(['bin/gbuild', '-i', '--commit', 'signature='+args.commit, '../Shroud/contrib/gitian-descriptors/gitian-win-signer.yml'])
-        subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-win-signed', '--destination', '../gitian.sigs-shroud/', '../Shroud/contrib/gitian-descriptors/gitian-win-signer.yml'])
-        subprocess.check_call('mv build/out/shroud-*win64-setup.exe ../shroud-binaries/'+args.version, shell=True)
-        subprocess.check_call('mv build/out/shroud-*win32-setup.exe ../shroud-binaries/'+args.version, shell=True)
+        subprocess.check_call('cp inputs/fiveg-' + args.version + '-win-unsigned.tar.gz inputs/fiveg-win-unsigned.tar.gz', shell=True)
+        subprocess.check_call(['bin/gbuild', '-i', '--commit', 'signature='+args.commit, '../Fiveg/contrib/gitian-descriptors/gitian-win-signer.yml'])
+        subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-win-signed', '--destination', '../gitian.sigs-fiveg/', '../Fiveg/contrib/gitian-descriptors/gitian-win-signer.yml'])
+        subprocess.check_call('mv build/out/fiveg-*win64-setup.exe ../fiveg-binaries/'+args.version, shell=True)
+        subprocess.check_call('mv build/out/fiveg-*win32-setup.exe ../fiveg-binaries/'+args.version, shell=True)
 
     if args.macos:
         print('\nSigning ' + args.version + ' MacOS')
-        subprocess.check_call('cp inputs/shroud-' + args.version + '-osx-unsigned.tar.gz inputs/shroud-osx-unsigned.tar.gz', shell=True)
-        subprocess.check_call(['bin/gbuild', '-i', '--commit', 'signature='+args.commit, '../Shroud/contrib/gitian-descriptors/gitian-osx-signer.yml'])
-        subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-osx-signed', '--destination', '../gitian.sigs-shroud/', '../Shroud/contrib/gitian-descriptors/gitian-osx-signer.yml'])
-        subprocess.check_call('mv build/out/shroud-osx-signed.dmg ../shroud-binaries/'+args.version+'/shroud-'+args.version+'-osx.dmg', shell=True)
+        subprocess.check_call('cp inputs/fiveg-' + args.version + '-osx-unsigned.tar.gz inputs/fiveg-osx-unsigned.tar.gz', shell=True)
+        subprocess.check_call(['bin/gbuild', '-i', '--commit', 'signature='+args.commit, '../Fiveg/contrib/gitian-descriptors/gitian-osx-signer.yml'])
+        subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-osx-signed', '--destination', '../gitian.sigs-fiveg/', '../Fiveg/contrib/gitian-descriptors/gitian-osx-signer.yml'])
+        subprocess.check_call('mv build/out/fiveg-osx-signed.dmg ../fiveg-binaries/'+args.version+'/fiveg-'+args.version+'-osx.dmg', shell=True)
 
     os.chdir(workdir)
 
     if args.commit_files:
         print('\nCommitting '+args.version+' Signed Sigs\n')
-        os.chdir('gitian.sigs-shroud')
+        os.chdir('gitian.sigs-fiveg')
 
         if args.windows:
             subprocess.check_call(['git', 'add', args.version+'-win-signed/'+args.signer])
@@ -129,23 +129,23 @@ def verify():
 
     if args.linux:
         print('\nVerifying v'+args.version+' Linux\n')
-        subprocess.check_call(['bin/gverify', '-v', '-d', '../gitian.sigs-shroud/', '-r', args.version+'-linux', '../Shroud/contrib/gitian-descriptors/gitian-linux.yml'])
+        subprocess.check_call(['bin/gverify', '-v', '-d', '../gitian.sigs-fiveg/', '-r', args.version+'-linux', '../Fiveg/contrib/gitian-descriptors/gitian-linux.yml'])
         print('\nVerifying v'+args.version+' Linux\n')
-        subprocess.check_call(['bin/gverify', '-v', '-d', '../gitian.sigs-shroud/', '-r', args.version+'-linux', '../Shroud/contrib/gitian-descriptors/gitian-linux.yml'])
+        subprocess.check_call(['bin/gverify', '-v', '-d', '../gitian.sigs-fiveg/', '-r', args.version+'-linux', '../Fiveg/contrib/gitian-descriptors/gitian-linux.yml'])
 
     if args.windows:
         print('\nVerifying v'+args.version+' Windows\n')
-        subprocess.check_call(['bin/gverify', '-v', '-d', '../gitian.sigs-shroud/', '-r', args.version+'-win-unsigned', '../Shroud/contrib/gitian-descriptors/gitian-win.yml'])
+        subprocess.check_call(['bin/gverify', '-v', '-d', '../gitian.sigs-fiveg/', '-r', args.version+'-win-unsigned', '../Fiveg/contrib/gitian-descriptors/gitian-win.yml'])
         if args.sign:
             print('\nVerifying v'+args.version+' Signed Windows\n')
-            subprocess.check_call(['bin/gverify', '-v', '-d', '../gitian.sigs-shroud/', '-r', args.version+'-win-signed', '../Shroud/contrib/gitian-descriptors/gitian-win-signer.yml'])
+            subprocess.check_call(['bin/gverify', '-v', '-d', '../gitian.sigs-fiveg/', '-r', args.version+'-win-signed', '../Fiveg/contrib/gitian-descriptors/gitian-win-signer.yml'])
 
     if args.macos:
         print('\nVerifying v'+args.version+' MacOS\n')
-        subprocess.check_call(['bin/gverify', '-v', '-d', '../gitian.sigs-shroud/', '-r', args.version+'-osx-unsigned', '../Shroud/contrib/gitian-descriptors/gitian-osx.yml'])
+        subprocess.check_call(['bin/gverify', '-v', '-d', '../gitian.sigs-fiveg/', '-r', args.version+'-osx-unsigned', '../Fiveg/contrib/gitian-descriptors/gitian-osx.yml'])
         if args.sign:
             print('\nVerifying v'+args.version+' Signed MacOS\n')
-            subprocess.check_call(['bin/gverify', '-v', '-d', '../gitian.sigs-shroud/', '-r', args.version+'-osx-signed', '../Shroud/contrib/gitian-descriptors/gitian-osx-signer.yml'])
+            subprocess.check_call(['bin/gverify', '-v', '-d', '../gitian.sigs-fiveg/', '-r', args.version+'-osx-signed', '../Fiveg/contrib/gitian-descriptors/gitian-osx-signer.yml'])
 
     os.chdir(workdir)
 
@@ -155,7 +155,7 @@ def main():
     parser = argparse.ArgumentParser(usage='%(prog)s [options] signer version')
     parser.add_argument('-c', '--commit', action='store_true', dest='commit', help='Indicate that the version argument is for a commit or branch')
     parser.add_argument('-p', '--pull', action='store_true', dest='pull', help='Indicate that the version argument is the number of a github repository pull request')
-    parser.add_argument('-u', '--url', dest='url', default='https://github.com/ShroudXProject/Shroud', help='Specify the URL of the repository. Default is %(default)s')
+    parser.add_argument('-u', '--url', dest='url', default='https://github.com/FivegXProject/Fiveg', help='Specify the URL of the repository. Default is %(default)s')
     parser.add_argument('-v', '--verify', action='store_true', dest='verify', help='Verify the Gitian build')
     parser.add_argument('-b', '--build', action='store_true', dest='build', help='Do a Gitian build')
     parser.add_argument('-s', '--sign', action='store_true', dest='sign', help='Make signed binaries for Windows and MacOS')
@@ -223,10 +223,10 @@ def main():
     if args.setup:
         setup()
 
-    os.chdir('Shroud')
+    os.chdir('Fiveg')
     if args.pull:
         subprocess.check_call(['git', 'fetch', args.url, 'refs/pull/'+args.version+'/merge'])
-        os.chdir('../gitian-builder/inputs/shroud')
+        os.chdir('../gitian-builder/inputs/fiveg')
         subprocess.check_call(['git', 'fetch', args.url, 'refs/pull/'+args.version+'/merge'])
         args.commit = subprocess.check_output(['git', 'show', '-s', '--format=%H', 'FETCH_HEAD'], universal_newlines=True, encoding='utf8').strip()
         args.version = 'pull-' + args.version

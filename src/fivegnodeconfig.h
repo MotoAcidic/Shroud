@@ -1,24 +1,24 @@
 // Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2020 The ShroudX Project developers
+// Copyright (c) 2020 The FivegX Project developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SRC_SHROUDNODECONFIG_H_
-#define SRC_SHROUDNODECONFIG_H_
+#ifndef SRC_FIVEGNODECONFIG_H_
+#define SRC_FIVEGNODECONFIG_H_
 
 #include "fs.h"
 
 #include <univalue.h>
 
-class CShroudnodeConfig;
-extern CShroudnodeConfig shroudnodeConfig;
+class CFivegnodeConfig;
+extern CFivegnodeConfig fivegnodeConfig;
 
-class CShroudnodeConfig
+class CFivegnodeConfig
 {
 
 public:
 
-    class CShroudnodeEntry {
+    class CFivegnodeEntry {
 
     private:
         std::string alias;
@@ -28,7 +28,7 @@ public:
         std::string outputIndex;
     public:
 
-        CShroudnodeEntry(std::string alias, std::string ip, std::string privKey, std::string txHash, std::string outputIndex) {
+        CFivegnodeEntry(std::string alias, std::string ip, std::string privKey, std::string txHash, std::string outputIndex) {
             this->alias = alias;
             this->ip = ip;
             this->privKey = privKey;
@@ -99,15 +99,15 @@ public:
         }
     };
 
-    CShroudnodeConfig() {
-        entries = std::vector<CShroudnodeEntry>();
+    CFivegnodeConfig() {
+        entries = std::vector<CFivegnodeEntry>();
     }
 
     void clear();
     bool read(std::string& strErr);
     void add(std::string alias, std::string ip, std::string privKey, std::string txHash, std::string outputIndex);
 
-    std::vector<CShroudnodeEntry>& getEntries() {
+    std::vector<CFivegnodeEntry>& getEntries() {
         return entries;
     }
 
@@ -116,10 +116,10 @@ public:
     }
 
 private:
-    std::vector<CShroudnodeEntry> entries;
+    std::vector<CFivegnodeEntry> entries;
 
 
 };
 
 
-#endif /* SRC_SHROUDNODECONFIG_H_ */
+#endif /* SRC_FIVEGNODECONFIG_H_ */

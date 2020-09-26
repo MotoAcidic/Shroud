@@ -20,7 +20,7 @@
 #include "primitives/transaction.h"
 #include <stdio.h>
 #include "util.h"
-#include "shroudnode-sync.h"
+#include "fivegnode-sync.h"
 
 // Stake Modifier (hash modifier of proof-of-stake):
 // The purpose of stake modifier is to prevent a txout (coin) owner from

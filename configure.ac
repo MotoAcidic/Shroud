@@ -7,8 +7,8 @@ define(_CLIENT_VERSION_BUILD,0)
 define(_CLIENT_VERSION_IS_RELEASE, true)
 define(_COPYRIGHT_YEAR, 2020)
 define(_COPYRIGHT_HOLDERS,[The %s developers])
-define(_COPYRIGHT_HOLDERS_SUBSTITUTION,[[Shroud Core]])
-AC_INIT([Shroud Core],[_CLIENT_VERSION_MAJOR._CLIENT_VERSION_MINOR._CLIENT_VERSION_REVISION._CLIENT_VERSION_BUILD],[https://github.com/ShroudXProject/Shroud/issues],[shroud],[https://shroudx.org/])
+define(_COPYRIGHT_HOLDERS_SUBSTITUTION,[[Fiveg Core]])
+AC_INIT([Fiveg Core],[_CLIENT_VERSION_MAJOR._CLIENT_VERSION_MINOR._CLIENT_VERSION_REVISION._CLIENT_VERSION_BUILD],[https://github.com/FivegXProject/Fiveg/issues],[fiveg],[https://fivegx.org/])
 AC_CONFIG_SRCDIR([src/main.cpp])
 AC_CONFIG_HEADERS([src/config/bitcoin-config.h])
 AC_CONFIG_AUX_DIR([build-aux])
@@ -19,10 +19,10 @@ AC_CONFIG_LINKS([src/crypto/x16Rv2/sph_md_helper.c:src/crypto/x16Rv2/sph_md_help
 AC_CONFIG_LINKS([src/crypto/x16Rv2/aes_helper.c:src/crypto/x16Rv2/aes_helper.c])
 AC_CONFIG_LINKS([src/crypto/x16Rv2/haval_helper.c:src/crypto/x16Rv2/haval_helper.c])
 
-BITCOIN_DAEMON_NAME=shroudd
-BITCOIN_GUI_NAME=shroud-qt
-BITCOIN_CLI_NAME=shroud-cli
-BITCOIN_TX_NAME=shroud-tx
+BITCOIN_DAEMON_NAME=fivegd
+BITCOIN_GUI_NAME=fiveg-qt
+BITCOIN_CLI_NAME=fiveg-cli
+BITCOIN_TX_NAME=fiveg-tx
 
 AC_CANONICAL_HOST
 
@@ -245,7 +245,7 @@ CPPFLAGS="$CPPFLAGS -DHAVE_BUILD_INFO -D__STDC_FORMAT_MACROS"
 
 AC_ARG_WITH([utils],
   [AS_HELP_STRING([--with-utils],
-  [build shroud-cli shroud-tx (default=yes)])],
+  [build fiveg-cli fiveg-tx (default=yes)])],
   [build_bitcoin_utils=$withval],
   [build_bitcoin_utils=yes])
 
@@ -923,11 +923,11 @@ AC_SUBST(UNIVALUE_LIBS)
 
 BITCOIN_QT_PATH_PROGS([PROTOC], [protoc],$protoc_bin_path)
 
-AC_MSG_CHECKING([whether to build shroudd])
+AC_MSG_CHECKING([whether to build fivegd])
 AM_CONDITIONAL([BUILD_BITCOIND], [test x$build_bitcoind = xyes])
 AC_MSG_RESULT($build_bitcoind)
 
-AC_MSG_CHECKING([whether to build utils (shroud-cli shroud-tx)])
+AC_MSG_CHECKING([whether to build utils (fiveg-cli fiveg-tx)])
 AM_CONDITIONAL([BUILD_BITCOIN_UTILS], [test x$build_bitcoin_utils = xyes])
 AC_MSG_RESULT($build_bitcoin_utils)
 
@@ -1046,7 +1046,7 @@ if test x$bitcoin_enable_qt != xno; then
     AC_MSG_WARN("xgettext is required to update qt translations")
   fi
 
-  AC_MSG_CHECKING([whether to build test_shroud-qt])
+  AC_MSG_CHECKING([whether to build test_fiveg-qt])
   if test x$use_gui_tests$bitcoin_enable_qt_test = xyesyes; then
     AC_MSG_RESULT([yes])
     BUILD_TEST_QT="yes"

@@ -24,8 +24,8 @@ void RegisterSendAPICommands(CAPITable &tableAPI);
 /** Register settings API commands */
 void RegisterSettingsAPICommands(CAPITable &tableAPI);
 
-/** Register shroudnode API commands */
-void RegisterShroudnodeAPICommands(CAPITable &tableAPI);
+/** Register fivegnode API commands */
+void RegisterFivegnodeAPICommands(CAPITable &tableAPI);
 
 /** Register sigma API commands */
 void RegisterSigmaAPICommands(CAPITable &tableAPI);
@@ -37,7 +37,7 @@ static inline void RegisterAllCoreAPICommands(CAPITable &tableAPI)
     RegisterBlockchainAPICommands(tableAPI);
     RegisterSendAPICommands(tableAPI);
     RegisterSettingsAPICommands(tableAPI);
-    RegisterShroudnodeAPICommands(tableAPI);
+    RegisterFivegnodeAPICommands(tableAPI);
     RegisterSigmaAPICommands(tableAPI);
 }
 

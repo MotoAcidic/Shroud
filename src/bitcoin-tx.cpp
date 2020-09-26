@@ -56,10 +56,10 @@ static int AppInitRawTx(int argc, char* argv[])
     if (argc<2 || mapArgs.count("-?") || mapArgs.count("-h") || mapArgs.count("-help"))
     {
         // First part of help message is specific to this utility
-        std::string strUsage = strprintf(_("%s shroud-tx utility version"), _(PACKAGE_NAME)) + " " + FormatFullVersion() + "\n\n" +
+        std::string strUsage = strprintf(_("%s fiveg-tx utility version"), _(PACKAGE_NAME)) + " " + FormatFullVersion() + "\n\n" +
             _("Usage:") + "\n" +
-              "  shroud-tx [options] <hex-tx> [commands]  " + _("Update hex-encoded Index transaction") + "\n" +
-              "  shroud-tx [options] -create [commands]   " + _("Create hex-encoded Index transaction") + "\n" +
+              "  fiveg-tx [options] <hex-tx> [commands]  " + _("Update hex-encoded Index transaction") + "\n" +
+              "  fiveg-tx [options] -create [commands]   " + _("Create hex-encoded Index transaction") + "\n" +
               "\n";
 
         fprintf(stdout, "%s", strUsage.c_str());

@@ -18,7 +18,7 @@
 #include "httpserver.h"
 #include "httprpc.h"
 #include "utilstrencodings.h"
-#include "shroudnodeconfig.h"
+#include "fivegnodeconfig.h"
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/thread.hpp>
@@ -92,7 +92,7 @@ bool AppInit(int argc, char* argv[])
         else
         {
             strUsage += "\n" + _("Usage:") + "\n" +
-                  "  shroudd [options]                     " + strprintf(_("Start %s Daemon"), _(PACKAGE_NAME)) + "\n";
+                  "  fivegd [options]                     " + strprintf(_("Start %s Daemon"), _(PACKAGE_NAME)) + "\n";
 
             strUsage += "\n" + HelpMessage(HMM_BITCOIND);
         }
@@ -132,29 +132,29 @@ bool AppInit(int argc, char* argv[])
         }
 #endif
 
-        // parse shroudnode.conf
+        // parse fivegnode.conf
         std::string strErr;
-        if(!shroudnodeConfig.read(strErr)) {
-            fprintf(stderr,"Error reading shroudnode configuration file: %s\n", strErr.c_str());
+        if(!fivegnodeConfig.read(strErr)) {
+            fprintf(stderr,"Error reading fivegnode configuration file: %s\n", strErr.c_str());
             return false;
         }
 
         // Command-line RPC
         bool fCommandLine = false;
         for (int i = 1; i < argc; i++)
-            if (!IsSwitchChar(argv[i][0]) && !boost::algorithm::istarts_with(argv[i], "shroud:"))
+            if (!IsSwitchChar(argv[i][0]) && !boost::algorithm::istarts_with(argv[i], "fiveg:"))
                 fCommandLine = true;
 
         if (fCommandLine)
         {
-            fprintf(stderr, "Error: There is no RPC client functionality in shroudd anymore. Use the shroud-cli utility instead.\n");
+            fprintf(stderr, "Error: There is no RPC client functionality in fivegd anymore. Use the fiveg-cli utility instead.\n");
             exit(EXIT_FAILURE);
         }
 #ifndef WIN32
         fDaemon = GetBoolArg("-daemon", false);
         if (fDaemon)
         {
-            fprintf(stdout, "Shroud server starting\n");
+            fprintf(stdout, "Fiveg server starting\n");
 
             // Daemonize
             pid_t pid = fork();

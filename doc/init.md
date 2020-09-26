@@ -53,11 +53,11 @@ see `contrib/debian/examples/bitcoin.conf`.
 
 All three configurations assume several paths that might need to be adjusted.
 
-Binary:              `/usr/bin/shroudd`
+Binary:              `/usr/bin/fivegd`
 Configuration file:  `/etc/index/zconf.conf`
-Data directory:      `/var/lib/shroudd`
-PID file:            `/var/run/shroudd/shroudd.pid` (OpenRC and Upstart) or `/var/lib/shroudd/shroudd.pid` (systemd)
-Lock file:           `/var/lock/subsys/shroudd` (CentOS)
+Data directory:      `/var/lib/fivegd`
+PID file:            `/var/run/fivegd/fivegd.pid` (OpenRC and Upstart) or `/var/lib/fivegd/fivegd.pid` (systemd)
+Lock file:           `/var/lock/subsys/fivegd` (CentOS)
 
 The configuration file, PID directory (if applicable) and data directory
 should all be owned by the bitcoin user and group.  It is advised for security
@@ -67,10 +67,10 @@ can then be controlled by group membership.
 
 3b) Mac OS X
 
-Binary:              `/usr/local/bin/shroudd`
-Configuration file:  `~/Library/Application Support/shroud/shroud.conf`
-Data directory:      `~/Library/Application Support/shroud`
-Lock file:           `~/Library/Application Support/shroud/.lock`
+Binary:              `/usr/local/bin/fivegd`
+Configuration file:  `~/Library/Application Support/fiveg/fiveg.conf`
+Data directory:      `~/Library/Application Support/fiveg`
+Lock file:           `~/Library/Application Support/fiveg/.lock`
 
 4. Installing Service Configuration
 -----------------------------------
@@ -81,19 +81,19 @@ Installing this .service file consists of just copying it to
 /usr/lib/systemd/system directory, followed by the command
 `systemctl daemon-reload` in order to update running systemd configuration.
 
-To test, run `systemctl start shroudd` and to enable for system startup run
-`systemctl enable shroudd`
+To test, run `systemctl start fivegd` and to enable for system startup run
+`systemctl enable fivegd`
 
 4b) OpenRC
 
 Rename bitcoind.openrc to bitcoind and drop it in /etc/init.d.  Double
 check ownership and permissions and make it executable.  Test it with
-`/etc/init.d/shroudd start` and configure it to run on startup with
-`rc-update add shroudd`
+`/etc/init.d/fivegd start` and configure it to run on startup with
+`rc-update add fivegd`
 
 4c) Upstart (for Debian/Ubuntu based distributions)
 
-Drop bitcoind.conf in /etc/init.  Test by running `service shroudd start`
+Drop bitcoind.conf in /etc/init.  Test by running `service fivegd start`
 it will automatically start on reboot.
 
 NOTE: This script is incompatible with CentOS 5 and Amazon Linux 2014 as they
@@ -101,7 +101,7 @@ use old versions of Upstart and do not supply the start-stop-daemon utility.
 
 4d) CentOS
 
-Copy shroudd.init to /etc/init.d/shroudd. Test by running `service shroudd start`.
+Copy fivegd.init to /etc/init.d/fivegd. Test by running `service fivegd start`.
 
 Using this script, you can adjust the path and flags to the bitcoind program by
 setting the BITCOIND and FLAGS environment variables in the file
@@ -110,7 +110,7 @@ setting the BITCOIND and FLAGS environment variables in the file
 4e) Mac OS X
 
 Copy org.bitcoin.bitcoind.plist into ~/Library/LaunchAgents. Load the launch agent by
-running `launchctl load ~/Library/LaunchAgents/org.shroud.shroudd.plist`.
+running `launchctl load ~/Library/LaunchAgents/org.fiveg.fivegd.plist`.
 
 This Launch Agent will cause bitcoind to start whenever the user logs in.
 

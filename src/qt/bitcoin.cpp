@@ -22,7 +22,7 @@
 #include "splashscreen.h"
 #include "utilitydialog.h"
 #include "winshutdownmonitor.h"
-#include "shroudnodeconfig.h"
+#include "fivegnodeconfig.h"
 #include <hybridui/styleSheet.h>
 
 #ifdef ENABLE_WALLET
@@ -98,7 +98,7 @@ static void InitMessage(const std::string &message)
  */
 static std::string Translate(const char* psz)
 {
-    return QCoreApplication::translate("shroud-core", psz).toStdString();
+    return QCoreApplication::translate("fiveg-core", psz).toStdString();
 }
 
 static QString GetLangTerritory()
@@ -517,7 +517,7 @@ void BitcoinApplication::initializeResult(int retval)
         }
         
         // Now that initialization/startup is done, process any command-line
-        // shroud: URIs or payment requests:
+        // fiveg: URIs or payment requests:
         connect(paymentServer, SIGNAL(receivedPaymentRequest(SendCoinsRecipient)),
                          window, SLOT(handlePaymentRequest(SendCoinsRecipient)));
         connect(window, SIGNAL(receivedURI(QString)),
@@ -622,7 +622,7 @@ int main(int argc, char *argv[])
     if (!Intro::pickDataDirectory())
         return EXIT_SUCCESS;
 
-    /// 6. Determine availability of data directory and parse shroud.conf
+    /// 6. Determine availability of data directory and parse fiveg.conf
     /// - Do not call GetDataDir(true) before this step finishes
     if (!fs::is_directory(GetDataDir(false)))
     {
@@ -677,11 +677,11 @@ int main(int argc, char *argv[])
     initTranslations(qtTranslatorBase, qtTranslator, translatorBase, translator);
 
 #ifdef ENABLE_WALLET
-    /// 7a. parse shroudnode.conf
+    /// 7a. parse fivegnode.conf
     std::string strErr;
-    if(!shroudnodeConfig.read(strErr)) {
-        QMessageBox::critical(0, QObject::tr("Shroud Core"),
-                              QObject::tr("Error reading shroudnode configuration file: %1").arg(strErr.c_str()));
+    if(!fivegnodeConfig.read(strErr)) {
+        QMessageBox::critical(0, QObject::tr("Fiveg Core"),
+                              QObject::tr("Error reading fivegnode configuration file: %1").arg(strErr.c_str()));
         return EXIT_FAILURE;
     }
 
@@ -695,7 +695,7 @@ int main(int argc, char *argv[])
         exit(EXIT_SUCCESS);
 
     // Start up the payment server early, too, so impatient users that click on
-    // shroud: links repeatedly have their payment requests routed to this process:
+    // fiveg: links repeatedly have their payment requests routed to this process:
     app.createPaymentServer();
 #endif
     /// 9. Main GUI initialization

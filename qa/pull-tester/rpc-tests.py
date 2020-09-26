@@ -75,10 +75,10 @@ for arg in sys.argv[1:]:
         opts.add(arg)
 
 #Set env vars
-if "SHROUDD" not in os.environ:
-    os.environ["SHROUDD"] = BUILDDIR + '/src/shroudd' + EXEEXT
-if "SHROUDCLI" not in os.environ:
-    os.environ["SHROUDCLI"] = BUILDDIR + '/src/shroud-cli' + EXEEXT
+if "FIVEGD" not in os.environ:
+    os.environ["FIVEGD"] = BUILDDIR + '/src/fivegd' + EXEEXT
+if "FIVEGCLI" not in os.environ:
+    os.environ["FIVEGCLI"] = BUILDDIR + '/src/fiveg-cli' + EXEEXT
 
 if EXEEXT == ".exe" and "-win" not in opts:
     # https://github.com/bitcoin/bitcoin/commit/d52802551752140cf41f0d9a225a43e84404d3e9

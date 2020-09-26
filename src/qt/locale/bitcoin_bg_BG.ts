@@ -260,9 +260,9 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>shroud-core</name>
+    <name>fiveg-core</name>
     <message>
-        <source>Shroud Core</source>
+        <source>Fiveg Core</source>
         <translation>Биткойн ядро</translation>
     </message>
     </context>

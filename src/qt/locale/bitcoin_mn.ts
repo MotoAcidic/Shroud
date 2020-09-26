@@ -126,7 +126,7 @@
         <translation>Оношилгоо ба засварын консолыг онгойлго</translation>
     </message>
     <message>
-        <source>Shroud</source>
+        <source>Fiveg</source>
         <translation>Биткойн</translation>
     </message>
     <message>
@@ -536,7 +536,7 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>shroud-core</name>
+    <name>fiveg-core</name>
     <message>
         <source>Options:</source>
         <translation>Сонголтууд:</translation>

@@ -75,7 +75,7 @@ public:
     const std::vector<unsigned char>& Base58Prefix(Base58Type type) const { return base58Prefixes[type]; }
     const std::vector<SeedSpec6>& FixedSeeds() const { return vFixedSeeds; }
     const CCheckpointData& Checkpoints() const { return checkpointData; }
-    /** shroudnode code from Dash*/
+    /** fivegnode code from Dash*/
     int64_t MaxTipAge() const { return nMaxTipAge; }
     int PoolMaxTransactions() const { return nPoolMaxTransactions; }
     int FulfilledRequestExpireTime() const { return nFulfilledRequestExpireTime; }
@@ -112,12 +112,12 @@ protected:
     bool fTestnetToBeDeprecatedFieldRPC;
     CCheckpointData checkpointData;
 	
-    /** shroudnode params*/
+    /** fivegnode params*/
     long nMaxTipAge;
     int nPoolMaxTransactions;
     int nFulfilledRequestExpireTime;
     std::string strSporkPubKey;
-    std::string strShroudnodePaymentsPubKey;
+    std::string strFivegnodePaymentsPubKey;
 };
 
 /**

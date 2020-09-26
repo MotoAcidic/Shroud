@@ -82,10 +82,10 @@ UniValue importprivkey(const UniValue& params, bool fHelp)
 
     if (fHelp || params.size() < 1 || params.size() > 3)
         throw runtime_error(
-            "importprivkey \"shroudprivkey\" ( \"label\" rescan )\n"
+            "importprivkey \"fivegprivkey\" ( \"label\" rescan )\n"
             "\nAdds a private key (as returned by dumpprivkey) to your wallet.\n"
             "\nArguments:\n"
-            "1. \"shroudprivkey\"   (string, required) The private key (see dumpprivkey)\n"
+            "1. \"fivegprivkey\"   (string, required) The private key (see dumpprivkey)\n"
             "2. \"label\"            (string, optional, default=\"\") An optional label\n"
             "3. rescan               (boolean, optional, default=true) Rescan the wallet for transactions\n"
             "\nNote: This call can take minutes to complete if rescan is true.\n"
@@ -108,7 +108,7 @@ UniValue importprivkey(const UniValue& params, bool fHelp)
     const CHDChain& chain = pwalletMain->GetHDChain();
     if(chain.nVersion == chain.VERSION_WITH_BIP39){
         throw JSONRPCError(RPC_WALLET_ERROR, "Importing wallets and private keys is disabled for mnemonic-enabled wallets."
-                                             "To import your dump file, create a non-mnemonic wallet by setting \"usemnemonic=0\" in your shroud.conf file, after backing up and removing your existing wallet.");
+                                             "To import your dump file, create a non-mnemonic wallet by setting \"usemnemonic=0\" in your fiveg.conf file, after backing up and removing your existing wallet.");
     }
 
 
@@ -248,7 +248,7 @@ UniValue importaddress(const UniValue& params, bool fHelp)
         std::vector<unsigned char> data(ParseHex(params[0].get_str()));
         ImportScript(CScript(data.begin(), data.end()), strLabel, fP2SH);
     } else {
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Shroud address or script");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Fiveg address or script");
     }
 
     if (fRescan)
@@ -445,7 +445,7 @@ UniValue importwallet(const UniValue& params, bool fHelp)
     const CHDChain& chain = pwalletMain->GetHDChain();
     if(chain.nVersion == chain.VERSION_WITH_BIP39){
         throw JSONRPCError(RPC_WALLET_ERROR, "Importing wallets and private keys is disabled for mnemonic-enabled wallets."
-                                             "To import your dump file, create a non-mnemonic wallet by setting \"usemnemonic=0\" in your shroud.conf file, after backing up and removing your existing wallet.");
+                                             "To import your dump file, create a non-mnemonic wallet by setting \"usemnemonic=0\" in your fiveg.conf file, after backing up and removing your existing wallet.");
     }
 
 
@@ -598,11 +598,11 @@ UniValue dumpprivkey(const UniValue& params, bool fHelp)
 
     if (fHelp || params.size() != 1)
         throw runtime_error(
-            "dumpprivkey \"shroudaddress\"\n"
-            "\nReveals the private key corresponding to 'shroudaddress'.\n"
+            "dumpprivkey \"fivegaddress\"\n"
+            "\nReveals the private key corresponding to 'fivegaddress'.\n"
             "Then the importprivkey can be used with this output\n"
             "\nArguments:\n"
-            "1. \"shroudaddress\"   (string, required) The Shroud address for the private key\n"
+            "1. \"fivegaddress\"   (string, required) The Fiveg address for the private key\n"
             "\nResult:\n"
             "\"key\"                (string) The private key\n"
             "\nExamples:\n"
@@ -618,7 +618,7 @@ UniValue dumpprivkey(const UniValue& params, bool fHelp)
     string strAddress = params[0].get_str();
     CBitcoinAddress address;
     if (!address.SetString(strAddress))
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Shroud address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Fiveg address");
     CKeyID keyID;
     if (!address.GetKeyID(keyID))
         throw JSONRPCError(RPC_TYPE_ERROR, "Address does not refer to a key");
@@ -633,11 +633,11 @@ UniValue dumpprivkey_index(const UniValue& params, bool fHelp)
 #ifndef UNSAFE_DUMPPRIVKEY
     if (fHelp || params.size() < 1 || params.size() > 2)
         throw runtime_error(
-            "dumpprivkey \"shroudaddress\"\n"
-            "\nReveals the private key corresponding to 'shroudaddress'.\n"
+            "dumpprivkey \"fivegaddress\"\n"
+            "\nReveals the private key corresponding to 'fivegaddress'.\n"
             "Then the importprivkey can be used with this output\n"
             "\nArguments:\n"
-            "1. \"shroudaddress\"   (string, required) The Shroud address for the private key\n"
+            "1. \"fivegaddress\"   (string, required) The Fiveg address for the private key\n"
             "2. \"one-time-auth-code\"   (string, optional) A one time authorization code received from a previous call of dumpprivkey"
             "\nResult:\n"
             "\"key\"                (string) The private key\n"
@@ -655,7 +655,7 @@ UniValue dumpprivkey_index(const UniValue& params, bool fHelp)
             "WARNING! Your one time authorization code is: " + AuthorizationHelper::inst().generateAuthorizationCode(__FUNCTION__ + params[0].get_str()) + "\n"
             "This command exports your wallet private key. Anyone with this key has complete control over your funds. \n"
             "If someone asked you to type in this command, chances are they want to steal your coins. \n"
-            "Shroud team members will never ask for this command's output and it is not needed for Shroudnode setup or diagnosis!\n"
+            "Fiveg team members will never ask for this command's output and it is not needed for Fivegnode setup or diagnosis!\n"
             "\n"
             " Please seek help on one of our public channels. \n"
             " Discord: https://discord.gg/7U8chR4\n"
@@ -854,7 +854,7 @@ UniValue dumpwallet_index(const UniValue& params, bool fHelp)
             "WARNING! Your one time authorization code is: " + AuthorizationHelper::inst().generateAuthorizationCode(__FUNCTION__ + params[0].get_str()) + "\n"
             "This command exports all your private keys. Anyone with these keys has complete control over your funds. \n"
             "If someone asked you to type in this command, chances are they want to steal your coins. \n"
-            "Index team members will never ask for this command's output and it is not needed for Shroudnode setup or diagnosis!\n"
+            "Index team members will never ask for this command's output and it is not needed for Fivegnode setup or diagnosis!\n"
             "\n"
             " Please seek help on one of our public channels. \n"
             " Telegram: https://t.me/indexproject \n"

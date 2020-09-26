@@ -255,11 +255,11 @@ UniValue stop(const UniValue& params, bool fHelp)
     if (fHelp || params.size() > 1)
         throw runtime_error(
             "stop\n"
-            "\nStop Shroud server.");
+            "\nStop Fiveg server.");
     // Event loop will exit after current HTTP requests have been handled, so
     // this reply will get back to the client.
     StartShutdown();
-    return "Shroud server stopping";
+    return "Fiveg server stopping";
 }
 
 /**
@@ -277,14 +277,14 @@ static const CRPCCommand vRPCCommands[] =
     { "addressindex",       "getaddressdeltas",       &getaddressdeltas,       false },
     { "addressindex",       "getaddresstxids",        &getaddresstxids,        false },
     { "addressindex",       "getaddressbalance",      &getaddressbalance,      false },
-        /* Shroud features */
-    { "shroud",               "shroudnode",            &shroudnode,             true  },
-    { "shroud",               "insync",                &insync,                 true  },
-    { "shroud",               "shroudnodelist",        &shroudnodelist,         true  },
-    { "shroud",               "shroudnodebroadcast",   &shroudnodebroadcast,    true  },
-    { "shroud",               "spork",                 &spork,                  true  },
-    { "shroud" ,              "createsporkkeypair",    &createsporkkeypair,     true  },
-    { "shroud",               "getpoolinfo",           &getpoolinfo,            true  },
+        /* Fiveg features */
+    { "fiveg",               "fivegnode",            &fivegnode,             true  },
+    { "fiveg",               "insync",                &insync,                 true  },
+    { "fiveg",               "fivegnodelist",        &fivegnodelist,         true  },
+    { "fiveg",               "fivegnodebroadcast",   &fivegnodebroadcast,    true  },
+    { "fiveg",               "spork",                 &spork,                  true  },
+    { "fiveg" ,              "createsporkkeypair",    &createsporkkeypair,     true  },
+    { "fiveg",               "getpoolinfo",           &getpoolinfo,            true  },
 };
 
 CRPCTable::CRPCTable()
@@ -480,7 +480,7 @@ std::vector<std::string> CRPCTable::listCommands() const
 
 std::string HelpExampleCli(const std::string& methodname, const std::string& args)
 {
-    return "> shroud-cli " + methodname + " " + args + "\n";
+    return "> fiveg-cli " + methodname + " " + args + "\n";
 }
 
 std::string HelpExampleRpc(const std::string& methodname, const std::string& args)

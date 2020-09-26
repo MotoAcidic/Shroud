@@ -38,10 +38,10 @@ def check_json_precision():
 def determine_db_dir():
     """Return the default location of the bitcoin data directory"""
     if platform.system() == "Darwin":
-        return os.path.expanduser("~/Library/Application Support/ShroudXProject/")
+        return os.path.expanduser("~/Library/Application Support/FivegXProject/")
     elif platform.system() == "Windows":
-        return os.path.join(os.environ['APPDATA'], "ShroudXProject")
-    return os.path.expanduser("~/.shroud")
+        return os.path.join(os.environ['APPDATA'], "FivegXProject")
+    return os.path.expanduser("~/.fiveg")
 
 def read_bitcoin_config(dbdir):
     """Read the bitcoin.conf file from dbdir, returns dictionary of settings"""
