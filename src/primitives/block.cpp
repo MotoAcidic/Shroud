@@ -22,7 +22,7 @@
 //#include "crypto/x16Rv2/hash_algos.h"
 #include "crypto/yescrypt/yescrypt.c"
 
-extern "C" void yescrypt_hash(const char* input, char* output);
+//extern "C" void yescrypt_hash(const char* input, char* output);
 
 uint256 CBlockHeader::GetHash() const {
 
