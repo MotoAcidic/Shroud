@@ -420,7 +420,7 @@ crypto_libbitcoin_crypto_a_SOURCES = \
   crypto/x16Rv2/gost_streebog.c \
   crypto/yespower/sha256.c \
   crypto/yespower/yespower-opt.c \
-  crypto/yespower/yespower.c
+  crypto/yespower/yespower.c \
   crypto/sha512.h
 
 # consensus: shared between all executables that validate any consensus rules.
