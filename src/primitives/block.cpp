@@ -20,33 +20,29 @@
 #include <algorithm>
 #include <string>
 //#include "crypto/x16Rv2/hash_algos.h"
-#include "crypto/yescrypt/yescrypt.c"
-
-//extern "C" void yescrypt_hash(const char* input, char* output);
 
 uint256 CBlockHeader::GetHash() const {
 
-    return yescrypt_hash(BEGIN(nVersion), END(nNonce), hashPrevBlock);
+   return SerializeHashYespower(*this);
 
 }
 
 uint256 CBlockHeader::GetPoWHash() const {
-        //Changed hash algo to Yescrypt
-    return yescrypt_hash(BEGIN(nVersion), END(nNonce), hashPrevBlock);
+
+    return SerializeHashYespower(*this);
 }
 
 std::string CBlock::ToString() const {
     std::stringstream s;
-    s << strprintf(
-            "CBlock(hash=%s, ver=0x%08x, hashPrevBlock=%s, hashMerkleRoot=%s, nTime=%u, nBits=%08x, nNonce=%u, vtx=%u)\n",
-            GetHash().ToString(),
-            nVersion,
-            hashPrevBlock.ToString(),
-            hashMerkleRoot.ToString(),
-            nTime, nBits, nNonce,
-            vtx.size());
-    for (unsigned int i = 0; i < vtx.size(); i++) {
-        s << "  " << vtx[i].ToString() << "\n";
+    s << strprintf("CBlock(hash=%s, ver=0x%08x, hashPrevBlock=%s, hashMerkleRoot=%s, nTime=%u, nBits=%08x, nNonce=%u, vtx=%u)\n",
+        GetHash().ToString(),
+        nVersion,
+        hashPrevBlock.ToString(),
+        hashMerkleRoot.ToString(),
+        nTime, nBits, nNonce,
+        vtx.size());
+    for (const auto& tx : vtx) {
+        s << "  " << tx->ToString() << "\n";
     }
     return s.str();
 }
