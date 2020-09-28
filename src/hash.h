@@ -239,7 +239,7 @@ public:
     CHashWriterYespower& operator<<(const T& obj)
     {
         // Serialize to this stream
-        ::Serialize(*this, obj);
+        ::Serialize(*this, obj, nType, nVersion);
         return (*this);
     }
 };
