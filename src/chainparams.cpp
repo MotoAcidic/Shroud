@@ -172,46 +172,26 @@ public:
         
         genesis = CreateGenesisBlock(ZC_GENESIS_BLOCK_TIME, 2046200, 0x1e00ffff, 2, 0 * COIN, extraNonce);
 
-
-        uint32_t nGenesisTime = ZC_GENESIS_BLOCK_TIME;
-        arith_uint256 test;
-        bool fNegative;
-        bool fOverflow;
-        test.SetCompact(0x1e00ffff, &fNegative, &fOverflow);
-        std::cout << "Test threshold: " << test.GetHex() << "\n\n";
-        int genesisNonce = 0;
-        uint256 TempHashHolding = uint256S("0x0000000000000000000000000000000000000000000000000000000000000000");
-        uint256 BestBlockHash = uint256S("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        for (int i = 0; i < 40000000; i++) {
-            genesis = CreateGenesisBlock(nGenesisTime, i, 0x1e00ffff, 2, 0 * COIN, extraNonce);
-            //genesis.hashPrevBlock = TempHashHolding;
-            consensus.hashGenesisBlock = genesis.GetHash();
-            arith_uint256 BestBlockHashArith = UintToArith256(BestBlockHash);
-            if (UintToArith256(consensus.hashGenesisBlock) < BestBlockHashArith) {
-                BestBlockHash = consensus.hashGenesisBlock;
-                std::cout << BestBlockHash.GetHex() << " Nonce: " << i << "\n";
-                std::cout << "   PrevBlockHash: " << genesis.hashPrevBlock.GetHex() << "\n";
-                std::cout << "hashGenesisBlock to 0x" << BestBlockHash.GetHex() << std::endl;
-                std::cout << "Genesis Nonce to " << genesisNonce << std::endl;
-                std::cout << "Genesis Merkle " << genesis.hashMerkleRoot.GetHex() << std::endl;
+        std::cout << "Begin calculating " << strNetworkID << " Genesis Block:\n";
+        arith_uint256 hashTarget = arith_uint256().SetCompact(genesis.nBits);
+        uint256 hash;
+        genesis.nNonce = 0;
+        while (UintToArith256(genesis.GetHash()) > hashTarget) {
+            ++genesis.nNonce;
+            if (genesis.nNonce == 0) {
+                std::cout << std::string("NONCE WRAPPED, incrementing time:\n");
+                ++genesis.nTime;
             }
-            TempHashHolding = consensus.hashGenesisBlock;
-            if (BestBlockHashArith < test) {
-                genesisNonce = i - 1;
-                break;
+            if (genesis.nNonce % 1000 == 0) {
+                std::cout << strNetworkID << " nonce: " << genesis.nNonce << " time: " << genesis.nTime << " hash: " << genesis.GetHash().ToString().c_str() << "\n";
             }
-            //std::cout << consensus.hashGenesisBlock.GetHex() << "\n";
         }
-        std::cout << "\n";
-        std::cout << "\n";
-        std::cout << "\n";
-        std::cout << "hashGenesisBlock to 0x" << BestBlockHash.GetHex() << std::endl;
-        std::cout << "Genesis Nonce to " << genesisNonce << std::endl;
-        std::cout << "Genesis Merkle " << genesis.hashMerkleRoot.GetHex() << std::endl;
-        std::cout << "\n";
-        return;
-
-
+        std::cout << strNetworkID << " ---\n";
+        std::cout << "  nonce: " << genesis.nNonce << "\n";
+        std::cout << "   time: " << genesis.nTime << "\n";
+        std::cout << "   hash: " << genesis.GetHash().ToString().c_str() << "\n";
+        std::cout << "   merklehash: " << genesis.hashMerkleRoot.ToString().c_str() << "\n";
+        std::cout << "Finished calculating " << strNetworkID << " Genesis Block:\n";
 
         consensus.hashGenesisBlock = genesis.GetHash();
         //assert(consensus.hashGenesisBlock == uint256S("0x000000b3cf5064a01dcdc8931f5bae3cc38c6af1aec07f4459903e9eebae986a"));
