@@ -418,19 +418,6 @@ crypto_libbitcoin_crypto_a_SOURCES = \
   crypto/x16Rv2/sponge.cpp \
   crypto/x16Rv2/sph_sha2.c \
   crypto/x16Rv2/gost_streebog.c \
-
-  crypto/yescrypt/phc.c \
-  crypto/yescrypt/sha256.h \
-  crypto/yescrypt/sha256_c.h \
-  crypto/yescrypt/sysendian.h \
-  crypto/yescrypt/yescrypt.c \
-  crypto/yescrypt/yescrypt.h \
-  crypto/yescrypt/yescrypt-best_c.h \
-  crypto/yescrypt/yescrypt-opt_c.h \
-  crypto/yescrypt/yescrypt-platform_c.h \
-  crypto/yescrypt/yescrypt-ref_c.h \
-  crypto/yescrypt/yescrypt-simd_c.h \
-
   crypto/sha512.h
 
 # consensus: shared between all executables that validate any consensus rules.
